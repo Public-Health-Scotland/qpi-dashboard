@@ -12,7 +12,8 @@
 
 source("code/packages.R")
 
-# tsg = "Tumour Specific Group". The following are acceptable values
+# tsg = "Tumour Specific Group"
+# The following are acceptable values
 # "Acute Leukaemia" "Bladder"     "Breast"           "Cervical"
 # "Colorectal"      "Endometrial" "Head and Neck"    "Lung"
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
