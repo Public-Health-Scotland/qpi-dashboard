@@ -10,6 +10,4 @@
 
 #### Step 0 : Housekeeping ----
 
-library(readr)
-library(dplyr)
-library(tidylog)
+source("code/packages.R")
