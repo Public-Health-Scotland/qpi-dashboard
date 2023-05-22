@@ -13,11 +13,11 @@
     + `temporary`
 
 ### Files
-  * `.Renviron` - R environment
+  * `renv.lock` - List of packages for use with renv
   * `.Rprofile` - R profile settings
   * `.gitignore` - tells git what files and folders *not* to track or upload to GitHub
   * `README.md` - this page
-  * `r-project.Proj` - R project
+  * `QPI-dashboard.Proj` - R project
   
 ## How to use
-Resources/blob/master/PHI%20R%20style%20guide.md).
+Add detail in later on how to use repository
