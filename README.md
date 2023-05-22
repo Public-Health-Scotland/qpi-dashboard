@@ -7,10 +7,7 @@
     + `housekeeping.R` - contains all values which need to be changed each time
     + `functions.R` - functions sourced and used in the other script(s)
     + `packages.R` - list of packages sourced and used in the other script(s)
-  * `data` - data required for project
-    + `basefiles`
-    + `output`
-    + `temporary`
+  * `renv` - Required for renv. Don't need to interact directly
 
 ### Files
   * `renv.lock` - List of packages for use with renv
