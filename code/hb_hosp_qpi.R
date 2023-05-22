@@ -1,13 +1,16 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# SCRIPT_NAME.R
+# hb_hosp_qpi.R
 # Angus Morton
-# DD/MM/YYYY
+# 2023-05-22
 # 
-# DESCRIPTION
+# Update the hb_hosp_qpi.xlsx file with the new data
 # 
-# R version 4.1.2
+# R version 4.1.2 (2021-11-01)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
 
 source("code/packages.R")
+source("code/housekeeping.R")
+
+####
