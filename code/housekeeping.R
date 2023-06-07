@@ -20,8 +20,38 @@ source("code/packages.R")
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 tsg <- "Colorectal"
 
+new_years <- c("2019/20", "2020/21", "2021/22")
+
 # Filepaths
 
-hb_hosp_qpi_fpath
+data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
+                      "Data/new_process/colorectal_jun23_dev/")
 
+#########################################
+
+# input files
+
+hb_hosp_in_fpath <- paste0(data_folder,
+                           "excels_for_tableau/input/",
+                           "HB_Hosp_QPI.xlsx")
+
+sca_fpath <- paste0(data_folder,
+                    "data_submissions/scan.xlsx")
+
+nca_fpath <- paste0(data_folder,
+                    "data_submissions/nca.xlsx")
+
+wos_fpath <- paste0(data_folder,
+                    "data_submissions/woscan.xlsx")
+
+# lookup
+
+lookup_fpath <- paste0(data_folder,
+                       "lookup/lookup.xlsx")
+
+# output files
+
+hb_hosp_out_fpath <- paste0(data_folder,
+                           "excels_for_tableau/output/",
+                           "hb_hosp_qpi.xlsx")
 

@@ -12,21 +12,21 @@ source("code/packages.R")
 
 # read in and tidy qpi info from template
 
-read_qpi_data <- function(fpath) {
+read_qpi_data <- function(fpath, network_name, year_names) {
   
   # Reads in a QPI data submission template from a network
   
   template <- loadWorkbook(fpath)
   
-  years_num <- length(names(template))-1
+  years_num <- length(year_names)
   
   dat <- data.frame()
   
   for (year in 1:years_num) {
     
-    rows <- readWorkbook(wos, sheet = year, startRow = 5, colNames = TRUE,
-                         cols = 2) %>%
-      filter(Network == "WoSCAN") %>% 
+    rows <- readWorkbook(template, sheet = year, startRow = 5,
+                         colNames = TRUE, cols = 2) %>%
+      filter(Network == network_name) %>% 
       count(Network) %>% 
       select(n) %>% 
       pull()
@@ -35,7 +35,7 @@ read_qpi_data <- function(fpath) {
                              rows = c(5:(rows+5)),
                              cols = c(2:13)) %>% 
       mutate(Comments = as.character(Comments),
-             cyear = year)
+             Cyear = year_names[year])
     
     dat <- bind_rows(dat, year_dat)
     
