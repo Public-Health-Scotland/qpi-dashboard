@@ -10,6 +10,8 @@
 
 source("code/packages.R")
 
+# housekeeping
+
 get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
   
   if (is.null(ntwrk_hosps)) {
@@ -34,6 +36,8 @@ get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
   hosps
   
 }
+
+# create_templates.R
 
 
 make_template_df <- function(lookup, year, network, board_names,
@@ -81,19 +85,82 @@ make_template_df <- function(lookup, year, network, board_names,
 }
 
 
-
-make_qpis_tab <- function(wb, df, styles) {
+make_qpis_tab <- function(wb, df, year_num, year,
+                          date_start, meas_vers, tsg, styles) {
   
-  addWorksheet(wb, sheetName = "data")
+  # define sheet name and cell values
   
-  writeData(wb, sheet = 1, data, startRow = 1, startCol = 1, colNames = TRUE)
+  sheet_name <- paste0("QPI Data Year ", year_num)
+  
+  title_cell <- paste0(tsg,
+                       " Cancer QPIs (Year ",
+                       year_num,
+                       " - ",
+                       year,
+                       ")")
+  
+  date_start_str <- date_start |> 
+    format("%d/%m/%Y")
+  
+  date_end_str <- date_start %m+% years(1) |> 
+    format("%d/%m/%Y")
+  
+  subtitle_cell <- paste0("Cohort: Patients Diagnosed with ",
+                          tsg,
+                          " Cancer Between ",
+                          date_start_str,
+                          " and ",
+                          date_end_str
+  )
+  
+  meas_cell <- paste0("Measurability of Quality Performance Indicators ",
+                      "Version ",
+                      meas_vers)
+  
+  # populate workbook
+  
+  addWorksheet(wb, sheetName = sheet_name)
+  
+  writeData(wb, sheet = sheet_name, title_cell, startRow = 1, startCol = 2)
+  writeData(wb, sheet = sheet_name, subtitle_cell, startRow = 2, startCol = 2)
+  writeData(wb, sheet = sheet_name, meas_cell, startRow = 3, startCol = 2)
+  
+  writeData(wb, sheet = sheet_name, df, startRow = 5, startCol = 2,
+            colNames = TRUE)
+  
+  # apply styles
+  
+  ntwrk_rows <- which(df$Network == df$Location)+5
+  
+  data_size <- nrow(df)+1
+  
+  addStyle(wb, sheet = sheet_name, style = styles$title,
+           rows = 1, cols = 2)
+  
+  addStyle(wb, sheet = sheet_name, style = styles$table,
+           rows = 6:(data_size+4), cols = 2:13, gridExpand = TRUE)
+  
+  addStyle(wb, sheet = sheet_name, style = styles$header,
+           rows = 5, cols = 2:13, stack = TRUE)
+  
+  addStyle(wb, sheet = sheet_name, style = styles$ntwrk_row,
+           rows = ntwrk_rows, cols = 2:13, gridExpand = TRUE,  stack = TRUE)
+  
+  addStyle(wb, sheet = sheet_name, style = styles$total,
+           rows = ntwrk_rows, cols = c(3,8:12), gridExpand = TRUE, stack = TRUE)
+  
+  setColWidths(wb, sheet = sheet_name, widths = "auto", cols = 3:7)
+  setColWidths(wb, sheet = sheet_name, widths = 15.6, cols = 8:12)
+  setColWidths(wb, sheet = sheet_name, widths = 68, cols = 13)
+  
+  showGridLines(wb, sheet = sheet_name, showGridLines = FALSE)
   
   wb
   
 }
 
 
-make_background_tab <- function(wb, cancer, network, new_years,
+make_background_tab <- function(wb, tsg, network, new_years,
                                 date_start, tsg_sex) {
   
   addWorksheet(wb, sheetName = "data")

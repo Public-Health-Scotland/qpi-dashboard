@@ -17,31 +17,38 @@ source("code/packages.R")
 
 ### Step x : Create styles ----
 
-header_style <- createStyle(
-  border = "bottom",
-  borderStyle = "medium",
-  fgFill = "#E7E6E6",
+title <- createStyle(
+  textDecoration = "bold",
+  fontSize = 12
+)
+
+table <- createStyle(
+  border = c("top", "bottom", "left", "right"),
+  borderStyle = "thin",
+  fontSize = 10
+)
+
+header <- createStyle(
+  border = c("top", "bottom", "left", "right"),
+  borderStyle = "thin",
+  textDecoration = "bold",
+  fgFill = "#B8CCE4",
+  halign = "center"
+)
+
+ntwrk_row <- createStyle(
+  fgFill = "#DCE6F1"
+)
+
+total <- createStyle(
   textDecoration = "bold"
 )
 
-header_numeric_style <- createStyle(
-  halign = "right"
-)
-
-total_style <- createStyle(
-  border = c("top", "bottom"),
-  borderStyle = "thin",
-  fgFill = "#E7E6E6"
-)
-
-separator_style <- createStyle(
-  border = "right",
-  borderStyle = "medium"
-)
-
-uptake_style <- createStyle(
-  numFmt = "0.0"
-)
+styles <- c("title" = title,
+            "table" = table,
+            "header" = header, 
+            "ntwrk_row" = ntwrk_row,
+            "total" = total)
 
 ### Step x : Load files ----
 
@@ -55,24 +62,6 @@ lookup <- lookup |>
   mutate(order = row_number()) |> 
   ungroup()
 
-### Step x : locations ----
-
-
-board_names <- hb_hosp_old |> 
-  filter(Board_Hospital == "NHS Board",
-         Cancer == tsg,
-         Location != "Scotland") |>
-  filter(Cyear == max(Cyear)) |> 
-  select(Network, Location) |> 
-  distinct()
-
-### Get hospitals from most recent year in hb hosp
-hosp_names <- hb_hosp_old |> 
-  filter(Board_Hospital == "Hospital",
-         Cancer == tsg) |>
-  filter(Cyear == max(Cyear)) |> 
-  select(Network, Location) |> 
-  distinct()
 
 ### Step x : 
 
@@ -81,11 +70,20 @@ test <- make_template_df(lookup, "2021/22", "SCAN", board_names,
 
 test_nca <- make_template_df(lookup, "2021/22", "NCA", board_names,
                              hosp_names)
-  
+
 ### Step x : Write to Excel ----
 
+wb <- createWorkbook()
+
+wb <- make_qpis_tab(wb, test, 7, "2019/20",
+                    date_start, 3.3, tsg, styles)
+
+temp_path <- paste0(data_folder, "temp/test.xlsx")
+
+saveWorkbook(wb, temp_path)
+
 # create workbook
-# use purrr write as many sheets as is requried for qpis
+# use purrr write as many sheets as is required for QPIs
 # write background info sheet using function
 
 # write out

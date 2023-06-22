@@ -29,6 +29,7 @@ tsg_sex <- case_when(
 )
 
 new_years <- c("2019/20", "2020/21", "2021/22")
+new_years_vals <- c(7,8,9)
 
 date_start <- dmy("01-04-2019")
 
@@ -82,10 +83,18 @@ hb_hosp_out_fpath <- paste0(data_folder,
                            "hb_hosp_qpi.xlsx")
 
 ### hospital names
-# run get_hosp_names three times
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
 hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps)
 networks <- c("NCA", "SCAN", "WoSCAN")
 
 hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
+
+### board names
+board_names <- hb_hosp_old |> 
+  filter(Board_Hospital == "NHS Board",
+         Cancer == tsg,
+         Location != "Scotland") |>
+  filter(Cyear == max(Cyear)) |> 
+  select(Network, Location) |> 
+  distinct()
