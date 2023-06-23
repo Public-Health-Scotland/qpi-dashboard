@@ -65,18 +65,31 @@ lookup <- lookup |>
 
 ### Step x : 
 
-test <- make_template_df(lookup, "2021/22", "SCAN", board_names,
-                         hosp_names)
+year_nums <- c(7,8,9)
+years <- c("2019/20", "2020/21", "2021/22")
+vars <- list(years, networks)
 
-test_nca <- make_template_df(lookup, "2021/22", "NCA", board_names,
-                             hosp_names)
+dfs <- pmap(vars, make_template_df,
+            lookup = lookup,
+            board_names = board_names,
+            hosp_names = hosp_names)
 
 ### Step x : Write to Excel ----
 
 wb <- createWorkbook()
 
-wb <- make_qpis_tab(wb, test, 7, "2019/20",
+wb <- make_qpis_tab(dfs, year_nums, years, meas_vers, wb, date_start, styles)
+
+vars <- list(dfs, year_nums, years, meas_vers)
+wb <- pmap(vars, make_qpis_tab, wb = wb, date_start = date_start,
+           styles = styles)
+
+wb2 <- createWorkbook()
+
+wb2 <- make_qpis_tab(wb, test, 8, "2019/20",
                     date_start, 3.3, tsg, styles)
+
+w
 
 temp_path <- paste0(data_folder, "temp/test.xlsx")
 
@@ -84,6 +97,9 @@ saveWorkbook(wb, temp_path)
 
 # create workbook
 # use purrr write as many sheets as is required for QPIs
+
+wb <- pmap()
+
 # write background info sheet using function
 
 # write out
