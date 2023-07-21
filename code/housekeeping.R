@@ -31,7 +31,7 @@ new_years_vals <- c(7,8,9)
 date_start <- dmy("01-10-2019")
 
 # measurability versions (one for each year)
-meas_vers <- c("3.3", "3.3", "4.4")
+meas_vers <- c("3.5", "4", "4")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
