@@ -9,11 +9,13 @@
 # R version 4.1.2 (2021-11-01)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 #### Step 0 : Housekeeping ----
 
 source("code/functions.R")
 source("code/housekeeping.R")
 source("code/packages.R")
+
 
 ### Step 1 : Create excel styles ----
 
@@ -56,6 +58,7 @@ styles <- c("title" = title,
             "total" = total,
             "age_sex_table" = age_sex_table)
 
+
 ### Step 2 : Load files ----
 
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
@@ -89,6 +92,7 @@ dfs_nca <- map(new_years, make_template_df,
                board_names = board_names,
                hosp_names = hosp_names)
 
+
 ### Step 4 : Assemble excels ----
 
 export_template(dfs_sca, "SCAN", new_years_vals, new_years, meas_vers,
@@ -99,25 +103,4 @@ export_template(dfs_wos, "WoSCAN", new_years_vals, new_years, meas_vers,
 
 export_template(dfs_nca, "NCA", new_years_vals, new_years, meas_vers,
                 date_start, styles)
-
-# # create workbook
-# wb <- createWorkbook()
-# 
-# # write QPIs tabs
-# wb <- make_qpis_tabs(dfs_sca, new_years_vals, new_years, meas_vers,
-#                      wb, date_start, styles)
-# 
-# # write background tab
-# wb <- make_background_tab(wb, tsg, "SCAN", new_years,
-#                           date_start, tsg_sex, board_names, styles)
-# 
-# # write out
-# 
-# output_path <- paste0(data_folder, "templates/",
-#                       "scan_test.xlsx")
-# 
-# saveWorkbook(wb, temp_path)
-
-
-
 

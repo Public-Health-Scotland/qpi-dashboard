@@ -8,10 +8,12 @@
 # R version 4.1.2 (2021-11-01)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### Step 0 : Housekeeping ----
-
 source("code/functions.R")
 source("code/packages.R")
+
+#### Edit Variables ----
+# The below variables vary depending on the the nature of the update.
+# They will need edited for each new dashbaord update.
 
 # tsg = "Tumour Specific Group"
 # The following are acceptable values
@@ -20,18 +22,13 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
-tsg <- "Colorectal"
-
-tsg_sex <- case_when(
-  tsg %in% c("Breast", "Cervical", "Endometrial", "Ovarian") ~ "female",
-  tsg %in% c("Prostate", "Testicular") ~ "male",
-  TRUE ~ "both"
-)
+tsg <- "Lymphoma"
 
 new_years <- c("2019/20", "2020/21", "2021/22")
 new_years_vals <- c(7,8,9)
 
-date_start <- dmy("01-04-2019")
+# Date of the start of the first new reporting year
+date_start <- dmy("01-10-2019")
 
 # measurability versions (one for each year)
 meas_vers <- c("3.3", "3.3", "4.4")
@@ -40,7 +37,7 @@ meas_vers <- c("3.3", "3.3", "4.4")
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c("hosp 1", "hosp 0")
+nca_hosps <- c()
 sca_hosps <- c()
 wos_hosps <- c()
 
@@ -48,14 +45,39 @@ wos_hosps <- c()
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "nca_hosps <- c()"
-age_groups <- c()
+age_groups <- c("Under 16",
+                "16-19",
+                "20-24",
+                "25-29",
+                "30-34",
+                "35-39",
+                "40-44",
+                "45-49",
+                "50-54",
+                "55-59",
+                "60-64",
+                "65-69",
+                "70-74",
+                "75-79",
+                "80-84",
+                "85+")
 
-# Filepaths
-
+# Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/colorectal_jun23_dev/")
+                      "Data/new_process/lymphoma_jul23/")
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~ Nothing below this line needs edited ~~~~~~~~~~~~~~
+
+#### Derived Variables ----
+# All these variables are automatically generated from input files and
+# the values provided above
+
+# Sex value to handle sex specific cancers
+tsg_sex <- case_when(
+  tsg %in% c("Breast", "Cervical", "Endometrial", "Ovarian") ~ "female",
+  tsg %in% c("Prostate", "Testicular") ~ "male",
+  TRUE ~ "both"
+)
 
 # input files
 
