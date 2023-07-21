@@ -15,7 +15,7 @@ source("code/functions.R")
 source("code/housekeeping.R")
 source("code/packages.R")
 
-### Step x : Create styles ----
+### Step 1 : Create excel styles ----
 
 title <- createStyle(
   textDecoration = "bold",
@@ -44,13 +44,19 @@ total <- createStyle(
   textDecoration = "bold"
 )
 
+age_sex_table <- createStyle(
+  halign = "center",
+  valign = "center"
+)
+
 styles <- c("title" = title,
             "table" = table,
             "header" = header, 
             "ntwrk_row" = ntwrk_row,
-            "total" = total)
+            "total" = total,
+            "age_sex_table" = age_sex_table)
 
-### Step x : Load files ----
+### Step 2 : Load files ----
 
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
@@ -63,11 +69,7 @@ lookup <- lookup |>
   ungroup()
 
 
-### Step x : 
-
-# new_years
-# new_years_vals
-vars <- list(years, networks)
+### Step 3 : Create QPI data frames using the make_template_df function ----
 
 dfs_sca <- map(new_years, make_template_df,
                 network = "SCAN",
@@ -87,26 +89,35 @@ dfs_nca <- map(new_years, make_template_df,
                board_names = board_names,
                hosp_names = hosp_names)
 
-### Step x : Write to Excel ----
+### Step 4 : Assemble excels ----
 
-# create workbook
-wb <- createWorkbook()
+export_template(dfs_sca, "SCAN", new_years_vals, new_years, meas_vers,
+                date_start, styles)
 
-# write QPIs tabs
-wb <- make_qpis_tabs(dfs_scan, year_nums, years, meas_vers,
-                     wb, date_start, styles)
+export_template(dfs_wos, "WoSCAN", new_years_vals, new_years, meas_vers,
+                date_start, styles)
 
-# write background info tabs
+export_template(dfs_nca, "NCA", new_years_vals, new_years, meas_vers,
+                date_start, styles)
 
-wb <- make_background_tab(wb, tsg, "SCAN", new_years,
-                          date_start, tsg_sex)
+# # create workbook
+# wb <- createWorkbook()
+# 
+# # write QPIs tabs
+# wb <- make_qpis_tabs(dfs_sca, new_years_vals, new_years, meas_vers,
+#                      wb, date_start, styles)
+# 
+# # write background tab
+# wb <- make_background_tab(wb, tsg, "SCAN", new_years,
+#                           date_start, tsg_sex, board_names, styles)
+# 
+# # write out
+# 
+# output_path <- paste0(data_folder, "templates/",
+#                       "scan_test.xlsx")
+# 
+# saveWorkbook(wb, temp_path)
 
-temp_path <- paste0(data_folder, "temp/scan_test.xlsx")
 
-saveWorkbook(wb, temp_path)
-
-# write background info sheet using function
-
-# write out
 
 

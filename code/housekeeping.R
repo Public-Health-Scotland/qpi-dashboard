@@ -44,6 +44,12 @@ nca_hosps <- c("hosp 1", "hosp 0")
 sca_hosps <- c()
 wos_hosps <- c()
 
+## age groups for template :
+# Enter age groups for background info manually. If none supplied then the
+# script will use the most common set of (<45, 45-49 ... 80-84, >85)
+# To use default age groups enter a NULL vector e.g. "nca_hosps <- c()"
+age_groups <- c()
+
 # Filepaths
 
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
@@ -98,3 +104,7 @@ board_names <- hb_hosp_old |>
   filter(Cyear == max(Cyear)) |> 
   select(Network, Location) |> 
   distinct()
+
+### age groups
+
+age_groups <- get_age_groups(age_groups)

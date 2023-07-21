@@ -37,8 +37,33 @@ get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
   
 }
 
-# create_templates.R
+get_age_groups <- function(age_groups) {
+  
+  if (is.null(age_groups)) {
+    
+    age_groups <- c("Under 45",
+                    "45-49",
+                    "50-54",
+                    "55-59",
+                    "60-64",
+                    "65-69",
+                    "70-74",
+                    "75-79",
+                    "80-84",
+                    "85+",
+                    "Total")
+    
+  } else {
+    
+    age_groups <- age_groups |> append("Total")
+    
+  }
+  
+  age_groups
+  
+}
 
+# create_templates.R
 
 make_template_df <- function(year, network, lookup, board_names,
                              hosp_names) {
@@ -159,6 +184,7 @@ make_qpis_tabs <- function(dfs, year_nums, years, meas_vers,
              rows = ntwrk_rows, cols = c(3,8:12), gridExpand = TRUE,
              stack = TRUE)
     
+    setColWidths(wb, sheet = sheet_name, widths = 3, cols = 1)
     setColWidths(wb, sheet = sheet_name, widths = "auto", cols = 3:7)
     setColWidths(wb, sheet = sheet_name, widths = 15.6, cols = 8:12)
     setColWidths(wb, sheet = sheet_name, widths = 68, cols = 13)
@@ -172,23 +198,216 @@ make_qpis_tabs <- function(dfs, year_nums, years, meas_vers,
 }
 
 
+
 make_background_tab <- function(wb, tsg, network, new_years,
-                                date_start, tsg_sex) {
+                                date_start, tsg_sex, board_names,
+                                styles) {
   
+  title_cell <- paste0(tsg, " QPIs: Background Data")
   
+  date_start_str <- date_start |> format("%d/%m/%Y")
   
-  title_cell <- paste0(tsg,
-                       " QPIs: Background Data (",
-                       month_start,
-                       " to ",
-                       month_end,
-                       ")")
+  date_end_str <- date_start %m+% years(length(new_years)) |> 
+    format("%d/%m/%Y")
+  
+  subtitle_cell <- paste0("Cohort: Patients Diagnosed with ",
+                          tsg,
+                          " Cancer Between ",
+                          date_start_str,
+                          " and ",
+                          date_end_str
+  )
   
   addWorksheet(wb, sheetName = "BackgroundInfo")
   
-  writeData(wb, sheet = 1, data, startRow = 1, startCol = 1, colNames = TRUE)
+  writeData(wb, sheet = "BackgroundInfo",
+            title_cell, startRow = 1, startCol = 2)
+  writeData(wb, sheet = "BackgroundInfo",
+            subtitle_cell, startRow = 2, startCol = 2)
+  
+  addStyle(wb, sheet = "BackgroundInfo", style = styles$title,
+           rows = 1, cols = 2)
+  
+  num_cases_df <- board_names |>
+    filter(Network == network) |>
+    select(Location) |>
+    mutate(Measure = "No. Of Cases",
+           `No. Of Patients` = NA)
+  
+  num_boards <- board_names |> 
+    filter(Network == network) |> 
+    select(Location) |> 
+    pull() |> 
+    length()
+  
+  ntwk_boards <- board_names |> 
+    filter(Network == network) |> 
+    filter(Location != network)
+  
+  
+  if (tsg_sex == "female") {
+    
+    age_sex_df <- data.frame(
+      `Age Range` = age_groups,
+      Sex = "F",
+      dummy = NA
+    ) |> 
+      cross_join(ntwk_boards) |> 
+      pivot_wider(names_from = "Location", values_from = dummy) |> 
+      select(-Network) |> 
+      mutate("{network}" := NA)
+    
+  } else if (tsg_sex == "male") {
+    
+    age_sex_df <- data.frame(
+      `Age Range` = age_groups,
+      Sex = "M",
+      dummy = NA
+    ) |> 
+      cross_join(ntwk_boards) |> 
+      pivot_wider(names_from = "Location", values_from = dummy) |> 
+      select(-Network) |> 
+      mutate("{network}" := NA)
+    
+  } else {
+    
+    age_sex_df <- data.frame(
+      `Age Range` = age_groups) |>
+      cross_join(data.frame(Sex = c("F","M"))) |> 
+      cross_join(ntwk_boards) |> 
+      mutate(dummy = NA) |> 
+      pivot_wider(names_from = "Location", values_from = dummy) |> 
+      select(-Network) |> 
+      mutate("{network}" := NA)
+    
+  }
+  
+  age_sex_start_row <- 5 + length(new_years)*(num_boards+4)
+  
+  for (i in 1:length(new_years)) {
+    
+    title_row <- (5 + (i-1)*(num_boards + 4))
+    
+    table_rows <- (title_row+3):(title_row + num_boards + 2)
+    
+    network_row <- (title_row + num_boards + 2)
+    
+    # Number of cases tables
+    
+    title <- paste0("Number of Cases (Year ",
+                    new_years_vals[i],
+                    " - ",
+                    new_years[i],
+                    ")")
+    
+    writeData(wb, sheet = "BackgroundInfo",
+              title,
+              startRow = title_row,
+              startCol = 2)
+    
+    writeData(wb, sheet = "BackgroundInfo",
+              num_cases_df,
+              startRow = (title_row + 2),
+              startCol = 2)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$title,
+             rows = title_row, cols = 2)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$header,
+             rows = (title_row + 2), cols = 2:4, gridExpand = TRUE,
+             stack = TRUE)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$table,
+             rows = table_rows, cols = 2:4, gridExpand = TRUE,
+             stack = TRUE)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$total,
+             rows = network_row, cols = 2, gridExpand = TRUE,
+             stack = TRUE)
+    
+    
+    # age gender tables
+    
+    title_row <- age_sex_start_row + (i-1)*(nrow(age_sex_df)+4)
+    
+    table_rows <- (title_row+3):(title_row + nrow(age_sex_df) + 2)
+    
+    table_cols <- 2:(length(age_sex_df)+1)
+    
+    title <- paste0("Age Gender (Year ",
+                    new_years_vals[i],
+                    " - ",
+                    new_years[i],
+                    ")")
+    
+    writeData(wb, sheet = "BackgroundInfo",
+              title,
+              startRow = title_row,
+              startCol = 2)
+    writeData(wb, sheet = "BackgroundInfo",
+              age_sex_df,
+              startRow = (title_row + 2),
+              startCol = 2)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$title,
+             rows = title_row, cols = 2)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$header,
+             rows = (title_row + 2), cols = 2:(length(age_sex_df)+1),
+             gridExpand = TRUE, stack = TRUE)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$table,
+             rows = table_rows, cols = table_cols, gridExpand = TRUE,
+             stack = TRUE)
+    
+    addStyle(wb, sheet = "BackgroundInfo", style = styles$age_sex_table,
+             rows = table_rows, cols = table_cols, gridExpand = TRUE,
+             stack = TRUE)
+    
+    for (j in 1:(nrow(age_sex_df)/2)) {
+      
+      mergeCells(wb, "BackgroundInfo", cols = 2,
+                 rows = ((title_row+3+(2*(j-1))):(title_row+3+(2*(j-1)+1))))
+      
+    }
+    
+  }
+  
+
+  setColWidths(wb, sheet = "BackgroundInfo", widths = 25.3, cols = 2)
+  setColWidths(wb, sheet = "BackgroundInfo", widths = 10.5, cols = 3)
+  setColWidths(wb, sheet = "BackgroundInfo", widths = 23,
+               cols = 4:(length(age_sex_df)+1))
+  
+  showGridLines(wb, sheet = "BackgroundInfo", showGridLines = FALSE)
   
   wb
+  
+}
+
+export_template <- function(df, network, new_years_vals, new_years, meas_vers,
+                            date_start, styles) {
+  
+  # create workbook
+  wb <- createWorkbook()
+  
+  # write QPIs tabs
+  wb <- make_qpis_tabs(df, new_years_vals, new_years, meas_vers,
+                       wb, date_start, styles)
+  
+  # write background tab
+  wb <- make_background_tab(wb, tsg, network, new_years,
+                            date_start, tsg_sex, board_names, styles)
+  
+  # write out
+  
+  output_path <- paste0(data_folder, "templates/",
+                        network,
+                        "_",
+                        tsg,
+                        "_QPIs_template.xlsx")
+  
+  saveWorkbook(wb, output_path)
   
 }
 
