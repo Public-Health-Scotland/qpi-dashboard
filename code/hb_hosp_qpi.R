@@ -50,13 +50,13 @@ scotland_rows <- new_data %>%
          Network = "Scotland",
          HB_Comments = "")
 
-new_data <- new_data %>% 
-  bind_rows(scotland_rows) %>%
-  group_by(Cancer, QPI, Cyear) %>% 
-  mutate(SurgDiag = case_when(
-    Location == "Scotland" ~ ,
-    TRUE ~ SurgDiag
-  ))
+# new_data <- new_data %>% 
+#   bind_rows(scotland_rows) %>%
+#   group_by(Cancer, QPI, Cyear) %>% 
+#   mutate(SurgDiag = case_when(
+#     Location == "Scotland" ~ ,
+#     TRUE ~ SurgDiag
+#   ))
   
 
 ### Step x : create derived variables

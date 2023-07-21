@@ -65,40 +65,45 @@ lookup <- lookup |>
 
 ### Step x : 
 
-year_nums <- c(7,8,9)
-years <- c("2019/20", "2020/21", "2021/22")
+# new_years
+# new_years_vals
 vars <- list(years, networks)
 
-dfs <- pmap(vars, make_template_df,
-            lookup = lookup,
-            board_names = board_names,
-            hosp_names = hosp_names)
+dfs_sca <- map(new_years, make_template_df,
+                network = "SCAN",
+                lookup = lookup,
+                board_names = board_names,
+                hosp_names = hosp_names)
+
+dfs_wos <- map(new_years, make_template_df,
+               network = "WoSCAN",
+               lookup = lookup,
+               board_names = board_names,
+               hosp_names = hosp_names)
+
+dfs_nca <- map(new_years, make_template_df,
+               network = "NCA",
+               lookup = lookup,
+               board_names = board_names,
+               hosp_names = hosp_names)
 
 ### Step x : Write to Excel ----
 
+# create workbook
 wb <- createWorkbook()
 
-wb <- make_qpis_tab(dfs, year_nums, years, meas_vers, wb, date_start, styles)
+# write QPIs tabs
+wb <- make_qpis_tabs(dfs_scan, year_nums, years, meas_vers,
+                     wb, date_start, styles)
 
-vars <- list(dfs, year_nums, years, meas_vers)
-wb <- pmap(vars, make_qpis_tab, wb = wb, date_start = date_start,
-           styles = styles)
+# write background info tabs
 
-wb2 <- createWorkbook()
+wb <- make_background_tab(wb, tsg, "SCAN", new_years,
+                          date_start, tsg_sex)
 
-wb2 <- make_qpis_tab(wb, test, 8, "2019/20",
-                    date_start, 3.3, tsg, styles)
-
-w
-
-temp_path <- paste0(data_folder, "temp/test.xlsx")
+temp_path <- paste0(data_folder, "temp/scan_test.xlsx")
 
 saveWorkbook(wb, temp_path)
-
-# create workbook
-# use purrr write as many sheets as is required for QPIs
-
-wb <- pmap()
 
 # write background info sheet using function
 
