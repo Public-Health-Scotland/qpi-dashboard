@@ -116,7 +116,35 @@ hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps)
 networks <- c("NCA", "SCAN", "WoSCAN")
 
-hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
+if ((hb_hosp_old |>
+    filter(Cancer == tsg) |>
+    filter(Cyear == max(Cyear)) |>
+    filter(Board_Hospital == "Hospital") |> 
+    nrow() != 0) |
+    every(hosp_vectors, is.null) == FALSE) {
+  
+  any_hosp_qpis <- 1
+  
+} else {
+  
+  any_hosp_qpis <- 0
+  
+}
+
+
+if (any_hosp_qpis == 1) {
+  
+  hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
+  
+} else {
+  
+  message("TSG has no surgical QPIs")
+  
+  hosp_names <- hb_hosp_old |> 
+    filter(Board_Hospital == "Hospital",
+           Cancer == tsg)
+  
+}
 
 ### board names
 board_names <- hb_hosp_old |> 

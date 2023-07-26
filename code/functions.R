@@ -10,17 +10,19 @@
 
 source("code/packages.R")
 
-# housekeeping
+#### GENERAL ----
+
+#### housekeeping.R ----
 
 get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
   
   if (is.null(ntwrk_hosps)) {
     
     hosps <- hb_hosp_old |> 
-      filter(Board_Hospital == "Hospital",
-             Cancer == tsg,
+      filter(Cancer == tsg,
              Network == {{ ntwrk  }}) |>
       filter(Cyear == max(Cyear)) |> 
+      filter(Board_Hospital == "Hospital")
       select(Network, Location) |> 
       distinct()
     
@@ -63,7 +65,7 @@ get_age_groups <- function(age_groups) {
   
 }
 
-# create_templates.R
+#### create_templates.R ----
 
 make_template_df <- function(year, network, lookup, board_names,
                              hosp_names) {
@@ -385,6 +387,7 @@ make_background_tab <- function(wb, tsg, network, new_years,
   
 }
 
+
 export_template <- function(df, network, new_years_vals, new_years, meas_vers,
                             date_start, styles) {
   
@@ -411,6 +414,8 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
   
 }
 
+
+#### hb_hosp_qpi.R ----
 
 read_qpi_data <- function(fpath, network_name, year_names) {
   
@@ -445,9 +450,9 @@ read_qpi_data <- function(fpath, network_name, year_names) {
   
 }
 
-# read in and tidy qpi info from template
+#### case_asc.R ----
 
-read_background_data <- function(fpath) {
+read_case_asc_data <- function(fpath) {
   
   # Reads in a QPI data submission template from a network
   
@@ -458,7 +463,10 @@ read_background_data <- function(fpath) {
   
 }
 
+#### age_gender.R ----
 
+
+## Potential checks
 # Check totals match
 
 # check for novel hospital names

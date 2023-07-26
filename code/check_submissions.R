@@ -15,4 +15,15 @@ source("code/functions.R")
 source("code/housekeeping.R")
 source("code/packages.R")
 
-###
+#### Step 1 : Import Submissions ----
+
+
+
+#### Step 2 : Check Column Types ----
+
+#### Step 3 : Check Board Totals Match Network ----
+
+#### Step 4 : Check Hospital Totals Match Network ----
+
+
+
