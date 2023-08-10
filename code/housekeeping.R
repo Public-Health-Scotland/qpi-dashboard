@@ -66,7 +66,7 @@ age_groups <- c("Under 16",
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
                       "Data/new_process/lymphoma_jul23/")
 
-#~~~~~~~~~~~~~~~~~ Nothing below this line needs edited ~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
 #### Derived Variables ----
 # All these variables are automatically generated from input files and
