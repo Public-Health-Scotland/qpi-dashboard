@@ -12,6 +12,32 @@ source("code/packages.R")
 
 #### GENERAL ----
 
+read_data_year <- function(year_val, network, sub_path) {
+  
+  sheet_name <- paste0("QPI Data Year ", as.character(year_val))
+  
+  network_year <- readWorkbook(paste0(sub_path, network, ".xlsx"),
+                           sheet = sheet_name,
+                           startRow = 5) |> 
+    mutate(year = paste0("Year ", as.character(year_val)),
+           .before = 1,
+           Comments = as.character(Comments))
+  
+  network_year
+  
+}
+
+import_submission <- function(network, sub_path, year_vals) {
+  
+  network_sub <- map(year_vals, read_data_year,
+                     network = network,
+                     sub_path = sub_path) |> 
+    list_rbind()
+  
+  network_sub
+  
+}
+
 #### housekeeping.R ----
 
 get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
