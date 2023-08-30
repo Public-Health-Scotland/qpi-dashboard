@@ -12,27 +12,36 @@ source("code/packages.R")
 
 #### GENERAL ----
 
-read_data_year <- function(year_val, network, sub_path) {
-  
+read_data_year <- function(year_val, cyear, network, sub_path) {
   sheet_name <- paste0("QPI Data Year ", as.character(year_val))
   
   network_year <- readWorkbook(paste0(sub_path, network, ".xlsx"),
-                           sheet = sheet_name,
-                           startRow = 5) |> 
-    mutate(year = paste0("Year ", as.character(year_val)),
-           .before = 1,
-           Comments = as.character(Comments))
+                               sheet = sheet_name,
+                               startRow = 5) |>
+    mutate(
+      cyear = cyear,
+      Year = paste0("Year ", as.character(year_val)),
+      .before = 1,
+      Comments = as.character(Comments)
+    )
   
   network_year
   
 }
 
-import_submission <- function(network, sub_path, year_vals) {
+import_submission <- function(network, sub_path, year_vals, years) {
   
-  network_sub <- map(year_vals, read_data_year,
+  network_sub <- map2(year_vals, years, read_data_year,
                      network = network,
                      sub_path = sub_path) |> 
-    list_rbind()
+    list_rbind() |> 
+    rename(
+      surg_diag = "Diagnosis/Surgery",
+      board_hosp = "Board/Hospital",
+      nr_numerator = "NR.Numerator",
+      nr_exclusions = "NR.Exclusions",
+      nr_denominator = "NR.Denominator"
+    )
   
   network_sub
   
@@ -443,6 +452,7 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
 
 #### hb_hosp_qpi.R ----
 
+# MIGHT BE DEPRECATING THIS
 read_qpi_data <- function(fpath, network_name, year_names) {
   
   # Reads in a QPI data submission template from a network
@@ -474,6 +484,77 @@ read_qpi_data <- function(fpath, network_name, year_names) {
   
   dat
   
+}
+
+#### check_submissions.R ----
+
+
+check_totals <- function(df, board_or_hosp) {
+  
+  check <- new_data |> 
+    filter(board_hosp == {{  board_or_hosp  }}) |>
+    group_by(Year, Network, QPI) |> 
+    summarise(
+      Numerator = sum(Numerator),
+      Denominator = sum(Denominator),
+      nr_numerator = sum(nr_numerator),
+      nr_exclusions = sum(nr_exclusions),
+      nr_denominator = sum(nr_denominator)
+    ) |> 
+    ungroup()
+  
+  totals <- new_data |> 
+    filter(board_hosp == "Network") |> 
+    select(
+      Year, Location, QPI, Numerator, Denominator, nr_numerator,
+      nr_exclusions, nr_denominator
+    ) |> 
+    rename(Network = Location)
+  
+  diffs <- check |> 
+    bind_rows(totals) |> 
+    group_by(Year, Network, QPI) |> 
+    summarise(
+      Numerator = isTRUE(var(Numerator) == 0),
+      Denominator = isTRUE(var(Denominator) == 0),
+      nr_numerator = isTRUE(var(nr_numerator) == 0),
+      nr_exclusions = isTRUE(var(nr_exclusions) == 0),
+      nr_denominator = isTRUE(var(nr_denominator) == 0)
+    ) |> 
+    ungroup()
+  
+  diffs <- diffs |> 
+    filter(Numerator == FALSE |
+             Denominator == FALSE |
+             nr_numerator == FALSE |
+             nr_exclusions == FALSE |
+             nr_denominator == FALSE)
+  
+  diffs
+  
+}
+
+print_error_report <- function(z_board_totals, z_hospital_totals) {
+  
+  # Prints the outcome of all checks to the terminal
+  
+  message("ERROR REPORT \n")
+  
+  if (nrow(z_board_totals) == 0) {
+    message("PASS. All board totals match network figures")
+  } else {
+    message("ERROR. The following board totals don't match the network figure")
+    message("       View `z` for full dataframe")
+    z
+  }
+  
+  if (nrow(z_board_totals) == 0) {
+    message("PASS. All board totals match network figures")
+  } else {
+    message("ERROR. The following board totals don't match the network figure")
+    message("       View `z` for full dataframe")
+    z
+  }
 }
 
 #### case_asc.R ----
