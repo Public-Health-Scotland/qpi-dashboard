@@ -49,10 +49,14 @@ new_data <- map(networks,
   )
 
 #### Step x : Modify old data for tsg ----
-
 # Sometimes changes need to be made in the old data.
 # Name/definition changes etc.
 # Make these in the lookup then it'll be joined back on
+
+old_tsg_data <- hb_hosp_old |> 
+  filter(Cancer == tsg)
+
+
 
 #### Step x : Create Scotland totals for new data ----
 
@@ -78,15 +82,55 @@ new_data <- new_data |>
                            "QPI" = "qpi"))
 
 #### Step x : create derived variables ----
+## There are a series of variables which Tableau requires which are 
+## derived from the data submissions and the lookups.
+## Some of them aren't used anymore but for now they are all required
 
+## cyear_abr
+new_data <- new_data |>
+  mutate(cyear_abr = case_when(
+    str_length(cyear) == 4 ~ str_sub(cyear, 1, 4),
+    str_length(cyear) == 7 ~ str_sub(cyear, 3, 7)
+  ))
 
-mutate(board_hospital_v2 = case_when(
-  board_hospital == "Board" ~ "NHS Board",
-  board_hospital == "Network" ~ "NHS Board",
-  board_hospital == "Hospital" ~ "Hospital",
-  TRUE ~ "unknown"))
+# per_performance
+new_data <- new_data |> 
+  mutate(per_performance = (numerator/denominator)*100)
+
+# QPI_order (does nothing. Leave for now?)
+
+# year_lk (same as cyear?)
+new_data <- new_data |> 
+  mutate(year_lk = cyear)
+
+# direction_text
+new_data <- new_data |> 
+  mutate(direction_text = case_when(
+    direction == "H" ~ "High rates/ratio desired",
+    direction == "L" ~ "Low rates/ratio desired",
+    TRUE ~ "unknown"))
+
+# RAG status
+new_data <- new_data |> 
+  mutate(rag_status = case_when(
+    direction == "H" & (per_performance >= current_target) ~ "1",
+    direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
+    direction == "H" & per_performance == 0  & denominator <=0~ "3",
+    direction == "H" & per_performance == 0 & denominator >0 ~ "2",
+    direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
+    direction == "L" & per_performance > current_target ~ "2",
+    direction == "L" & per_performance == 0 & denominator <=0 ~ "3",
+    direction == "L" & per_performance == 0 & denominator >0 ~ "1",
+    TRUE ~ "unknown"))
+
 
 #### Step x : bind together to make full hb_hosp_qpi ----
+
+hb_hosp_no_tsg <- hb_hosp_old |> 
+  filter(Cancer != tsg)
+
+hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |> 
+  arrange()
 
 #### Step x : Write to excel ----
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath)
