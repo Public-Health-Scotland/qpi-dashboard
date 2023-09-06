@@ -115,12 +115,12 @@ new_data <- new_data |>
   mutate(rag_status = case_when(
     direction == "H" & (per_performance >= current_target) ~ "1",
     direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
-    direction == "H" & per_performance == 0  & denominator <=0~ "3",
-    direction == "H" & per_performance == 0 & denominator >0 ~ "2",
+    direction == "H" & per_performance == 0  & denominator <= 0 ~ "3",
+    direction == "H" & per_performance == 0 & denominator > 0 ~ "2",
     direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
     direction == "L" & per_performance > current_target ~ "2",
-    direction == "L" & per_performance == 0 & denominator <=0 ~ "3",
-    direction == "L" & per_performance == 0 & denominator >0 ~ "1",
+    direction == "L" & per_performance == 0 & denominator <= 0 ~ "3",
+    direction == "L" & per_performance == 0 & denominator > 0 ~ "1",
     TRUE ~ "unknown"))
 
 
