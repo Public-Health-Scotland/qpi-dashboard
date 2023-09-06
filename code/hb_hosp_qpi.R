@@ -48,15 +48,6 @@ new_data <- map(networks,
     Comments = as.character(Comments)
   )
 
-#### Step x : Modify old data for tsg ----
-# Sometimes changes need to be made in the old data.
-# Name/definition changes etc.
-# Make these in the lookup then it'll be joined back on
-
-old_tsg_data <- hb_hosp_old |> 
-  filter(Cancer == tsg)
-
-
 
 #### Step x : Create Scotland totals for new data ----
 
@@ -95,9 +86,15 @@ new_data <- new_data |>
 
 # per_performance
 new_data <- new_data |> 
-  mutate(per_performance = (numerator/denominator)*100)
+  mutate(per_performance = (Numerator/Denominator)*100) |> 
+  mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
 
 # QPI_order (does nothing. Leave for now?)
+new_data <- new_data |> 
+  mutate(qpi_order = as.numeric(qpi_order))
+
+new_data <- new_data |> 
+  mutate(qpi_subtitle = as.character(qpi_subtitle))
 
 # year_lk (same as cyear?)
 new_data <- new_data |> 
@@ -115,19 +112,57 @@ new_data <- new_data |>
   mutate(rag_status = case_when(
     direction == "H" & (per_performance >= current_target) ~ "1",
     direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
-    direction == "H" & per_performance == 0  & denominator <= 0 ~ "3",
-    direction == "H" & per_performance == 0 & denominator > 0 ~ "2",
+    direction == "H" & per_performance == 0  & Denominator <= 0 ~ "3",
+    direction == "H" & per_performance == 0 & Denominator > 0 ~ "2",
     direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
     direction == "L" & per_performance > current_target ~ "2",
-    direction == "L" & per_performance == 0 & denominator <= 0 ~ "3",
-    direction == "L" & per_performance == 0 & denominator > 0 ~ "1",
+    direction == "L" & per_performance == 0 & Denominator <= 0 ~ "3",
+    direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
     TRUE ~ "unknown"))
 
+# Recode board_hospital
+new_data <- new_data |> 
+  mutate(board_hosp = case_when(
+    board_hosp %in% c("Board","Network") ~ "NHS Board",
+    TRUE ~ board_hosp
+  ))
 
-#### Step x : bind together to make full hb_hosp_qpi ----
+#### Step x : Change names for tableau ----
+
+new_data <- new_data |> 
+  rename(
+    Board_Hospital = board_hosp,
+    Cyear = cyear,
+    SurgDiag = surg_diag,
+    NRforDenominator = nr_denominator,
+    NRforExclusion = nr_exclusions,
+    NRforNumerator = nr_numerator,
+    PerPerformance = per_performance,
+    Cyear_Abr = cyear_abr,
+    Year_Lk = year_lk,
+    QPI_Order = qpi_order,
+    Numerator1 = numerator1,
+    Denominator1 = denominator1,
+    Exclusions1 = exclusions1,
+    Current_Target = current_target,
+    Target_Label = target_label,
+    Direction = direction,
+    QPI_Label_Short = qpi_label_short,
+    Direction_Text = direction_text,
+    RAG_Status = rag_status,
+    HB_Comments = Comments,
+    Previous_Target = previous_target,
+    QPI_Subtitle = qpi_subtitle
+  ) |> 
+  select(-Year)
+
+#### Step x : Bind together to make full hb_hosp_qpi ----
 
 hb_hosp_no_tsg <- hb_hosp_old |> 
   filter(Cancer != tsg)
+
+old_tsg_data <- hb_hosp_old |> 
+  filter(Cancer == tsg)
 
 hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |> 
   arrange()
