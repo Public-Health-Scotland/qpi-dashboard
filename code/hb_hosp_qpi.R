@@ -60,7 +60,7 @@ scotland_rows <- new_data %>%
          Cancer = tsg,
          Location = "Scotland",
          Network = "Scotland",
-         Comments = "")
+         Comments = NA)
 
 new_data <- new_data |> 
   bind_rows(scotland_rows)
