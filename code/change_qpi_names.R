@@ -27,11 +27,16 @@ qpi_name_changes <- readWorkbook(qpi_name_changes_path)
 
 #### Step 2 : Make QPI name changes ----
 
+hb_hosp_qpi <- hb_hosp_qpi |> 
+  
 
 #### Step 3 : Write to excel ----
 
+out_path <- paste0(data_folder, "excels_for_tableau/output/name_changes/",
+                   "hb_hosp_qpi.xlsx")
+
 wb <- createWorkbook(hb_hosp_qpi)
 
-saveWorkbook(wb, hb_hosp_out_fpath)
+saveWorkbook(wb, out_path)
 
 
