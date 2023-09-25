@@ -120,6 +120,13 @@ new_data <- new_data |>
     direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
     TRUE ~ "unknown"))
 
+# target_label
+new_data <- new_data |> 
+  mutate(target_label = case_when(
+    direction == "H" ~ paste0(current_target, "%"),
+    direction == "L" ~ paste0("<", current_target, "%")
+  ))
+
 # Recode board_hospital
 new_data <- new_data |> 
   mutate(board_hosp = case_when(
@@ -164,10 +171,20 @@ hb_hosp_no_tsg <- hb_hosp_old |>
 old_tsg_data <- hb_hosp_old |> 
   filter(Cancer == tsg)
 
+# Replace " - " and " – " in old QPI names with ": "
+# This step can be removed once all updates are done or another solution made
+old_tsg_data <- old_tsg_data |> 
+  mutate(QPI = str_replace(QPI, " – ", ": "),
+         QPI = str_replace(QPI, " - ", ": "),
+         QPI = str_replace(QPI, "QPI \\d+ ", reformat_qpi_number))
+
 hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |> 
   arrange()
 
 #### Step x : Write to excel ----
+
+# Add in sheet name "HB_Hosp_QPI"
+
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath)
 
 

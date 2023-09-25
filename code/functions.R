@@ -486,6 +486,16 @@ read_qpi_data <- function(fpath, network_name, year_names) {
   
 }
 
+reformat_qpi_number <- function(x) {
+  
+  num <- str_match(x, "\\d+")
+  
+  qpi_number <- paste0("QPI ", num)
+  
+  qpi_number
+  
+}
+
 #### check_submissions.R ----
 
 
