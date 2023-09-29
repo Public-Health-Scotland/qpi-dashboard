@@ -310,7 +310,7 @@ make_background_tab <- function(wb, tsg, network, new_years,
     
     age_sex_df <- data.frame(
       `Age Range` = age_groups) |>
-      cross_join(data.frame(Sex = c("F","M"))) |> 
+      cross_join(data.frame(Sex = c("M","F"))) |> 
       cross_join(ntwk_boards) |> 
       mutate(dummy = NA) |> 
       pivot_wider(names_from = "Location", values_from = dummy) |> 
@@ -385,6 +385,10 @@ make_background_tab <- function(wb, tsg, network, new_years,
               age_sex_df,
               startRow = (title_row + 2),
               startCol = 2)
+    # createNamedRegion(wb, "BackgroundInfo",
+    #                   cols = 2:(ncol(age_sex_df)+1),
+    #                   rows = (title_row+2):(title_row+3+nrow(age_sex_df)),
+    #                   name = paste0("ag_", new_years[i]))
     
     addStyle(wb, sheet = "BackgroundInfo", style = styles$title,
              rows = title_row, cols = 2)
@@ -581,6 +585,30 @@ read_case_asc_data <- function(fpath) {
 }
 
 #### age_gender.R ----
+
+
+read_ag_year <- function(year_val, cyear, network, sub_path) {
+  
+  network_year <- loadWorkbook(paste0(sub_path, network, ".xlsx")) |> 
+    readWorkbook(namedRegion = paste0("ag_", cyear)) |>
+    pivot_longer(cols = 3:last_col()) |> 
+    mutate(cyear = cyear,
+           network = network)
+  
+  network_year
+  
+}
+
+import_age_gender <- function(network, sub_path, year_vals, years) {
+  
+  network_sub <- map2(year_vals, years, read_ag_year,
+                      network = network,
+                      sub_path = sub_path) |> 
+    list_rbind()
+  
+  network_sub
+  
+}
 
 
 ## Potential checks
