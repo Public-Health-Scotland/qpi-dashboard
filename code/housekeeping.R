@@ -22,16 +22,16 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
-tsg <- "Colorectal"
+tsg <- "Lymphoma"
 
-new_years <- c("2022/23")
-new_years_vals <- c(10)
+new_years <- c("2019/20","2020/21","2021/22")
+new_years_vals <- c(7,8,9)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-04-2022")
+date_start <- dmy("01-10-2019")
 
 # measurability versions (one for each year)
-meas_vers <- c("4")
+meas_vers <- c("3.5","4","4")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
@@ -49,7 +49,7 @@ age_groups <- c()
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/colorectal_oct23/")
+                      "Data/new_process/lymphoma_jul23/")
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
