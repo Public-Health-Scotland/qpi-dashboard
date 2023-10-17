@@ -23,7 +23,13 @@ new_data <- map(networks,
                 sub_path = sub_path,
                 year_vals = new_years_vals,
                 years = new_years) |>
-  list_rbind()
+  list_rbind() |> 
+  mutate(Location = str_replace_all(Location, "\\." , " ")) |> 
+  select("Cancer_C" = "Age.Range",)
+  
+
+
+
 
 
 #### Step x : Write to excel ----

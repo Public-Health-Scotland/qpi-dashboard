@@ -593,7 +593,8 @@ read_ag_year <- function(year_val, cyear, network, sub_path) {
     readWorkbook(namedRegion = paste0("ag", year_val)) |>
     pivot_longer(cols = 3:last_col()) |> 
     mutate(cyear = cyear,
-           network = network)
+           network = network) |> 
+    rename(Location = name)
   
   network_year
   
