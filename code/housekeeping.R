@@ -93,7 +93,7 @@ templates_fpath <- paste0(data_folder,
 
 hb_hosp_out_fpath <- paste0(data_folder,
                            "excels_for_tableau/output/",
-                           "hb_hosp_qpi.xlsx")
+                           "HB_Hosp_QPI.xlsx")
 
 ### hospital names
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
