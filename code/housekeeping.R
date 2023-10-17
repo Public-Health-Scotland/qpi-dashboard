@@ -45,7 +45,22 @@ wos_hosps <- c()
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "nca_hosps <- c()"
-age_groups <- c()
+age_groups <- c("Under 16",
+                "16-19",
+                "20-24",
+                "25-29",
+                "30-34",
+                "35-39",
+                "40-44",
+                "45-49",
+                "50-54",
+                "55-59",
+                "60-64",
+                "65-69",
+                "70-74",
+                "75-79",
+                "80-84",
+                "85+")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
@@ -87,7 +102,7 @@ lookup_fpath <- paste0(data_folder,
 # templates
 
 templates_fpath <- paste0(data_folder,
-                          "tempates/")
+                          "tempates/dev/")
 
 # output files
 
