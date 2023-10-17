@@ -22,16 +22,16 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
-tsg <- "Lymphoma"
+tsg <- "Colorectal"
 
-new_years <- c("2019/20", "2020/21", "2021/22")
-new_years_vals <- c(7,8,9)
+new_years <- c("2022/23")
+new_years_vals <- c(10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2019")
+date_start <- dmy("01-04-2022")
 
 # measurability versions (one for each year)
-meas_vers <- c("3.5", "4", "4")
+meas_vers <- c("4")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
@@ -45,26 +45,11 @@ wos_hosps <- c()
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "nca_hosps <- c()"
-age_groups <- c("Under 16",
-                "16-19",
-                "20-24",
-                "25-29",
-                "30-34",
-                "35-39",
-                "40-44",
-                "45-49",
-                "50-54",
-                "55-59",
-                "60-64",
-                "65-69",
-                "70-74",
-                "75-79",
-                "80-84",
-                "85+")
+age_groups <- c()
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/lymphoma_jul23/")
+                      "Data/new_process/colorectal_oct23/")
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
@@ -152,7 +137,8 @@ board_names <- hb_hosp_old |>
          Cancer == tsg,
          Location != "Scotland") |>
   filter(Cyear == max(Cyear)) |> 
-  select(Network, Location) |> 
+  select(Network, Location) |>
+  arrange(Network, Network == Location) |> 
   distinct()
 
 ### age groups
