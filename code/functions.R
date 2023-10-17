@@ -22,7 +22,7 @@ get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
       filter(Cancer == tsg,
              Network == {{ ntwrk  }}) |>
       filter(Cyear == max(Cyear)) |> 
-      filter(Board_Hospital == "Hospital")
+      filter(Board_Hospital == "Hospital") |> 
       select(Network, Location) |> 
       distinct()
     
@@ -275,7 +275,7 @@ make_background_tab <- function(wb, tsg, network, new_years,
     
     age_sex_df <- data.frame(
       `Age Range` = age_groups) |>
-      cross_join(data.frame(Sex = c("F","M"))) |> 
+      cross_join(data.frame(Sex = c("M","F"))) |> 
       cross_join(ntwk_boards) |> 
       mutate(dummy = NA) |> 
       pivot_wider(names_from = "Location", values_from = dummy) |> 
