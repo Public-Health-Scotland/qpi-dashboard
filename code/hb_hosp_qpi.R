@@ -183,8 +183,6 @@ hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |>
 
 #### Step x : Write to excel ----
 
-# Add in sheet name "HB_Hosp_QPI"
-
-write.xlsx(hb_hosp_new, hb_hosp_out_fpath)
+write.xlsx(hb_hosp_new, hb_hosp_out_fpath, sheetName = "HB_Hosp_QPI")
 
 
