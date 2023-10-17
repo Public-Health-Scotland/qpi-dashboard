@@ -59,6 +59,6 @@ hb_hosp_qpi <- hb_hosp_qpi |>
 #### Step 3 : Write to excel ----
 
 out_path <- paste0(data_folder, "excels_for_tableau/output/name_changes/",
-                   "hb_hosp_qpi.xlsx")
+                   "HB_Hosp_QPI.xlsx")
 
 write.xlsx(hb_hosp_qpi, out_path, sheetName = "HB_Hosp_QPI")
