@@ -45,7 +45,7 @@ wos_hosps <- c()
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "nca_hosps <- c()"
-age_groups <- c("Under 16",
+age_groups <- c("0-16",
                 "16-19",
                 "20-24",
                 "25-29",
@@ -85,6 +85,10 @@ hb_hosp_in_fpath <- paste0(data_folder,
                            "excels_for_tableau/input/",
                            "HB_Hosp_QPI.xlsx")
 
+age_gender_in_fpath <- paste0(data_folder,
+                              "excels_for_tableau/input/",
+                              "Background_Data_Age_Gender.xlsx")
+
 sca_fpath <- paste0(data_folder,
                     "data_submissions/scan.xlsx")
 
@@ -109,6 +113,10 @@ templates_fpath <- paste0(data_folder,
 hb_hosp_out_fpath <- paste0(data_folder,
                            "excels_for_tableau/output/",
                            "HB_Hosp_QPI.xlsx")
+
+age_gender_out_fpath <- paste0(data_folder,
+                               "excels_for_tableau/output/",
+                               "Background_Data_Age_Gender.xlsx")
 
 ### hospital names
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
