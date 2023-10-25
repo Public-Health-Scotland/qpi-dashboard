@@ -236,7 +236,7 @@ make_qpis_tabs <- function(dfs, year_nums, years, meas_vers,
 
 
 
-make_background_tab <- function(wb, tsg, network, new_years,
+make_background_tab <- function(wb, tsg, network, new_years, new_years_vals,
                                 date_start, tsg_sex, board_names,
                                 styles) {
   
@@ -385,10 +385,10 @@ make_background_tab <- function(wb, tsg, network, new_years,
               age_sex_df,
               startRow = (title_row + 2),
               startCol = 2)
-    # createNamedRegion(wb, "BackgroundInfo",
-    #                   cols = 2:(ncol(age_sex_df)+1),
-    #                   rows = (title_row+2):(title_row+3+nrow(age_sex_df)),
-    #                   name = paste0("ag_", new_years[i]))
+    createNamedRegion(wb, "BackgroundInfo",
+                      cols = 2:(ncol(age_sex_df)+1),
+                      rows = (title_row+2):(title_row+3+nrow(age_sex_df)),
+                      name = paste0("ag", as.character(new_years_vals[i])))
     
     addStyle(wb, sheet = "BackgroundInfo", style = styles$title,
              rows = title_row, cols = 2)
@@ -438,12 +438,12 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
                        wb, date_start, styles)
   
   # write background tab
-  wb <- make_background_tab(wb, tsg, network, new_years,
+  wb <- make_background_tab(wb, tsg, network, new_years, new_years_vals,
                             date_start, tsg_sex, board_names, styles)
   
   # write out
   
-  output_path <- paste0(data_folder, "templates/",
+  output_path <- paste0(data_folder, "templates/dev/",
                         network,
                         "_",
                         tsg,
@@ -590,10 +590,11 @@ read_case_asc_data <- function(fpath) {
 read_ag_year <- function(year_val, cyear, network, sub_path) {
   
   network_year <- loadWorkbook(paste0(sub_path, network, ".xlsx")) |> 
-    readWorkbook(namedRegion = paste0("ag_", cyear)) |>
+    readWorkbook(namedRegion = paste0("ag", year_val)) |>
     pivot_longer(cols = 3:last_col()) |> 
     mutate(cyear = cyear,
-           network = network)
+           network = network) |> 
+    rename(Location = name)
   
   network_year
   
