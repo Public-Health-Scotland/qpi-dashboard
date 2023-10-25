@@ -443,7 +443,7 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
   
   # write out
   
-  output_path <- paste0(data_folder, "templates/dev/",
+  output_path <- paste0(data_folder, "templates/",
                         network,
                         "_",
                         tsg,
