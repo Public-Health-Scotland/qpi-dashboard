@@ -74,6 +74,10 @@ age_gender_in_fpath <- paste0(data_folder,
                               "excels_for_tableau/input/",
                               "Background_Data_Age_Gender.xlsx")
 
+case_asc_in_fpath <- paste0(data_folder,
+                            "excels_for_tableau/input/",
+                            "Background_Data_Case.xlsx")
+
 sca_fpath <- paste0(data_folder,
                     "data_submissions/scan.xlsx")
 
@@ -91,7 +95,7 @@ lookup_fpath <- paste0(data_folder,
 # templates
 
 templates_fpath <- paste0(data_folder,
-                          "tempates/")
+                          "templates/")
 
 # output files
 
@@ -102,6 +106,10 @@ hb_hosp_out_fpath <- paste0(data_folder,
 age_gender_out_fpath <- paste0(data_folder,
                                "excels_for_tableau/output/",
                                "Background_Data_Age_Gender.xlsx")
+
+case_asc_out_fpath <- paste0(data_folder,
+                             "excels_for_tableau/output/",
+                             "Background_Data_Case.xlsx")
 
 ### hospital names
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
