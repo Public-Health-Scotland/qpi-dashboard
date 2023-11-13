@@ -405,10 +405,14 @@ make_background_tab <- function(wb, tsg, network, new_years, new_years_vals,
              rows = table_rows, cols = table_cols, gridExpand = TRUE,
              stack = TRUE)
     
-    for (j in 1:(nrow(age_sex_df)/2)) {
+    if (tsg_sex == "both") {
       
-      mergeCells(wb, "BackgroundInfo", cols = 2,
-                 rows = ((title_row+3+(2*(j-1))):(title_row+3+(2*(j-1)+1))))
+      for (j in 1:(nrow(age_sex_df)/2)) {
+        
+        mergeCells(wb, "BackgroundInfo", cols = 2,
+                   rows = ((title_row+3+(2*(j-1))):(title_row+3+(2*(j-1)+1))))
+        
+      }
       
     }
     
