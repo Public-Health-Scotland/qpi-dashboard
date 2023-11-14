@@ -37,7 +37,12 @@ meas_vers <- c("4","4","4")
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c()
+nca_hosps <- c("ARI",
+               "Albyn",
+               "Dr Gray's",
+               "Raigmore",
+               "Ninewells",
+               "PRI")
 sca_hosps <- c()
 wos_hosps <- c()
 
