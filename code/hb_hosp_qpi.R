@@ -20,7 +20,7 @@ source("code/packages.R")
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
 # new lookup
-lookup <- readWorkbook(lookup_fpath) |> 
+lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
 
 # new data
@@ -93,6 +93,7 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(qpi_order = as.numeric(qpi_order))
 
+# Does nothing as well I think
 new_data <- new_data |> 
   mutate(qpi_subtitle = as.character(qpi_subtitle))
 

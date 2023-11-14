@@ -41,9 +41,30 @@ import_submission <- function(network, sub_path, year_vals, years) {
       nr_numerator = "NR.Numerator",
       nr_exclusions = "NR.Exclusions",
       nr_denominator = "NR.Denominator"
-    )
+    ) |> 
+    replace_na(list(Numerator = 0,
+                    Denominator = 0,
+                    nr_numerator = 0, 
+                    nr_exclusions = 0, 
+                    nr_denominator = 0))
+    
   
   network_sub
+  
+}
+
+import_lookup <- function(lookup_fpath) {
+  
+  lookup <- readWorkbook(lookup_fpath) |> 
+    mutate(across(c("cancer","qpi",
+                    "numerator1", "denominator1", "exclusions1",
+                    "target_label", "direction", "qpi_label_short",
+                    "qpi_subtitle",
+                    "SurgDiag"), as.character)) |> 
+    mutate(across(c("qpi_order", "previous_target",
+                    "current_target"), as.numeric))
+  
+  lookup
   
 }
 
@@ -509,7 +530,15 @@ reformat_qpi_number <- function(x) {
 
 check_totals <- function(df, board_or_hosp) {
   
-  check <- new_data |> 
+  if (board_or_hosp == "Hospital") {
+    
+    df <- df |> 
+      filter(surg_diag == "Surgery",
+             board_hosp %in% c("Network", "Hospital"))
+    
+  }
+  
+  check <- df |> 
     filter(board_hosp == {{  board_or_hosp  }}) |>
     group_by(Year, Network, QPI) |> 
     summarise(
@@ -521,7 +550,7 @@ check_totals <- function(df, board_or_hosp) {
     ) |> 
     ungroup()
   
-  totals <- new_data |> 
+  totals <- df |> 
     filter(board_hosp == "Network") |> 
     select(
       Year, Location, QPI, Numerator, Denominator, nr_numerator,
@@ -539,14 +568,10 @@ check_totals <- function(df, board_or_hosp) {
       nr_exclusions = isTRUE(var(nr_exclusions) == 0),
       nr_denominator = isTRUE(var(nr_denominator) == 0)
     ) |> 
-    ungroup()
-  
-  diffs <- diffs |> 
-    filter(Numerator == FALSE |
-             Denominator == FALSE |
-             nr_numerator == FALSE |
-             nr_exclusions == FALSE |
-             nr_denominator == FALSE)
+    ungroup() |> 
+    pivot_longer(cols = c(Numerator:nr_denominator)) |> 
+    filter(value == FALSE) |> 
+    select(-value)
   
   diffs
   
