@@ -53,6 +53,21 @@ import_submission <- function(network, sub_path, year_vals, years) {
   
 }
 
+import_lookup <- function(lookup_fpath) {
+  
+  lookup <- readWorkbook(lookup_fpath) |> 
+    mutate(across(c("cancer","qpi",
+                    "numerator1", "denominator1", "exclusions1",
+                    "target_label", "direction", "qpi_label_short",
+                    "qpi_subtitle",
+                    "SurgDiag"), as.character)) |> 
+    mutate(across(c("qpi_order", "previous_target",
+                    "current_target"), as.numeric))
+  
+  lookup
+  
+}
+
 #### housekeeping.R ----
 
 get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
