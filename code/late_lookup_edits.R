@@ -28,7 +28,11 @@ source("code/packages.R")
 #### Step 1 : Import data ----
 
 # old hb_hosp_qpi
-hb_hosp_qpi <- readWorkbook(hb_hosp_in_fpath)
+hb_hosp_fpath <- paste0(data_folder,
+                        "excels_for_tableau/late_lookup_edits/input/",
+                        "HB_Hosp_QPI.xlsx")
+
+hb_hosp_qpi <- readWorkbook(hb_hosp_fpath)
 
 # new lookup
 lookup <- readWorkbook(lookup_fpath) |>
@@ -55,7 +59,8 @@ hb_hosp_qpi <- bind_rows(hb_hosp_no_tsg, tsg_all)
 
 #### Step 3 : Write to excel ----
 
-out_path <- paste0(data_folder, "excels_for_tableau/output/name_changes/",
+out_path <- paste0(data_folder,
+                   "excels_for_tableau/late_lookup_edits/output/",
                    "HB_Hosp_QPI.xlsx")
 
 write.xlsx(hb_hosp_qpi, out_path, sheetName = "HB_Hosp_QPI")
