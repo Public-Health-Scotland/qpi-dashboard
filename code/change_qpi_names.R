@@ -22,7 +22,12 @@ source("code/packages.R")
 
 # hb hosp
 
-hb_hosp_qpi <- readWorkbook(hb_hosp_out_fpath)
+
+hb_hosp_fpath <- paste0(data_folder,
+                        "excels_for_tableau/qpi_name_changes/input/",
+                        "HB_Hosp_QPI.xlsx")
+
+hb_hosp_qpi <- readWorkbook(hb_hosp_fpath)
 
 qpi_name_changes_path <- paste0(data_folder, "lookup/qpi_name_changes.xlsx")
 
@@ -58,7 +63,8 @@ hb_hosp_qpi <- hb_hosp_qpi |>
 
 #### Step 3 : Write to excel ----
 
-out_path <- paste0(data_folder, "excels_for_tableau/output/name_changes/",
+out_path <- paste0(data_folder,
+                   "excels_for_tableau/qpi_name_changes/output/",
                    "HB_Hosp_QPI.xlsx")
 
 write.xlsx(hb_hosp_qpi, out_path, sheetName = "HB_Hosp_QPI")
