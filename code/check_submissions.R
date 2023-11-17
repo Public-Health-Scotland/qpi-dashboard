@@ -30,22 +30,15 @@ new_data <- map(to_check, import_submission,
                 years = new_years) |> 
   list_rbind()
 
-#### Step 2 : Check Column Types ----
-
-#### Step 3 : Check Board Totals Match Network ----
+#### Step 2 : Check Board Totals Match Network ----
 # The total of the numbers for all boards must match the quoted network total
 # Should probably do this 'summarise_if(is.numeric,sum)'
 
 z_board_totals <- check_totals(new_data, "Board")
 
-#### Step 4 : Check Hospital Totals Match Network ----
+#### Step 3 : Check Hospital Totals Match Network ----
 # The total of the numbers for all hospitals must match the quoted network total
 
 z_hospital_totals <- check_totals(new_data, "Hospital")
-
-#### Step x : Clare's Checks?
-
-#### Step x : Print out results of all checks? ----
-
 
 
