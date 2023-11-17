@@ -84,15 +84,15 @@ tsg_sex <- case_when(
 # input files
 
 hb_hosp_in_fpath <- paste0(data_folder,
-                           "excels_for_tableau/input/",
+                           "excels_for_tableau/initial_run/input/",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_in_fpath <- paste0(data_folder,
-                              "excels_for_tableau/input/",
+                              "excels_for_tableau/initial_run/input/",
                               "Background_Data_Age_Gender.xlsx")
 
 case_asc_in_fpath <- paste0(data_folder,
-                            "excels_for_tableau/input/",
+                            "excels_for_tableau/initial_run/input/",
                             "Background_Data_Case.xlsx")
 
 sca_fpath <- paste0(data_folder,
@@ -117,15 +117,15 @@ templates_fpath <- paste0(data_folder,
 # output files
 
 hb_hosp_out_fpath <- paste0(data_folder,
-                           "excels_for_tableau/output/",
+                           "excels_for_tableau/initial_run/output/",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_out_fpath <- paste0(data_folder,
-                               "excels_for_tableau/output/",
+                               "excels_for_tableau/initial_run/output/",
                                "Background_Data_Age_Gender.xlsx")
 
 case_asc_out_fpath <- paste0(data_folder,
-                             "excels_for_tableau/output/",
+                             "excels_for_tableau/initial_run/output/",
                              "Background_Data_Case.xlsx")
 
 ### hospital names
