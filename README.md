@@ -3,11 +3,12 @@
 
 ### Directories
   * `code` - R scripts required for project
-    + `main.R` - run the update
     + `housekeeping.R` - contains all values which need to be changed each time
     + `functions.R` - functions sourced and used in the other script(s)
     + `packages.R` - list of packages sourced and used in the other script(s)
-  * `renv` - Required for renv. Don't need to interact directly
+    etc
+  * `renv` - Required for renv. Don't need to interact directly 
+  * /docs - documentation
 
 ### Files
   * `renv.lock` - List of packages for use with renv
@@ -17,4 +18,4 @@
   * `QPI-dashboard.Proj` - R project
   
 ## How to use
-Add detail in later on how to use repository
+Please see the SOP in the /docs folder. 
