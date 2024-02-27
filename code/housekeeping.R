@@ -22,27 +22,22 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
-tsg <- "Ovarian"
+tsg <- "Melanoma"
 
-new_years <- c("2019/20", "2020/21", "2021/22")
-new_years_vals <- c(7,8,9)
+new_years <- c("2022/23")
+new_years_vals <- c(9)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2022")
+date_start <- dmy("01-07-2022")
 
 # measurability versions (one for each year)
-meas_vers <- c("4","4","4")
+meas_vers <- c("4.1")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c("ARI",
-               "Albyn",
-               "Dr Gray's",
-               "Raigmore",
-               "Ninewells",
-               "PRI")
+nca_hosps <- c()
 sca_hosps <- c()
 wos_hosps <- c()
 
@@ -50,23 +45,18 @@ wos_hosps <- c()
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "age_groups <- c()"
-age_groups <- c("Under 30",
-                "30-34",
-                "35-39",
-                "40-44",
-                "45-49",
-                "50-54",
-                "55-59",
-                "60-64",
-                "65-69",
-                "70-74",
-                "75-79",
-                "80-84",
+age_groups <- c("Under 25",
+                "25-34",
+                "35-44",
+                "45-54",
+                "55-64",
+                "65-74",
+                "75-84",
                 "85+")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/ovarian_nov23/")
+                      "Data/new_process/melanoma_jan24/")
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
