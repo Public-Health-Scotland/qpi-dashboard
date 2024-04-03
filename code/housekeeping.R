@@ -22,16 +22,19 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
-tsg <- "Melanoma"
+# In development values for tsg
+# "Brain" "HPB" 
 
-new_years <- c("2022/23")
+tsg <- "Brain"
+
+new_years <- c("2022")
 new_years_vals <- c(9)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-07-2022")
+date_start <- dmy("01-01-2022")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.1")
+meas_vers <- c("4.0")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
@@ -45,14 +48,21 @@ wos_hosps <- c()
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "age_groups <- c()"
-age_groups <- c("Under 25",
-                "25-34",
-                "35-44",
-                "45-54",
-                "55-64",
-                "65-74",
-                "75-84",
-                "85+")
+age_groups <- c("85+",
+                "80-84",
+                "75-79", 
+                "70-74", 
+                "65-69", 
+                "60-64", 
+                "55-59", 
+                "50-54",
+                "45-49",
+                "40-44",
+                "35-39",
+                "30-34",
+                "25-29",
+                "20-24",
+                "15-19")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
