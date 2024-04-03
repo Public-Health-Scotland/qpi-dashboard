@@ -66,7 +66,7 @@ age_groups <- c("85+",
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/melanoma_jan24/")
+                      "Data/new_process/brain_mar24/")
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
