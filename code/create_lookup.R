@@ -34,7 +34,10 @@ lookup <- hb_hosp_old |>
          target_label = Target_Label,
          direction = Direction,
          qpi_label_short = QPI_Label_Short,
-         previous_target = QPI_Label_Short,
+         
+         previous_target = QPI_Label_Short, # not used
+         # The previous_target variable is not needed, but will not be removed 
+         # in case doing so would disrupt downstream processes eg in Tableau. 
          qpi_subtitle = QPI_Subtitle,
          SurgDiag) |> 
   distinct() |> 
