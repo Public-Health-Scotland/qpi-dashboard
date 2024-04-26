@@ -72,7 +72,8 @@ data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
 
 # Board-to-Network correspondence 
 # For new TSGs with no pre-existing data in hb_hosp_old,  
-# please define them in this data frame (not a tibble). 
+# please define them in this data frame (not a tibble), 
+# ie list all territorial HBs, and what network they are in. 
 new_tsg_board_names <- {}
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
