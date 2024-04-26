@@ -25,13 +25,13 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Brain"
+tsg <- "Brain and CNS"
 
-new_years <- c("2022")
-new_years_vals <- c(9)
+new_years <- c("2020", "2021", "2022")
+new_years_vals <- c(7, 8, 9)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-01-2022")
+date_start <- dmy("01-01-2020")
 
 # measurability versions (one for each year)
 meas_vers <- c("4.0")
