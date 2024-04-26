@@ -40,9 +40,11 @@ meas_vers <- c("4.0")
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c()
-sca_hosps <- c()
-wos_hosps <- c()
+# For brain data, 2024, no existing hospital names, so they have been 
+# identified from SCN document, and aligned with tsg_locations.xlsx reference.
+nca_hosps <- c("Aberdeen RI", "Ninewells Hosp")
+sca_hosps <- c("Royal Inf Edinburgh", "Western General Hosp")
+wos_hosps <- c("Queen Elizabeth Hosp")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
@@ -67,6 +69,11 @@ age_groups <- c("85+",
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
                       "Data/new_process/brain_mar24/")
+
+# Board-to-Network correspondence 
+# For new TSGs with no pre-existing data in hb_hosp_old,  
+# please define them in this data frame (not a tibble). 
+new_tsg_board_names <- {}
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
@@ -165,6 +172,9 @@ if (any_hosp_qpis == 1) {
 }
 
 ### board names
+### Creates a tibble, listing the boards belonging to each network, 
+### for the present tsg, based on the last dataset 
+### For tsg with no pre-existing list, need to add that. 
 board_names <- hb_hosp_old |> 
   filter(Board_Hospital == "NHS Board",
          Cancer == tsg,
