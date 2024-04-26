@@ -13,7 +13,7 @@ source("code/packages.R")
 
 #### Edit Variables ----
 # The below variables vary depending on the the nature of the update.
-# They will need edited for each new dashbaord update.
+# They will need edited for each new dashboard update.
 
 # tsg = "Tumour Specific Group"
 # The following are acceptable values
@@ -23,7 +23,7 @@ source("code/packages.R")
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
 # In development values for tsg
-# "Brain" "HPB" 
+# "Brain and CNS" "HPB" 
 
 tsg <- "Brain"
 
