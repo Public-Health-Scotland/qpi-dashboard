@@ -74,7 +74,9 @@ data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
 # For new TSGs with no pre-existing data in hb_hosp_old,  
 # please define them in this data frame (not a tibble), 
 # ie list all territorial HBs, and what network they are in. 
+regional_networks_folder <- "/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks"
 new_tsg_board_names <- {}
+
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
@@ -184,6 +186,10 @@ board_names <- hb_hosp_old |>
   select(Network, Location) |>
   arrange(Network, Network == Location) |> 
   distinct()
+# If board_names is empty / null 
+# read in the file "health_boards_to_RegionalCancerNetworks.csv" 
+# into df new_tsg_board_names
+
 
 ### age groups
 
