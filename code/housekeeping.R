@@ -75,7 +75,6 @@ data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
 # please define them in this data frame (not a tibble), 
 # ie list all territorial HBs, and what network they are in. 
 regional_networks_folder <- "/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks"
-new_tsg_board_names <- {}
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
@@ -189,8 +188,9 @@ board_names <- hb_hosp_old |>
 # If board_names is empty / null 
 # read in the file "health_boards_to_RegionalCancerNetworks.csv" 
 # into df new_tsg_board_names
-
-
+if ( nrow(board_names) < 1 ) {
+  board_names <- read.csv(file = paste0(regional_networks_folder, "health_boards_to_RegionalCancerNetworks.csv")
+}
 ### age groups
 
 age_groups <- get_age_groups(age_groups)
