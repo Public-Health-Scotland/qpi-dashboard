@@ -74,7 +74,11 @@ data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
 # For new TSGs with no pre-existing data in hb_hosp_old,  
 # please define them in this data frame (not a tibble), 
 # ie list all territorial HBs, and what network they are in. 
-regional_networks_folder <- "/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks"
+regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
+if (str_detect(tsg, "^Brain and CNS$" )) { # ^ for 'starts with' and $ for 'ends with'
+  # read in the brain networks
+  
+}
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
