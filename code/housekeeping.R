@@ -191,14 +191,15 @@ board_names <- hb_hosp_old |>
 # if brain, read in the brain networks 
 # else read in the file "health_boards_to_default_RegionalCancerNetworks.csv" 
 # into df new_tsg_board_names
-if ( nrow(board_names) < 1 ) {
+if ( nrow(board_names) < 1 ) { # if board_names is empty
   if (str_detect(tsg, "^Brain and CNS$" )) { # ^ for 'starts with' and $ for 'ends with'
     # read in the brain / CNS networks memberships
     board_names <- read.csv(file = here(regional_networks_folder, "brain_cns_health_boards_to_RegionalCancerNetworks.csv"))
   } else {
-  board_names <- read.csv(file = here(regional_networks_folder, "health_boards_to_default_RegionalCancerNetworks.csv")
+    board_names <- read.csv(file = here(regional_networks_folder, "health_boards_to_default_RegionalCancerNetworks.csv")
   }
-}
+  
+
 
 ### age groups
 
