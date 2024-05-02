@@ -70,10 +70,7 @@ age_groups <- c("85+",
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
                       "Data/new_process/brain_mar24/")
 
-# Board-to-Network correspondence 
-# For new TSGs with no pre-existing data in hb_hosp_old,  
-# please define them in this data frame (not a tibble), 
-# ie list all territorial HBs, and what network they are in. 
+# Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
 
 
@@ -175,7 +172,7 @@ if (any_hosp_qpis == 1) {
 }
 
 ### board names
-### Creates a tibble, listing the boards belonging to each network, 
+### Creates a data frame, listing the boards belonging to each network, 
 ### for the present tsg, based on the last dataset 
 ### For tsg with no pre-existing list, need to add that. 
 board_names <- hb_hosp_old |> 
@@ -188,17 +185,19 @@ board_names <- hb_hosp_old |>
   distinct()
 
 # If board_names is empty / null 
-# if brain, read in the brain networks 
-# else read in the file "health_boards_to_default_RegionalCancerNetworks.csv" 
+# read in the file "health_boards_to_default_RegionalCancerNetworks.csv" 
 # into df new_tsg_board_names
-if ( nrow(board_names) < 1 ) { # if board_names is empty
-  if (str_detect(tsg, "^Brain and CNS$" )) { # ^ for 'starts with' and $ for 'ends with'
+
+if ( nrow(board_names) < 1 ) {
+    board_names <- read.csv(file = here(regional_networks_folder,"health_boards_to_default_RegionalCancerNetworks.csv"))
+} 
+
+# If tsg is brain, overwrite board_names
+if ( str_detect(tsg, "^Brain and CNS$" ) ) { 
     # read in the brain / CNS networks memberships
+    print("true that board names empty and tsg is brain , so read in brain networks")
     board_names <- read.csv(file = here(regional_networks_folder, "brain_cns_health_boards_to_RegionalCancerNetworks.csv"))
-  } else {
-    board_names <- read.csv(file = here(regional_networks_folder, "health_boards_to_default_RegionalCancerNetworks.csv")
-  }
-  
+  } 
 
 
 ### age groups
