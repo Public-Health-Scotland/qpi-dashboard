@@ -195,7 +195,6 @@ if ( nrow(board_names) < 1 ) {
 # If tsg is brain, overwrite board_names
 if ( str_detect(tsg, "^Brain and CNS$" ) ) { 
     # read in the brain / CNS networks memberships
-    print("true that board names empty and tsg is brain , so read in brain networks")
     board_names <- read.csv(file = here(regional_networks_folder, "brain_cns_health_boards_to_RegionalCancerNetworks.csv"))
   } 
 
@@ -203,3 +202,4 @@ if ( str_detect(tsg, "^Brain and CNS$" ) ) {
 ### age groups
 
 age_groups <- get_age_groups(age_groups)
+
