@@ -19,6 +19,9 @@ source("code/packages.R")
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
+# For new TSGs that don't have existing QPI info from previous years, 
+# eg brain, will need to create lookup file manually instead. 
+
 #### Step 2 : Create lookup ----
 
 lookup <- hb_hosp_old |> 
@@ -34,14 +37,11 @@ lookup <- hb_hosp_old |>
          target_label = Target_Label,
          direction = Direction,
          qpi_label_short = QPI_Label_Short,
-         
-         previous_target = QPI_Label_Short, # not used
-         # The previous_target variable is not needed, but will not be removed 
-         # in case doing so would disrupt downstream processes eg in Tableau. 
+         previous_target = "not used", # not used
          qpi_subtitle = QPI_Subtitle,
          SurgDiag) |> 
   distinct() |> 
-  arrange(cyear, qpi_order)
+  arrange(cyear, qpi_order) 
 
 
 #### Step 3 : Write to excel ----

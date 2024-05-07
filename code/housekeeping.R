@@ -13,7 +13,7 @@ source("code/packages.R")
 
 #### Edit Variables ----
 # The below variables vary depending on the the nature of the update.
-# They will need edited for each new dashbaord update.
+# They will need edited for each new dashboard update.
 
 # tsg = "Tumour Specific Group"
 # The following are acceptable values
@@ -22,41 +22,58 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 
-tsg <- "Melanoma"
+# In development values for tsg
+# "Brain and CNS" "HPB" 
 
-new_years <- c("2022/23")
-new_years_vals <- c(9)
+tsg <- "Brain and CNS"
+
+new_years <- c("2020", "2021", "2022")
+new_years_vals <- c(7, 8, 9)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-07-2022")
+date_start <- dmy("01-01-2020")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.1")
+meas_vers <- c("4.0")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c()
-sca_hosps <- c()
-wos_hosps <- c()
+# For brain data, 2024, no existing hospital names, so they have been 
+# identified from SCN document, and aligned with tsg_locations.xlsx reference.
+nca_hosps <- c("Aberdeen RI", "Ninewells Hosp")
+sca_hosps <- c("Royal Inf Edinburgh", "Western General Hosp")
+wos_hosps <- c("Queen Elizabeth Hosp")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "age_groups <- c()"
-age_groups <- c("Under 25",
-                "25-34",
-                "35-44",
-                "45-54",
-                "55-64",
-                "65-74",
-                "75-84",
-                "85+")
+age_groups <- c("85+",
+                "80-84",
+                "75-79", 
+                "70-74", 
+                "65-69", 
+                "60-64", 
+                "55-59", 
+                "50-54",
+                "45-49",
+                "40-44",
+                "35-39",
+                "30-34",
+                "25-29",
+                "20-24",
+                "15-19")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/melanoma_jan24/")
+                      "Data/new_process/brain_mar24/")
+
+# Folder containing lookup info on HBs by network
+regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
+
+
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
 
@@ -155,6 +172,9 @@ if (any_hosp_qpis == 1) {
 }
 
 ### board names
+### Creates a data frame, listing the boards belonging to each network, 
+### for the present tsg, based on the last dataset 
+### For tsg with no pre-existing list, need to add that. 
 board_names <- hb_hosp_old |> 
   filter(Board_Hospital == "NHS Board",
          Cancer == tsg,
@@ -164,6 +184,22 @@ board_names <- hb_hosp_old |>
   arrange(Network, Network == Location) |> 
   distinct()
 
+# If board_names is empty / null 
+# read in the file "health_boards_to_default_RegionalCancerNetworks.csv" 
+# into df new_tsg_board_names
+
+if ( nrow(board_names) < 1 ) {
+    board_names <- read.csv(file = here(regional_networks_folder,"health_boards_to_default_RegionalCancerNetworks.csv"))
+} 
+
+# If tsg is brain, overwrite board_names
+if ( str_detect(tsg, "^Brain and CNS$" ) ) { 
+    # read in the brain / CNS networks memberships
+    board_names <- read.csv(file = here(regional_networks_folder, "brain_cns_health_boards_to_RegionalCancerNetworks.csv"))
+  } 
+
+
 ### age groups
 
 age_groups <- get_age_groups(age_groups)
+
