@@ -25,16 +25,19 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Brain and CNS"
+tsg <- "Acute Leukaemia"
 
-new_years <- c("2020", "2021", "2022")
-new_years_vals <- c(7, 8, 9)
+new_years <- c("2020/23", "2021/23") # Unlike other TSGs, multiple yrs are combined
+# Usually the new_years_vals are equal to the year number eg 7. 
+# But since Ac Leuk is for year ranges 7 to 9 and 8 to 9, I've made a pun
+# so that the variable is still a numeric 7-9 is '729', 8-9 is ''829'. 
+new_years_vals <- c(729, 829)  
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-01-2020")
+date_start <- dmy("01-07-2020")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.0")
+meas_vers <- c("0.0") # As a result of HIS website reorganisation, not findable. 
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
