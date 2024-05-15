@@ -31,6 +31,7 @@ new_years <- c("2020/23", "2021/23") # Unlike other TSGs, multiple yrs are combi
 # Usually the new_years_vals are equal to the year number eg 7. 
 # But since Ac Leuk is for year ranges 7 to 9 and 8 to 9, I've made a pun
 # so that the variable is still a numeric 7-9 is '729', 8-9 is ''829'. 
+# Need to add these to the hb hosp script possibly. 
 new_years_vals <- c(729, 829)  
 
 # Date of the start of the first new reporting year
