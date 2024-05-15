@@ -38,7 +38,7 @@ new_years_vals <- c(729, 829)
 date_start <- dmy("01-07-2020")
 
 # measurability versions (one for each year)
-meas_vers <- c("0.0") # As a result of HIS website reorganisation, not findable. 
+meas_vers <- c("3.4 and 4.1") # As a result of HIS website reorganisation, not findable. 
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
