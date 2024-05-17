@@ -29,6 +29,13 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
 }
 
+# Should be called passing in the following arguments: 
+#  - new_years_vals, as defined in housekeeping, in to year_vals parameter
+#    (year_vals are integers representing the year in the programme eg c(7,8,9))
+#    They need to match the tabs in Excel submission files. 
+#
+#  - new_years, as defined in housekeeping, in to the years parameter
+#    (such as "2017/18" ie the strings that ultimately go into the column Cyear in the output.)
 import_submission <- function(network, sub_path, year_vals, years) {
   
   network_sub <- map2(year_vals, years, read_data_year,

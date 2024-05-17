@@ -34,8 +34,8 @@ tsg <- "Acute Leukaemia"
 # and will not be mistaken for a single year by anyone looking at the excel file:
 # 7-9 is '729', corresponding to 2020/23
 # while 8-9 is ''829' corresponding to 2021/23. 
-new_years <- c("2020/23", "2021/23")
 new_years_vals <- c(729, 829)  
+new_years <- c("2020/23", "2021/23")
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-07-2020")
