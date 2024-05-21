@@ -25,16 +25,23 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Brain and CNS"
+tsg <- "Acute Leukaemia"
 
-new_years <- c("2020", "2021", "2022")
-new_years_vals <- c(7, 8, 9)
+# Unlike other TSGs, multiple yrs are combined for Ac Leuk. 
+# Usually the new_years_vals are equal to the year number eg 7. 
+# But since Ac Leuk is for year ranges 7 to 9 and 8 to 9, I've made a pun
+# so that the variable is still a numeric, for when they're used in hb_hosp_qpi.R
+# and will not be mistaken for a single year by anyone looking at the excel file:
+# 7-9 is '729' / "7 to 9", corresponding to 2020/23
+# while 8-9 is ''829' / "8 to 9" corresponding to 2021/23. 
+new_years_vals <- c("7 to 9", "8 to 9")  
+new_years <- c("2020/23", "2021/23")
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-01-2020")
+date_start <- dmy("01-07-2020")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.0")
+meas_vers <- c("3.4 and 4.1") # As a result of HIS website reorganisation, not findable. 
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
@@ -42,9 +49,9 @@ meas_vers <- c("4.0")
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
 # For brain data, 2024, no existing hospital names, so they have been 
 # identified from SCN document, and aligned with tsg_locations.xlsx reference.
-nca_hosps <- c("Aberdeen RI", "Ninewells Hosp")
-sca_hosps <- c("Royal Inf Edinburgh", "Western General Hosp")
-wos_hosps <- c("Queen Elizabeth Hosp")
+nca_hosps <- c()
+sca_hosps <- c()
+wos_hosps <- c()
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
@@ -64,11 +71,11 @@ age_groups <- c("85+",
                 "30-34",
                 "25-29",
                 "20-24",
-                "15-19")
+                "16-19")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/brain_mar24/")
+                      "Data/new_process/ac_leuk_apr24/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
