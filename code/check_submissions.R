@@ -41,4 +41,9 @@ z_board_totals <- check_totals(new_data, "Board")
 
 z_hospital_totals <- check_totals(new_data, "Hospital")
 
+# Print the results of the check_totals functions to the console
+print_error_report(z_board_totals, z_hospital_totals)
+
+
+#### Basic checks for data completeness ---- 
 

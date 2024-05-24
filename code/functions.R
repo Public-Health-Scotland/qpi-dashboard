@@ -589,6 +589,7 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
   # Prints the outcome of all checks to the terminal
   
   message("ERROR REPORT \n")
+  message("WORK IN PROGRESS. CODE TO SUM THE TOTALS NOT YET IN PLACE. ")
   
   if (nrow(z_board_totals) == 0) {
     message("PASS. All board totals match network figures")
@@ -598,10 +599,10 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
     z
   }
   
-  if (nrow(z_board_totals) == 0) {
-    message("PASS. All board totals match network figures")
+  if (nrow(z_hospital_totals) == 0) {
+    message("PASS. All hospital totals match network figures")
   } else {
-    message("ERROR. The following board totals don't match the network figure")
+    message("ERROR. The following hospital totals don't match the network figure")
     message("       View `z` for full dataframe")
     z
   }
