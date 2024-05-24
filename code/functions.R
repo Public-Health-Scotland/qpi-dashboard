@@ -63,7 +63,7 @@ import_submission <- function(network, sub_path, year_vals, years) {
 import_lookup <- function(lookup_fpath) {
   
   lookup <- readWorkbook(lookup_fpath) |> 
-    mutate(across(c("cancer","qpi",
+    mutate(across(c("cyear", "cancer", "qpi",
                     "numerator1", "denominator1", "exclusions1",
                     "target_label", "direction", "qpi_label_short",
                     "qpi_subtitle",
