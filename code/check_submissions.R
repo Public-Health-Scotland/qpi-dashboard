@@ -46,4 +46,9 @@ print_error_report(z_board_totals, z_hospital_totals)
 
 
 #### Basic checks for data completeness ---- 
-
+# For the new data, provide a count of records for each regional network, 
+# for each year, 
+# for each QPI. 
+# Are there rows for each Health Board for each QPI for each year? 
+# Are any cells empty that we would expect to be populated? 
+# Are the numbers of patients in a sensible range ie what ballpark are they in? 
