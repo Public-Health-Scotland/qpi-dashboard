@@ -539,8 +539,10 @@ reformat_qpi_number <- function(x) {
 basic_data_checks <- function(new_data) {
   
   basic_checks_output <- "# Basic checks output \n"
-  append(basic_checks_output, c("Timestamp - Checking started at: ", Sys.time(), "\n"))
-  append(basic_checks_output, c(str(new_data), "\n"))
+  # Add date and time into output
+  basic_checks_output <- str_c(basic_checks_output, "Timestamp - Checking started at: ", Sys.time(), "\n")
+  # Add description of new_data into the output for the user to see, as a check
+  basic_checks_output <- str_c(basic_checks_output, str(new_data), "\n")
   
 }
 
