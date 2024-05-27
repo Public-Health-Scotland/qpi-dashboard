@@ -536,6 +536,14 @@ reformat_qpi_number <- function(x) {
 
 #### check_submissions.R ----
 
+basic_data_checks <- function(new_data) {
+  
+  basic_checks_output <- "# Basic checks output \n"
+  append(basic_checks_output, c("Timestamp - Checking started at: ", Sys.time(), "\n"))
+  append(basic_checks_output, c(str(new_data), "\n"))
+  
+}
+
 
 check_totals <- function(df, board_or_hosp) {
   

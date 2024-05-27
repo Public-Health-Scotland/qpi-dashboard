@@ -30,13 +30,26 @@ new_data <- map(to_check, import_submission,
                 years = new_years) |> 
   list_rbind()
 
-#### Step 2 : Check Board Totals Match Network ----
+
+#### Step 2: Basic checks for data completeness ---- 
+# For the new data, provide a count of records for each regional network, 
+# for each year, 
+# for each QPI. 
+# Are there rows for each Health Board for each QPI for each year? 
+# Are any cells empty that we would expect to be populated? 
+# Are the numbers of patients in a sensible range ie what ballpark are they in? 
+basic_check_results <- basic_data_checks(new_data)
+basic_check_results 
+cat(basic_check_results, file = "Basic_Check_Results.txt")
+
+#### Step 3 : Check Board Totals Match Network ----
 # The total of the numbers for all boards must match the quoted network total
 # Should probably do this 'summarise_if(is.numeric,sum)'
 
 z_board_totals <- check_totals(new_data, "Board")
 
-#### Step 3 : Check Hospital Totals Match Network ----
+
+#### Step 4 : Check Hospital Totals Match Network ----
 # The total of the numbers for all hospitals must match the quoted network total
 
 z_hospital_totals <- check_totals(new_data, "Hospital")
@@ -45,10 +58,4 @@ z_hospital_totals <- check_totals(new_data, "Hospital")
 # print_error_report(z_board_totals, z_hospital_totals)
 
 
-#### Basic checks for data completeness ---- 
-# For the new data, provide a count of records for each regional network, 
-# for each year, 
-# for each QPI. 
-# Are there rows for each Health Board for each QPI for each year? 
-# Are any cells empty that we would expect to be populated? 
-# Are the numbers of patients in a sensible range ie what ballpark are they in? 
+
