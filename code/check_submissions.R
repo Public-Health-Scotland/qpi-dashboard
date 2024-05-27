@@ -40,7 +40,7 @@ new_data <- map(to_check, import_submission,
 # Are the numbers of patients in a sensible range ie what ballpark are they in? 
 basic_check_results <- basic_data_checks(new_data)
 basic_check_results 
-cat(basic_check_results, file = "Basic_Check_Results.txt")
+cat(basic_check_results, file = "./code/Basic_Check_Results.txt")
 
 #### Step 3 : Check Board Totals Match Network ----
 # The total of the numbers for all boards must match the quoted network total
