@@ -31,7 +31,9 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
 
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter
-#    (year_vals are integers representing the year in the programme eg c(7,8,9))
+#    (year_vals are usually integers stored as numerics representing the year 
+#    of the improvement programme eg c(7,8,9)), 
+#    but may be strings eg "7 to 9". 
 #    They need to match the tabs in Excel submission files. 
 #
 #  - new_years, as defined in housekeeping, in to the years parameter
@@ -589,7 +591,7 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
   # Prints the outcome of all checks to the terminal
   
   message("ERROR REPORT \n")
-  message("WORK IN PROGRESS. CODE TO SUM THE TOTALS NOT YET IN PLACE. ")
+  message("WORK IN PROGRESS. Need to add code to provide output, to verify that the code is reaching the data. \n")
   
   if (nrow(z_board_totals) == 0) {
     message("PASS. All board totals match network figures")
