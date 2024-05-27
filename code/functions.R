@@ -541,8 +541,26 @@ basic_data_checks <- function(new_data) {
   basic_checks_output <- "# Basic checks output \n"
   # Add date and time into output
   basic_checks_output <- str_c(basic_checks_output, "Timestamp - Checking started at: ", Sys.time(), "\n")
-  # Add description of new_data into the output for the user to see, as a check
-  basic_checks_output <- str_c(basic_checks_output, str(new_data), "\n")
+
+  # Delete the comments column
+  new_data_to_check <- as_tibble(new_data)
+  new_data_to_check <- select(new_data_to_check, -Comments)
+  
+  # For the new data, provide a count of records for each regional network, 
+  # for each year, 
+  # for each QPI. 
+  # Are there rows for each Health Board for each QPI for each year? 
+  # Are any cells empty that we would expect to be populated? 
+  # Are the numbers of patients in a sensible range ie what ballpark are they in? 
+  basic_checks_output <- str_c(basic_checks_output, "ADD CHECK RESULTS HERE!" , "\n")
+  
+  
+  
+  
+  # levels not working, need to debug this
+  # basic_checks_output <- str_c(basic_checks_output, levels(new_data[Network]))
+  
+  return(basic_checks_output)
   
 }
 

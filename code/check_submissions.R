@@ -32,15 +32,10 @@ new_data <- map(to_check, import_submission,
 
 
 #### Step 2: Basic checks for data completeness ---- 
-# For the new data, provide a count of records for each regional network, 
-# for each year, 
-# for each QPI. 
-# Are there rows for each Health Board for each QPI for each year? 
-# Are any cells empty that we would expect to be populated? 
-# Are the numbers of patients in a sensible range ie what ballpark are they in? 
+
 basic_check_results <- basic_data_checks(new_data)
 basic_check_results 
-cat(basic_check_results, file = "./code/Basic_Check_Results.txt")
+cat(basic_check_results, file = here(data_folder, "/Basic_Check_Results.txt"))
 
 #### Step 3 : Check Board Totals Match Network ----
 # The total of the numbers for all boards must match the quoted network total
