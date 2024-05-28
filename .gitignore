@@ -2,3 +2,27 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Ignore data ie do not save any data files to GitHub
+data/
+
+# The following are standard practice, to avoid disclosure risk,
+# in accordance with https://public-health-scotland.github.io/knowledge-base/docs/Version%20Control?doc=GitHub%20Guidance.md 
+# copied from https://github.com/Public-Health-Scotland/GitHub-guidance/blob/master/.gitignore 
+# Common text files that may contain data #
+*.[cC][sS][vV]
+*.[tT][xX][tT]
+
+# Excel files #
+*.[xX][lL][sS]*
+
+# SPSS formats #
+*.[sS][aA][vV]
+
+# R data files #
+*.[rR][dD][aA][tT][aA]
+*.[rR][dD][sS]
+
+# The following are files that may be created while running these QPI processing scripts
+Basic_Check_Results.txt
+Exploring_data.html
