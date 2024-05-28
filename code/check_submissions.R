@@ -39,8 +39,6 @@ write.csv(basic_checks_results[2], here(data_folder, "tally_table_by_qpi.csv"))
 write.csv(basic_checks_results[3], here(data_folder, "tally_table_by_location.csv"))
 
 
-# basic_checks_results 
-
 #### Step 3 : Check Board Totals Match Network ----
 # The total of the numbers for all boards must match the quoted network total
 # Should probably do this 'summarise_if(is.numeric,sum)'

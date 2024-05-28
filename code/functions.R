@@ -558,12 +558,12 @@ basic_data_checks <- function(new_data) {
     count(cyear, Year, Network)
   
   tally_table_by_QPI <- new_data_to_check |> 
-    count(cyear, QPI, board_hosp) 
+    count(QPI, board_hosp) 
   
   tally_table_by_location <- new_data_to_check |> 
+    group_by(Network) |> 
     count(cyear, Location)
   
-
   return(basic_checks_list <- list(netwk = tally_table_by_network, qpis = tally_table_by_QPI, locn = tally_table_by_location))
   
 }
