@@ -557,20 +557,14 @@ basic_data_checks <- function(new_data) {
   tally_table_by_network <- new_data_to_check |> 
     count(cyear, Year, Network)
   
-  write.csv(tally_table_by_network, here(data_folder, "tally_table_by_network.csv"))
-
   tally_table_by_QPI <- new_data_to_check |> 
     count(cyear, QPI, board_hosp) 
   
-  write.csv(tally_table_by_QPI, here(data_folder, "tally_table_by_qpi.csv"))
-
   tally_table_by_location <- new_data_to_check |> 
     count(cyear, Location)
   
-  write.csv(tally_table_by_location, here(data_folder, "tally_table_by_location.csv"))
-  
 
-  return(basic_checks_output)
+  return(basic_checks_list <- list(netwk = tally_table_by_network, qpis = tally_table_by_QPI, locn = tally_table_by_location))
   
 }
 
