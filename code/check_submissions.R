@@ -18,6 +18,11 @@ source("code/functions.R")
 source("code/housekeeping.R")
 source("code/packages.R")
 
+# Create a folder for output
+quality_checking_folder <- sub("/$", "", data_folder)
+quality_checking_folder  <-  here(quality_checking_folder, "quality_checking")
+dir.create(quality_checking_folder)
+
 #### Step 1 : Import Submissions ----
 
 # Bring all submissions in and combine into one dataframe
@@ -44,15 +49,20 @@ write.csv(basic_checks_results[3], here(data_folder, "tally_table_by_location.cs
 # Should probably do this 'summarise_if(is.numeric,sum)'
 
 z_board_totals <- check_totals(new_data, "Board")
+if (nrow(z_board_totals) > 0) {
+  write_csv(z_board_totals, file = here(quality_checking_folder, "non_matching_board_totals.csv"))
+}
 
 
 #### Step 4 : Check Hospital Totals Match Network ----
 # The total of the numbers for all hospitals must match the quoted network total
 
 z_hospital_totals <- check_totals(new_data, "Hospital")
+if (nrow(z_hospital_totals) > 0) {
+  write_csv(z_hospital_totals, file = here(quality_checking_folder, "non_matching_hospital_totals.csv"))
+}
 
 # Print the results of the check_totals functions to the console
-# print_error_report(z_board_totals, z_hospital_totals)
-
+print_error_report(z_board_totals, z_hospital_totals)
 
 

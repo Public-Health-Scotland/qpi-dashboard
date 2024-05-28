@@ -571,6 +571,8 @@ basic_data_checks <- function(new_data) {
 
 check_totals <- function(df, board_or_hosp) {
   
+  totals_report <- str_c("Checking sub-totals for: ", board_or_hosp, "   ") 
+  
   if (board_or_hosp == "Hospital") {
     
     df <- df |> 
@@ -580,6 +582,7 @@ check_totals <- function(df, board_or_hosp) {
   }
   
   check <- df |> 
+    select(-Comments) |>
     filter(board_hosp == {{  board_or_hosp  }}) |>
     group_by(Year, Network, QPI) |> 
     summarise(
@@ -591,6 +594,8 @@ check_totals <- function(df, board_or_hosp) {
     ) |> 
     ungroup()
   
+  totals_report <- str_c(totals_report, "tibble: check; column: Numerator:   ", toString(check$Numerator), "   ")
+  
   totals <- df |> 
     filter(board_hosp == "Network") |> 
     select(
@@ -598,6 +603,10 @@ check_totals <- function(df, board_or_hosp) {
       nr_exclusions, nr_denominator
     ) |> 
     rename(Network = Location)
+  
+  totals_report <- str_c(totals_report, "tibble: totals; column: Numerator:   ", toString(totals$Numerator), "   ")
+  
+  
   
   diffs <- check |> 
     bind_rows(totals) |> 
@@ -613,6 +622,11 @@ check_totals <- function(df, board_or_hosp) {
     pivot_longer(cols = c(Numerator:nr_denominator)) |> 
     filter(value == FALSE) |> 
     select(-value)
+  
+  totals_report <- str_c(totals_report, "tibble diffs:   ", toString(diffs), "   ")
+  
+  
+  print(totals_report)
   
   diffs
   
@@ -631,7 +645,7 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
   } else {
     message("ERROR. The following board totals don't match the network figure")
     message("       View `z` for full dataframe")
-    z # not found
+    z_board_totals # not found
   }
   
   if (nrow(z_hospital_totals) == 0) {
@@ -639,7 +653,7 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
   } else {
     message("ERROR. The following hospital totals don't match the network figure")
     message("       View `z` for full dataframe")
-    z
+    z_hospital_totals
   }
 }
 
