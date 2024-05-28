@@ -33,9 +33,9 @@ new_data <- map(to_check, import_submission,
 
 #### Step 2: Basic checks for data completeness ---- 
 
-basic_check_results <- basic_data_checks(new_data)
-basic_check_results 
-cat(basic_check_results, file = here(data_folder, "/Basic_Check_Results.txt"))
+basic_checks_results <- basic_data_checks(new_data)
+# basic_checks_results 
+# cat(basic_checks_results, file = here(data_folder, "/Basic_Check_Results.txt"))
 
 #### Step 3 : Check Board Totals Match Network ----
 # The total of the numbers for all boards must match the quoted network total

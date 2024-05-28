@@ -554,12 +554,22 @@ basic_data_checks <- function(new_data) {
   # Are the numbers of patients in a sensible range ie what ballpark are they in? 
   basic_checks_output <- str_c(basic_checks_output, "ADD CHECK RESULTS HERE!" , "\n")
   
+  tally_table_by_network <- new_data_to_check |> 
+    count(cyear, Year, Network)
   
+  write.csv(tally_table_by_network, here(data_folder, "tally_table_by_network.csv"))
+
+  tally_table_by_QPI <- new_data_to_check |> 
+    count(cyear, QPI, board_hosp) 
   
+  write.csv(tally_table_by_QPI, here(data_folder, "tally_table_by_qpi.csv"))
+
+  tally_table_by_location <- new_data_to_check |> 
+    count(cyear, Location)
   
-  # levels not working, need to debug this
-  # basic_checks_output <- str_c(basic_checks_output, levels(new_data[Network]))
+  write.csv(tally_table_by_location, here(data_folder, "tally_table_by_location.csv"))
   
+
   return(basic_checks_output)
   
 }
