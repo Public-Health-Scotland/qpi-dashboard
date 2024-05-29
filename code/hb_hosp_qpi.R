@@ -72,6 +72,18 @@ new_data <- new_data |>
                            "Cancer" = "cancer",
                            "QPI" = "qpi"))
 
+# Identify rows where the QPI name in new_data was not matched with any in lookup. 
+# Sometimes happens because of a typo in the QPI name. 
+# Checking Numerator1 column as a proxy for the whole row in lookup
+rows_with_missing_values <- new_data |> 
+  filter(str_equal(numerator1, "") || is.na(numerator1))
+
+if (nrow(rows_with_missing_values) > 0 ) {
+  message("ISSUE DETECTED: POSSIBLE UN-MATCHED ROWS.\n")
+  message("The Numerator1 column is empty in some rows, indicating possible mis-match between data submissions and lookup, see missing_data.csv.\n")
+ write.csv(rows_with_missing_values, file = here(data_folder, "missing_data.csv"))
+}
+
 #### Step x : create derived variables ----
 ## There are a series of variables which Tableau requires which are 
 ## derived from the data submissions and the lookups.

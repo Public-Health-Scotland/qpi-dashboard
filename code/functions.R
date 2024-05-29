@@ -31,7 +31,9 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
 
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter
-#    (year_vals are integers representing the year in the programme eg c(7,8,9))
+#    (year_vals are usually integers stored as numerics representing the year 
+#    of the improvement programme eg c(7,8,9)), 
+#    but may be strings eg "7 to 9". 
 #    They need to match the tabs in Excel submission files. 
 #
 #  - new_years, as defined in housekeeping, in to the years parameter
@@ -63,7 +65,7 @@ import_submission <- function(network, sub_path, year_vals, years) {
 import_lookup <- function(lookup_fpath) {
   
   lookup <- readWorkbook(lookup_fpath) |> 
-    mutate(across(c("cancer","qpi",
+    mutate(across(c("cyear", "cancer", "qpi",
                     "numerator1", "denominator1", "exclusions1",
                     "target_label", "direction", "qpi_label_short",
                     "qpi_subtitle",
@@ -534,8 +536,42 @@ reformat_qpi_number <- function(x) {
 
 #### check_submissions.R ----
 
+basic_data_checks <- function(new_data) {
+  
+  basic_checks_output <- "# Basic checks output \n"
+  # Add date and time into output
+  basic_checks_output <- str_c(basic_checks_output, "Timestamp - Checking started at: ", Sys.time(), "\n")
+
+  # Delete the comments column
+  new_data_to_check <- as_tibble(new_data)
+  new_data_to_check <- select(new_data_to_check, -Comments)
+  
+  # For the new data, provide a count of records for each regional network, 
+  # for each year, 
+  # for each QPI. 
+  # Are there rows for each Health Board for each QPI for each year? 
+  # Are any cells empty that we would expect to be populated? 
+  # Are the numbers of patients in a sensible range ie what ballpark are they in? 
+  basic_checks_output <- str_c(basic_checks_output, "ADD CHECK RESULTS HERE!" , "\n")
+  
+  tally_table_by_network <- new_data_to_check |> 
+    count(cyear, Year, Network)
+  
+  tally_table_by_QPI <- new_data_to_check |> 
+    count(QPI, board_hosp) 
+  
+  tally_table_by_location <- new_data_to_check |> 
+    group_by(Network) |> 
+    count(cyear, Location)
+  
+  return(basic_checks_list <- list(netwk = tally_table_by_network, qpis = tally_table_by_QPI, locn = tally_table_by_location))
+  
+}
+
 
 check_totals <- function(df, board_or_hosp) {
+  
+  message(str_c("Checking sub-totals for: ", board_or_hosp)) 
   
   if (board_or_hosp == "Hospital") {
     
@@ -546,6 +582,7 @@ check_totals <- function(df, board_or_hosp) {
   }
   
   check <- df |> 
+    select(-Comments) |>
     filter(board_hosp == {{  board_or_hosp  }}) |>
     group_by(Year, Network, QPI) |> 
     summarise(
@@ -557,6 +594,9 @@ check_totals <- function(df, board_or_hosp) {
     ) |> 
     ungroup()
   
+  message("tibble: check; column: Numerator:  ")
+  message(toString(check$Numerator))
+  
   totals <- df |> 
     filter(board_hosp == "Network") |> 
     select(
@@ -564,6 +604,9 @@ check_totals <- function(df, board_or_hosp) {
       nr_exclusions, nr_denominator
     ) |> 
     rename(Network = Location)
+  
+  message("tibble: totals; column: Numerator: ")
+  message(toString(totals$Numerator))
   
   diffs <- check |> 
     bind_rows(totals) |> 
@@ -580,6 +623,9 @@ check_totals <- function(df, board_or_hosp) {
     filter(value == FALSE) |> 
     select(-value)
   
+  message("tibble diffs: ")
+  message(toString(diffs))
+  
   diffs
   
 }
@@ -589,21 +635,21 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
   # Prints the outcome of all checks to the terminal
   
   message("ERROR REPORT \n")
-  
+
   if (nrow(z_board_totals) == 0) {
     message("PASS. All board totals match network figures")
   } else {
     message("ERROR. The following board totals don't match the network figure")
-    message("       View `z` for full dataframe")
-    z
+    message("       View `z_board_totals` for full dataframe")
+    z_board_totals 
   }
   
-  if (nrow(z_board_totals) == 0) {
-    message("PASS. All board totals match network figures")
+  if (nrow(z_hospital_totals) == 0) {
+    message("PASS. All hospital totals match network figures")
   } else {
-    message("ERROR. The following board totals don't match the network figure")
-    message("       View `z` for full dataframe")
-    z
+    message("ERROR. The following hospital totals don't match the network figure")
+    message("       View `z_hospital_totals` for full dataframe")
+    z_hospital_totals
   }
 }
 

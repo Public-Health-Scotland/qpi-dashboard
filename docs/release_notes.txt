@@ -1,0 +1,7 @@
+# RELEASE NOTES 
+
+## May 2024 
+
+* Bug-fix: Change cyear field to string
+Now converts the 'cyear' field to character when imported from the lookup file. 
+This was necessary to fix the left join that was not matching on cyear. 
