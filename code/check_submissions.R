@@ -39,9 +39,9 @@ new_data <- map(to_check, import_submission,
 #### Step 2: Basic checks for data completeness ---- 
 
 basic_checks_results <- basic_data_checks(new_data)
-write.csv(basic_checks_results[1], here(data_folder, "tally_table_by_network.csv"))
-write.csv(basic_checks_results[2], here(data_folder, "tally_table_by_qpi.csv"))
-write.csv(basic_checks_results[3], here(data_folder, "tally_table_by_location.csv"))
+write.csv(basic_checks_results[1], here(quality_checking_folder, "tally_table_by_network.csv"))
+write.csv(basic_checks_results[2], here(quality_checking_folder, "tally_table_by_qpi.csv"))
+write.csv(basic_checks_results[3], here(quality_checking_folder, "tally_table_by_location.csv"))
 
 
 #### Step 3 : Check Board Totals Match Network ----
