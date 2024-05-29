@@ -571,7 +571,7 @@ basic_data_checks <- function(new_data) {
 
 check_totals <- function(df, board_or_hosp) {
   
-  totals_report <- str_c("Checking sub-totals for: ", board_or_hosp, "   ") 
+  message(str_c("Checking sub-totals for: ", board_or_hosp)) 
   
   if (board_or_hosp == "Hospital") {
     
@@ -594,7 +594,8 @@ check_totals <- function(df, board_or_hosp) {
     ) |> 
     ungroup()
   
-  totals_report <- str_c(totals_report, "tibble: check; column: Numerator:   ", toString(check$Numerator), "   ")
+  message("tibble: check; column: Numerator:  ")
+  message(toString(check$Numerator))
   
   totals <- df |> 
     filter(board_hosp == "Network") |> 
@@ -604,9 +605,8 @@ check_totals <- function(df, board_or_hosp) {
     ) |> 
     rename(Network = Location)
   
-  totals_report <- str_c(totals_report, "tibble: totals; column: Numerator:   ", toString(totals$Numerator), "   ")
-  
-  
+  message("tibble: totals; column: Numerator: ")
+  message(toString(totals$Numerator))
   
   diffs <- check |> 
     bind_rows(totals) |> 
@@ -623,10 +623,8 @@ check_totals <- function(df, board_or_hosp) {
     filter(value == FALSE) |> 
     select(-value)
   
-  totals_report <- str_c(totals_report, "tibble diffs:   ", toString(diffs), "   ")
-  
-  
-  print(totals_report)
+  message("tibble diffs: ")
+  message(toString(diffs))
   
   diffs
   
@@ -638,21 +636,19 @@ print_error_report <- function(z_board_totals, z_hospital_totals) {
   
   message("ERROR REPORT \n")
 
-  message("WORK IN PROGRESS. Need to add code to provide output, to verify the function is accessing the data.")
-
   if (nrow(z_board_totals) == 0) {
     message("PASS. All board totals match network figures")
   } else {
     message("ERROR. The following board totals don't match the network figure")
-    message("       View `z` for full dataframe")
-    z_board_totals # not found
+    message("       View `z_board_totals` for full dataframe")
+    z_board_totals 
   }
   
   if (nrow(z_hospital_totals) == 0) {
     message("PASS. All hospital totals match network figures")
   } else {
     message("ERROR. The following hospital totals don't match the network figure")
-    message("       View `z` for full dataframe")
+    message("       View `z_hospital_totals` for full dataframe")
     z_hospital_totals
   }
 }
