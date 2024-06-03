@@ -623,11 +623,25 @@ check_totals <- function(df, board_or_hosp) {
     filter(value == FALSE) |> 
     select(-value)
   
+  
   message("tibble diffs: ")
   message(toString(diffs))
   
   diffs
   
+}
+
+hosp_differences_report <- function(new_data) {
+  # Create tibble, to contain the delta  
+  # not working - will need some trial and error
+  # still need to filter to hospital 
+  # and sum the hosps only 
+  # and compare to network only
+  diffs_deltas <- new_data |> 
+    group_by(Year, Network, QPI) |> 
+    summarise(
+    summarised_Numerator = Numerator
+  )
 }
 
 print_error_report <- function(z_board_totals, z_hospital_totals) {

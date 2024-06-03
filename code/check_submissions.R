@@ -10,7 +10,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Select which templates to check. Put the names of the files in this vector
-to_check <- c("NCA", "SCAN", "WoSCAN")
+to_check <- c("SCAN", "WoSCAN")
 
 #### Step 0 : Housekeeping ----
 
@@ -76,3 +76,6 @@ if (nrow(z_hospital_totals) > 0) {
 print_error_report(z_board_totals, z_hospital_totals)
 
 
+# Generate a report listing the size of differences for hospitals
+hosp_diffs_tbl <- hosp_differences_report(new_data)
+write_csv(hosp_diffs_tbl, file = here(quality_checking_folder, "hospital_differences_amounts.csv"))
