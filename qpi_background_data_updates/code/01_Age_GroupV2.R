@@ -7,19 +7,19 @@
 ### 1 - Preliminaries ----
 
 ####### Things to edit before running the code #####------
-cancer <- "Melanoma"
-total_years <- 1
-which_years <- c("2022/23")
+cancer <- "Brain and CNS"
+total_years <- 3
+which_years <- c("2020", "2021", "2022")
 
-NCA_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/melanoma_jan24/data_submissions/NCA.xlsx"
+NCA_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/brain_mar24/data_submissions/NCA.xlsx"
 # Below is cells in which data is located, each year's data separated by comma
-NCA <- c("B18:J36")  
+NCA <- c("B7:D14", "B18:D25", "B29:D36")  
 
-SCA_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/melanoma_jan24/data_submissions/SCAN.xlsx"
-SCA <- c("B16:H34")
+SCA_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/brain_mar24/data_submissions/SCAN.xlsx"
+SCA <- c("B7:D13", "B17:D23", "B27:D33")
 
-WOS_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/melanoma_jan24/data_submissions/WoSCAN.xlsx"
-WOS <- c("B16:H34")
+WOS_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/brain_mar24/data_submissions/WoSCAN.xlsx"
+WOS <- c("B7:D11", "B15:D19", "B23:D27")
 ##########################################################
 
 # Loading required libraries
