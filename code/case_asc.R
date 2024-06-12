@@ -49,7 +49,7 @@ write.xlsx(case_asc_temp, case_asc_temp_fpath,
 #### Step x : Import completed template ----
 
 case_asc_comp_fpath <- paste0(data_folder,
-                              "excels_for_tableau/input/",
+                              "excels_for_tableau/initial_run/input/",
                               "Case_Asc_Template.xlsx")
 
 case_asc_comp <- readWorkbook(case_asc_comp_fpath)
