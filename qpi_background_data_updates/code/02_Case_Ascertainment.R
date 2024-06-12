@@ -7,9 +7,9 @@
 ### 1 - Preliminaries ----
 
 ####### Things to edit before running the code #####------
-cancer <- "Upper GI"
-total_years <- 1
-which_years <- c("2022")
+cancer <- "Brain and CNS"
+total_years <- 3
+which_years <- c("2020", "2021", "2022")
 ##########################################################
 
 #   Loading required libraries
