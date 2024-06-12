@@ -13,13 +13,13 @@ which_years <- c("2020", "2021", "2022")
 
 NCA_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/brain_mar24/data_submissions/NCA.xlsx"
 # Below is cells in which data is located, each year's data separated by comma
-NCA <- c("B7:D14", "B18:D25", "B29:D36")  
+NCA <- c("B40:J72", "B76:J108", "B112:J144")  
 
 SCA_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/brain_mar24/data_submissions/SCAN.xlsx"
-SCA <- c("B7:D13", "B17:D23", "B27:D33")
+SCA <- c("B37:I69", "B73:I105", "B109:I144")
 
 WOS_submission_location <- "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/brain_mar24/data_submissions/WoSCAN.xlsx"
-WOS <- c("B7:D11", "B15:D19", "B23:D27")
+WOS <- c("B31:G63", "B67:G99", "B103:G135")
 ##########################################################
 
 # Loading required libraries
