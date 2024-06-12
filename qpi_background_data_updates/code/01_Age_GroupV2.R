@@ -35,6 +35,9 @@ loc_order <- c("Grampian", "Highland",	"Orkney",	"Shetland",	"Tayside", "Western
 ### 2 - Extract Age Group Data ----
 
 ### Import latest Background_Data_Age_Gender.xlsx ###----
+# Running the following line to read Excel file from \\\\Isdsf etc from Posit produces an error
+# Error: `path` does not exist 'Isdsf00 etc
+# So this code would need major re-write to run from posit, ie fix all paths. 
 age_gender <- read_xlsx(path = "\\\\Isdsf00d03/quality_indicators/Benchmarking/Cancer QPIs/Data/Tableau/Tableau Dashboard 2017/Data/Background_Data_Age_Gender.xlsx", guess_max = 1048576)
 
 # Variables to store datasets for each year
