@@ -10,7 +10,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Select which templates to check. Put the names of the files in this vector
-to_check <- c("SCAN", "WoSCAN")
+to_check <- c("NCA", "SCAN", "WoSCAN")
 
 #### Step 0 : Housekeeping ----
 
