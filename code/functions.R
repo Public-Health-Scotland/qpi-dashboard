@@ -637,6 +637,10 @@ hosp_differences_report <- function(new_data) {
   # still need to filter to hospital 
   # and sum the hosps only 
   # and compare to network only
+  # Will calculate the delta ie the differences for any non-matching sub-totals
+  # and will store and write the amount and direction of the differences
+  # to help troubleshooting by helping us identify eg where there are reciprocal differences, 
+  # that show data has been swapped between the expected locations etc. 
   diffs_deltas <- new_data |> 
     group_by(Year, Network, QPI) |> 
     summarise(
