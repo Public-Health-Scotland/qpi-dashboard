@@ -25,16 +25,16 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Brain and CNS"
+tsg <- "Bladder"
 
-new_years <- c("2020", "2021", "2022")
+new_years <- c("2020/21", "2021/22", "2022/23")
 new_years_vals <- c(7, 8, 9)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-01-2020")
+date_start <- dmy("01-04-2020")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.0")
+meas_vers <- c("3.2", "4.2", "4.2")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
@@ -68,7 +68,7 @@ age_groups <- c("85+",
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/brain_mar24/")
+                      "Data/new_process/bladder_nov_24/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
