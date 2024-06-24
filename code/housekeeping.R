@@ -59,12 +59,7 @@ age_groups <- c("85+",
                 "55-59", 
                 "50-54",
                 "45-49",
-                "40-44",
-                "35-39",
-                "30-34",
-                "25-29",
-                "20-24",
-                "15-19")
+                "0-44")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
