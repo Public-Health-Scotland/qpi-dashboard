@@ -40,11 +40,9 @@ meas_vers <- c("3.2", "4.2", "4.2")
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-# For brain data, 2024, no existing hospital names, so they have been 
-# identified from SCN document, and aligned with tsg_locations.xlsx reference.
-nca_hosps <- c("Aberdeen RI", "Ninewells Hosp")
-sca_hosps <- c("Royal Inf Edinburgh", "Western General Hosp", "Royal Hosp Sick Children Edinburgh")
-wos_hosps <- c("Queen Elizabeth Hosp")
+nca_hosps <- c()
+sca_hosps <- c()
+wos_hosps <- c()
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
