@@ -25,13 +25,13 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Toenail"
+tsg <- "Toenails"
 
-new_years <- c("1920/21", "1921/22", "1922/23")
-new_years_vals <- c(13, 14, 15)
+new_years <- c("1923/24", "1924/27", "1927/29")
+new_years_vals <- c(13, "14 to 17", "17 to 19")
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-04-2020")
+date_start <- dmy("01-04-1923")
 
 # measurability versions (one for each year)
 meas_vers <- c("3.99", "4.0001", "4.0002")
@@ -128,6 +128,10 @@ hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
 hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps)
 networks <- c("NCA", "SCAN", "WoSCAN")
+
+# Optional: check tsg is a match by counting rows
+# nrow(hb_hosp_old |> filter(Cancer == tsg)) 
+# If nrow is zero, then max(Cyear) in next line will error, cos no arguments.
 
 if ((hb_hosp_old |>
     filter(Cancer == tsg) |>
