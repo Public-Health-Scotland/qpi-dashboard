@@ -37,7 +37,7 @@ lookup <- hb_hosp_old |>
          target_label = Target_Label,
          direction = Direction,
          qpi_label_short = QPI_Label_Short,
-         previous_target = "not used", # not used
+         previous_target = Previous_Target, # not used
          qpi_subtitle = QPI_Subtitle,
          SurgDiag) |> 
   distinct() |> 
