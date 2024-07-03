@@ -27,8 +27,8 @@ source("code/packages.R")
 
 tsg <- "Toenail"
 
-new_years <- c("2020/21", "2021/22")
-new_years_vals <- c(7, 8)
+new_years <- c("1920/21", "1921/22", "1922/23")
+new_years_vals <- c(13, 14, 15)
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-04-2020")
