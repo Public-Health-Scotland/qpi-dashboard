@@ -25,24 +25,24 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Bladder"
+tsg <- "Toenail"
 
-new_years <- c("2020/21", "2021/22", "2022/23")
-new_years_vals <- c(7, 8, 9)
+new_years <- c("2020/21", "2021/22")
+new_years_vals <- c(7, 8)
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-04-2020")
 
 # measurability versions (one for each year)
-meas_vers <- c("3.2", "4.2", "4.2")
+meas_vers <- c("3.99", "4.0001", "4.0002")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published year of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c()
-sca_hosps <- c()
-wos_hosps <- c()
+nca_hosps <- c("Finlay", "Bedlam")
+sca_hosps <- c("St Elsewhere", "New Amsterdam", "Pitié-Salpêtrière Hospital")
+wos_hosps <- c("Holby City", "River City")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
@@ -53,15 +53,11 @@ age_groups <- c("85+",
                 "75-79", 
                 "70-74", 
                 "65-69", 
-                "60-64", 
-                "55-59", 
-                "50-54",
-                "45-49",
-                "0-44")
+                "0-64")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/bladder_nov_24/")
+                      "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
