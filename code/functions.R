@@ -81,12 +81,17 @@ import_lookup <- function(lookup_fpath) {
 
 get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
   
+  # Convert Cyear into a numeric value, so we can make use of a range of years
+  hb_hosp_old <- hb_hosp_old |> 
+    mutate(start_year = as.numeric(substr(Cyear, 1, 4)))
+    
+    
   if (is.null(ntwrk_hosps)) {
     
     hosps <- hb_hosp_old |> 
       filter(Cancer == tsg,
              Network == {{ ntwrk  }}) |>
-      filter(Cyear == max(Cyear)) |> 
+      filter(Cyear == max(Cyear) || start_year >= (max(start_year) - 3) ) |> 
       filter(Board_Hospital == "Hospital") |> 
       select(Network, Location) |> 
       distinct()

@@ -42,7 +42,9 @@ meas_vers <- c("3.2", "4.2", "4.2")
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
 nca_hosps <- c()
 sca_hosps <- c()
-wos_hosps <- c()
+wos_hosps <- c("Ayr", "Forth Valley Royal", "Gartnavel/Western", 
+               "Glasgow Royal Inf", "Monklands", "Queen Elizabeth Hosp", 
+               "Royal Alexandra", "Stobhill", "Victoria Glasgow", "Wishaw")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
