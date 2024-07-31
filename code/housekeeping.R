@@ -38,11 +38,17 @@ meas_vers <- c("3.2", "4.2", "4.2")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
-# the names from the most recent published year of QPIs for this TSG.
+# the names from the most recent published four years of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c()
-sca_hosps <- c()
-wos_hosps <- c()
+nca_hosps <- c("Aberdeen RI","Albyn","Balfour Hosp","Belford Hosp",
+               "Caithness General","Dr Grays Hosp","Gilbert Bain Hosp",
+               "Lorn Islands Hosp","Ninewells Hosp","Perth Royal Inf",
+               "Raigmore Hosp","Stracathro Hosp","Western Isles Hosp")
+sca_hosps <- c("Borders General Hosp","QMH Fife","Royal Inf Edinburgh",
+               "Victoria Hosp Fife","Western General Hosp")
+wos_hosps <- c("Gartnavel","Glasgow Royal Inf","Hairmyres","Inverclyde Royal",
+               "Monklands","Queen Elizabeth Hosp","Royal Alexandra","Stobhill",
+               "Victoria Glasgow","Wishaw")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
