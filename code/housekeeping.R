@@ -44,7 +44,7 @@ nca_hosps <- c("Aberdeen RI","Albyn","Balfour Hosp","Belford Hosp",
                "Caithness General","Dr Grays Hosp","Gilbert Bain Hosp",
                "Lorn Islands Hosp","Ninewells Hosp","Perth Royal Inf",
                "Raigmore Hosp","Stracathro Hosp","Western Isles Hosp")
-sca_hosps <- c("Borders General Hosp","QMH Fife","Royal Inf Edinburgh",
+sca_hosps <- c("Borders General Hosp","Dumfries & Galloway RI", "QMH Fife","Royal Inf Edinburgh",
                "Victoria Hosp Fife","Western General Hosp")
 wos_hosps <- c("Gartnavel","Glasgow Royal Inf","Hairmyres","Inverclyde Royal",
                "Monklands","Queen Elizabeth Hosp","Royal Alexandra","Stobhill",
