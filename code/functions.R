@@ -91,7 +91,7 @@ get_hosp_names <- function(ntwrk_hosps, ntwrk, hb_hosp_old) {
     hosps <- hb_hosp_old |> 
       filter(Cancer == tsg,
              Network == {{ ntwrk  }}) |>
-      filter(start_year >= (max(start_year) - 3) ) |> 
+      filter(start_year >= (max(start_year) - 5) ) |> 
       filter(Board_Hospital == "Hospital") |> 
       select(Network, Location) |> 
       distinct()
