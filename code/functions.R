@@ -716,11 +716,17 @@ make_summary_table <- function() {
   # from the separate file containing rows from HB_hosp where Location is Scotland 
   scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"), sheet = "data")
   
+  # Add target status column
+  scotland_performance_all_qpis <- scotland_performance_all_qpis |>
+    mutate(target_status = ifelse(RAG_Status == 1, "Target met", "Target not met") )
+  
   # Use pivot_wider to create columns for the years
   performance_by_year <- scotland_performance_all_qpis |>
     pivot_wider(names_from = Cyear, 
                 values_from = PerPerformance,
                 id_cols = QPI)
+  
+  performance_by_year <- per
   
   return(performance_by_year)
   
