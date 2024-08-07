@@ -721,12 +721,12 @@ make_summary_table <- function() {
     mutate(target_status = ifelse(RAG_Status == 1, "Target met", "Target not met") )
   
   # Use pivot_wider to create columns for the years
+  # Needs more work, to add target status column
   performance_by_year <- scotland_performance_all_qpis |>
     pivot_wider(names_from = Cyear, 
                 values_from = PerPerformance,
-                id_cols = QPI)
-  
-  performance_by_year <- per
+                id_cols = QPI
+                )
   
   return(performance_by_year)
   
