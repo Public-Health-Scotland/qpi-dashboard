@@ -24,4 +24,5 @@ target_not_met_style <- createStyle(
 )
 
 perf_summary_tbl <- make_summary_table()
-write.xlsx(perf_summary_tbl, file = "qpi_summary_table.xlsx")
+
+write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table.xlsx"))
