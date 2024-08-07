@@ -17,6 +17,11 @@ library(officer)
 library(janitor)
 library(flextable) # takes ages to load
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# N.B. throughout the text that will be seen by the reader, 
+# I have added "???" in all places where manual editing will be needed. 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # source doesn't seem to work  
 # so copy the function to create the table here instead
 # source("code/functions.R")
@@ -50,22 +55,24 @@ make_summary_table <- function() {
 
 ```
 
-<Div custom-style = "Publication Title"><TSG> cancer QPIs YYYY to YYYY Summary Publication</Div>
-<Div custom-style = "Publication subtitle">Quality Performance Indicators</Div>
+<Div custom-style = "Publication Title">(TSG???) cancer QPIs YYYY??? to YYYY??? Summary Publication</Div>
+<Div custom-style = "Publication subtitle">Patients diagnosed from Month/YYYY??? to Month/YYYY???</Div>
 <Div custom-style = "Stats designation">An Official statistics release for Scotland</Div>
-<Div custom-style = "Publication date">Publication date: DD Month YYYY</Div>
-<Div custom-style = "Restricted Stats">Unduly RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy</Div>
+<Div custom-style = "Publication date">Publication date: DD Month YYYY???</Div>
+<Div custom-style = "Restricted Stats">Unduly RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy???</Div>
 
 # About this release
-Vestibulum lacinia, turpis eu sagittis lacinia, justo orci blandit orci, ut suscipit tortor turpis et metus. Pellentesque sollicitudin nisl et porttitor laoreet. Nunc id purus pretium, suscipit justo vitae, pretium dui. Quisque congue ex dignissim tellus pulvinar, a interdum libero fermentum.
+This release by Public Health Scotland (PHS) presents performance against the National 
+(TSG)??? Quality Performance Indicators (QPIs) in the Cancer QPIs dashboard held within the 
+Scottish Cancer Registry and Intelligence Service (SCRIS).
 
 # Main Points
-Proin nec ultricies dolor. Maecenas pulvinar, enim et imperdiet cursus, mi
+???Proin nec ultricies dolor. Maecenas pulvinar, enim et imperdiet cursus, mi
 
-<Div custom-style = "Bullet 1">Maecenas ut sagittis mi. Vestibulum faucibus ligula sit amet facilisis pulvinar. Morbi mollis odio id est consequat, a convallis quam finibus. Morbi id congue turpis, sit amet ultrices tortor. Phasellus vel nisi.</Div>
-<Div custom-style = "Bullet 1">Quisque iaculis congue aliquet. Aenean in dictum nisl. Etiam quis ullamcorper ex. Aenean mollis ante eget.</Div>
+<Div custom-style = "Bullet 1">Maecenas ut sagittis mi. Vestibulum faucibus ligula sit amet facilisis pulvinar. Morbi mollis odio id est consequat, a convallis quam finibus. Morbi id congue turpis, sit amet ultrices tortor. Phasellus vel nisi. There were ??? patients diagnosed etc... ???</Div>
+<Div custom-style = "Bullet 1">Quisque iaculis congue aliquet. Aenean in dictum nisl. Etiam quis ullamcorper ex. Aenean mollis ante eget.??? At Scotland-level, the target was met for ??? of ??? targets ???</Div>
 
-<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+<Div custom-style = "Table or chart caption">Percentage performance against Quality Performance Indicators</Div>
 ```{r flextable-table-data, ft.align = "left"}
 # Set up some formatting for flextable to be applied to most tables
 my_ft_format <- function(ft) {
@@ -85,19 +92,13 @@ my_ft_format <- function(ft) {
 
 ```
 
-## Table format has been set... 
-
-## Now to make a specific table... 
+  
+  
 
 ```{r qpi_summary_table}
 summary_table_for_Rmd <- make_summary_table()
 
-number_headings <- ncol(summary_table_for_Rmd)
-
-headings <- list("Table head", "Table head", "Table head", "Table head",
-                 "Table head", "Table head", "Table head")
-
-names(headings) <- names(summary_table_for_Rmd)
+headings <- names(summary_table_for_Rmd)
 
 flextable(summary_table_for_Rmd, theme_fun = NULL) |>
   my_ft_format() |>
