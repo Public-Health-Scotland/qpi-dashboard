@@ -25,4 +25,29 @@ target_not_met_style <- createStyle(
 
 perf_summary_tbl <- make_summary_table()
 
-write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table.xlsx"))
+wb_qpi_summary = createWorkbook()
+addWorksheet(wb_qpi_summary, "summary_data")
+
+writeDataTable(wb_qpi_summary, "summary_data", perf_summary_tbl, startCol = 1, startRow = 1)
+
+conditionalFormatting(wb_qpi_summary,
+                      "summary_data",
+                      cols = 1:14,
+                      rows = 1:50,
+                      rule = '="Target met"', 
+                      style = success_style
+                      )
+
+conditionalFormatting(wb_qpi_summary,
+                      "summary_data",
+                      cols = 1:14,
+                      rows = 1:50,
+                      rule = '="Target not met"',
+                      style = target_not_met_style
+                      )
+
+saveWorkbook(wb_qpi_summary, here("for_summary_table", "qpi_summary_table.xlsx"))
+
+# Optional - just write the data to file, for manual formatting
+# write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table.xlsx"))
+
