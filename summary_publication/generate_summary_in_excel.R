@@ -49,5 +49,5 @@ conditionalFormatting(wb_qpi_summary,
 saveWorkbook(wb_qpi_summary, here("for_summary_table", "qpi_summary_table.xlsx"))
 
 # Optional - just write the data to file, for manual formatting
-# write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table.xlsx"))
+# write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table_plain.xlsx"))
 
