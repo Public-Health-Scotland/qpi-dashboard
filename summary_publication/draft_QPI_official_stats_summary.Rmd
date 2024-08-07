@@ -50,7 +50,7 @@ make_summary_table <- function() {
 
 ```
 
-<Div custom-style = "Publication Title">Endometrial cancer QPIs 20 Summary Publication</Div>
+<Div custom-style = "Publication Title"><TSG> cancer QPIs YYYY to YYYY Summary Publication</Div>
 <Div custom-style = "Publication subtitle">Quality Performance Indicators</Div>
 <Div custom-style = "Stats designation">An Official statistics release for Scotland</Div>
 <Div custom-style = "Publication date">Publication date: DD Month YYYY</Div>
@@ -128,16 +128,16 @@ Aliquam sed maximus ante, a imperdiet est. Vivamus vel diam facilisis, pulvinar 
 Nunc at mauris euismod, mattis tellus sed, vehicula dolor. Duis quis auctor elit. Fusce eu dui eu magna convallis porttitor in ac purus. Proin sed tellus massa. In pulvinar augue sit amet faucibus maximus. Aenean porttitor arcu vitae lacus fringilla condimentum. Praesent laoreet, felis non dignissim viverra, libero nunc eleifend sapien, sed dignissim felis risus et tellus.
 
 # Contact
-Name | Role | Number | [phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+Garry Hecht | Principal Information Analyst | [phs.cancerstats@phs.scot](mailto:phs.cancerstats@phs.scot)
 
-Name | Role | Number | [phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+Pauline Ward | Information Analyst | [phs.cancerstats@phs.scot](mailto:phs.cancerstats@phs.scot)
 
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further information
 Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/YOUR-PUBLICATION-URL) on our website.
 
-Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/).
+Open data from this publication is available as an Excel file to download from the publication page.
 
 Our statistical practice is regulated by the Office for Statistics Regulation (OSR).
 
@@ -147,5 +147,3 @@ The next release of this publication will be DD Month YYYY.
 
 Other formats of this publication are available on request by calling 0131 314 5300 or emailing [phs.otherformats@phs.scot](mailto:phs.otherformats@phs.scot).
 
-# NHS Performs
-A selection of information from this publication is included in [NHS Performs](http://www.nhsperforms.scot). NHS Performs is a website that brings together a range of information on how hospitals and NHS Boards within NHSScotland are performing.
