@@ -9,6 +9,13 @@ output:
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, dpi = 300)
 library(ggplot2)
+library(here)
+library(openxlsx)
+
+# Import the summary data 
+# ie separate file containing rows from HB_hosp where Location is Scotland 
+
+scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"), sheet = "data")
 
 # Create a pseudo chart. Becoz I can. 
 yr <- c(rep("2024-25", times = 8), rep("2025-26", times = 8))
@@ -61,10 +68,10 @@ chart <- ggplot(data = chart_data,
   )
 ```
 
-<Div custom-style = "Publication Title">Pauline's Amazing Official Summary Publication title</Div>
-<Div custom-style = "Publication subtitle">Subtitle</Div>
+<Div custom-style = "Publication Title">Endometrial cancer QPIs 20 Summary Publication</Div>
+<Div custom-style = "Publication subtitle">Quality Performance Indicators</Div>
 <Div custom-style = "Stats designation">An Official statistics release for Scotland</Div>
-<Div custom-style = "Publication date">Publication date: DD Month YYYY ??????????????</Div>
+<Div custom-style = "Publication date">Publication date: DD Month YYYY</Div>
 <Div custom-style = "Restricted Stats">Unduly RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy</Div>
 
 # About this release
