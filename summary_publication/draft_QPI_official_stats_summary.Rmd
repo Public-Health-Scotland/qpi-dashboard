@@ -56,8 +56,6 @@ my_ft_format <- function(ft) {
            part = "all")
 }
 
-headings <- list("Table head", "Table head", "Table head", "Table head",
-                 "Table head")
 
 ```
 
@@ -66,12 +64,19 @@ headings <- list("Table head", "Table head", "Table head", "Table head",
 ## Now to make a specific table... 
 
 ```{r qpi_summary_table}
-names(headings) <- names(performance_by_year)
+summary_table_for_Rmd <- make_summary_table()
 
-flextable(performance_by_year, theme_fun = NULL) |>
+number_headings <- ncol(summary_table_for_Rmd)
+
+headings <- list("Table head", "Table head", "Table head", "Table head",
+                 "Table head", "Table head", "Table head")
+
+names(headings) <- names(summary_table_for_Rmd)
+
+flextable(summary_table_for_Rmd, theme_fun = NULL) |>
   my_ft_format() |>
   set_header_labels(values = headings) |>
-  bold(i = nrow(table_data)) |>
+  bold(i = nrow(summary_table_for_Rmd)) |>
   align(j = 2, align = "right", part = "body") |>
   height(height = 0.236, part = "body") |>
   hrule(rule = "atleast", part = "body") |>
