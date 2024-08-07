@@ -714,7 +714,7 @@ import_age_gender <- function(network, sub_path, year_vals, years) {
 make_summary_table <- function() {
   # Import the summary data 
   # from the separate file containing rows from HB_hosp where Location is Scotland 
-  scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"), sheet = "data")
+  scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"))
   
   # Add target status column called Result
   scotland_performance_all_qpis <- scotland_performance_all_qpis |>
