@@ -543,7 +543,7 @@ make_summary_table <- function() {
   scotland_performance_all_qpis <- scotland_performance_all_qpis |>
     mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |>
     mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1)) |>
-    rename(Target_Label = "Target")
+    rename("Target" = Target_Label)
   
   # Use pivot_wider to create columns for the years
   # Needs more work, to add target status column
@@ -556,7 +556,6 @@ make_summary_table <- function() {
     ) 
   
   return(performance_by_year)
-  
 }
 
 
