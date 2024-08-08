@@ -534,6 +534,32 @@ reformat_qpi_number <- function(x) {
   
 }
 
+make_summary_table <- function() {
+  # Import the summary data 
+  # from the separate file containing rows from HB_hosp where Location is Scotland 
+  scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"))
+  
+  # Add target status column called Result
+  scotland_performance_all_qpis <- scotland_performance_all_qpis |>
+    mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |>
+    mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1)) |>
+    rename(Target_Label = "Target")
+  
+  # Use pivot_wider to create columns for the years
+  # Needs more work, to add target status column
+  performance_by_year <- scotland_performance_all_qpis |>
+    pivot_wider(names_from = Cyear, 
+                values_from = c("Performance (%)", Result),
+                id_cols = c(QPI,Target), 
+                names_sep = " ",
+                names_vary = "slowest"
+    ) 
+  
+  return(performance_by_year)
+  
+}
+
+
 #### check_submissions.R ----
 
 basic_data_checks <- function(new_data) {
@@ -708,30 +734,6 @@ import_age_gender <- function(network, sub_path, year_vals, years) {
     list_rbind()
   
   network_sub
-  
-}
-
-make_summary_table <- function() {
-  # Import the summary data 
-  # from the separate file containing rows from HB_hosp where Location is Scotland 
-  scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"))
-  
-  # Add target status column called Result
-  scotland_performance_all_qpis <- scotland_performance_all_qpis |>
-    mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |>
-    mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1))
-  
-  # Use pivot_wider to create columns for the years
-  # Needs more work, to add target status column
-  performance_by_year <- scotland_performance_all_qpis |>
-    pivot_wider(names_from = Cyear, 
-                values_from = c("Performance (%)", Result),
-                id_cols = QPI,
-                names_sep = " ",
-                names_vary = "slowest"
-                ) 
-  
-  return(performance_by_year)
   
 }
 
