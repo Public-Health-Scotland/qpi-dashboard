@@ -19,9 +19,9 @@
   * /docs - documentation
   * /for_summary_table - script, input and templates to generate table for summary publication
     + `generate_summary_in_excel.R` - pivots the rows to show perf by year
-    + `Scotland_rows_no_comments.xlsx` - input, containing Scotland-level performance data
-    + `qpi_summary_table_plain.xlsx` - pivoted qpi table with no highlighting
-    + `qpi_summary_table.xlsx` - pivoted table with 'target met' column and colour highlighting
+    + `Scotland_rows_no_comments.xlsx` - input, containing Scotland-level performance data (ignored by git of course, rightly so)
+    + `qpi_summary_table_plain.xlsx` - pivoted qpi table with no highlighting (ignored by git)
+    + `qpi_summary_table.xlsx` - pivoted table with 'target met' column and colour highlighting (ignored by git)
   * /qpi_background_data_updates - for automatically collating demographic data for dashboard 'Background' tab
 
 ### Files
