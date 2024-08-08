@@ -18,11 +18,19 @@ library(janitor)
 library(flextable) # takes ages to load
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# N.B. Could not get table formatted sufficiently well. 
+# Had to reduce flextable width from 1.26 to 0.9 to fit on portrait page. 
+# But this means column heading text wrapping over three lines, 
+# not very readable. And landscape format not working either. 
+# Therefore, best to simply use the script:
+# ../summary_publication/generate_summary_in_excel.R 
+#
 # N.B. throughout the text that will be seen by the reader, 
 # I have added "???" in all places where manual editing will be needed. 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# source doesn't seem to work  
+# source() doesn't seem to work,  
 # so copy the function to create the table here instead
 # source("code/functions.R")
 
@@ -35,20 +43,20 @@ make_summary_table <- function() {
   # Add target status column called Result
   scotland_performance_all_qpis <- scotland_performance_all_qpis |>
     mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |>
-    mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1))
+    mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1)) |>
+    rename("Target" = Target_Label)
   
   # Use pivot_wider to create columns for the years
   # Needs more work, to add target status column
   performance_by_year <- scotland_performance_all_qpis |>
     pivot_wider(names_from = Cyear, 
                 values_from = c("Performance (%)", Result),
-                id_cols = QPI,
+                id_cols = c(QPI,Target), 
                 names_sep = " ",
                 names_vary = "slowest"
-                ) 
+    ) 
   
   return(performance_by_year)
-  
 }
 
 
@@ -56,7 +64,7 @@ make_summary_table <- function() {
 ```
 
 <Div custom-style = "Publication Title">I have added ??? in all places where manual editing will be needed.
-(TSG???) cancer QPIs YYYY??? to YYYY??? Summary Publication</Div>
+TSG??? cancer QPIs YYYY??? to YYYY??? Summary Publication</Div>
 <Div custom-style = "Publication subtitle">Patients diagnosed from Month/YYYY??? to Month/YYYY???</Div>
 <Div custom-style = "Stats designation">An Official statistics release for Scotland</Div>
 <Div custom-style = "Publication date">Publication date: DD Month YYYY???</Div>
@@ -64,7 +72,7 @@ make_summary_table <- function() {
 
 # About this release
 This release by Public Health Scotland (PHS) presents performance against the National 
-(TSG)??? Quality Performance Indicators (QPIs) in the Cancer QPIs dashboard held within the 
+TSG??? Quality Performance Indicators (QPIs) in the Cancer QPIs dashboard held within the 
 Scottish Cancer Registry and Intelligence Service (SCRIS).
 
 # Main Points
@@ -95,6 +103,7 @@ my_ft_format <- function(ft) {
 ```
 
 <br>  
+<!---BLOCK_LANDSCAPE_START{break_page: "nextPage"}--->
 <Div custom-style = "Table or chart caption">Percentage performance against Quality Performance Indicators
 Is this table unformattable???</Div>
   
@@ -112,11 +121,9 @@ flextable(summary_table_for_Rmd, theme_fun = NULL) |>
   align(j = 2, align = "right", part = "body") |>
   height(height = 0.236, part = "body") |>
   hrule(rule = "atleast", part = "body") |>
-  width(width = 1.26)
+  width(width = 0.9)
 ```
-
-
-
+<!---BLOCK_LANDSCAPE_STOP{break_page: "nextPage"}--->
 
 # Background
 National cancer quality performance indicators have been developed to support continuous 
