@@ -20,7 +20,7 @@ success_style <- createStyle(
 )
 
 target_not_met_style <- createStyle(
-  bgFill = phs_colors("phs-magenta-50")
+  bgFill = phs_colors("phs-rust-50")
 )
 
 perf_summary_tbl <- make_summary_table()
