@@ -20,7 +20,13 @@ success_style <- createStyle(
 )
 
 target_not_met_style <- createStyle(
-  bgFill = phs_colors("phs-magenta-50")
+  bgFill = phs_colors("phs-rust-50")
+)
+
+# This colour appears to not work, openxlsx uses a blue heading style
+# But colour can be manually set to PHS Table Head style after pasting anyway. 
+headerStyle <- createStyle(
+  bgFill = phs_colors("phs-purple")
 )
 
 perf_summary_tbl <- make_summary_table()
@@ -45,6 +51,8 @@ conditionalFormatting(wb_qpi_summary,
                       rule = '="Target not met"',
                       style = target_not_met_style
                       )
+
+
 
 saveWorkbook(wb_qpi_summary, here("for_summary_table", "qpi_summary_table.xlsx"))
 
