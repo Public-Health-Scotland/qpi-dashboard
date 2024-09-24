@@ -46,9 +46,9 @@ nca_hosps <- c("Aberdeen RI","Albyn","Balfour Hosp","Belford Hosp",
                "Raigmore Hosp","Stracathro Hosp","Western Isles Hosp")
 sca_hosps <- c("Borders General Hosp","Dumfries & Galloway RI", "QMH Fife","Royal Inf Edinburgh",
                "Victoria Hosp Fife","Western General Hosp")
-wos_hosps <- c("Gartnavel","Glasgow Royal Inf","Hairmyres","Inverclyde Royal",
-               "Monklands","Queen Elizabeth Hosp","Royal Alexandra","Stobhill",
-               "Victoria Glasgow","Wishaw")
+wos_hosps <- c("Ayr", "Dumfries & Galloway RI", "Forth Valley Royal", "Gartnavel (West Glasgow)", "Glasgow Royal Inf", "Hairmyres", "Inverclyde Royal",
+               "Monklands", "Queen Elizabeth Hosp", "Royal Alexandra", "Stobhill",
+               "Victoria Glasgow", "Wishaw")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
