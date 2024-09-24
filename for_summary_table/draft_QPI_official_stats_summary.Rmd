@@ -1,0 +1,162 @@
+---
+output: 
+  word_document:
+    reference_docx: "phs-offstats-summary.docx"
+    fig_caption: no
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, dpi = 300)
+library(ggplot2)
+library(here)
+library(openxlsx)
+library(dplyr)
+library(tidyr)
+library(officer)
+library(janitor)
+library(flextable) # takes ages to load
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# N.B. Could not get table formatted sufficiently well. 
+# Had to reduce flextable width from 1.26 to 0.9 to fit on portrait page. 
+# But this means column heading text wrapping over three lines, 
+# not very readable. And landscape format not working either. 
+# Therefore, best to simply use the script:
+# ../summary_publication/generate_summary_in_excel.R 
+#
+# N.B. throughout the text that will be seen by the reader, 
+# I have added "???" in all places where manual editing will be needed. 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# source() doesn't seem to work,  
+# so copy the function to create the table here instead
+# source("code/functions.R")
+
+# copied from functions.R
+make_summary_table <- function() {
+  # Import the summary data 
+  # from the separate file containing rows from HB_hosp where Location is Scotland 
+  scotland_performance_all_qpis <- readWorkbook(here("for_summary_table", "Scotland_rows_no_comments.xlsx"))
+  
+  # Add target status column called Result
+  scotland_performance_all_qpis <- scotland_performance_all_qpis |>
+    mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |>
+    mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1)) |>
+    rename("Target" = Target_Label)
+  
+  # Use pivot_wider to create columns for the years
+  # Needs more work, to add target status column
+  performance_by_year <- scotland_performance_all_qpis |>
+    pivot_wider(names_from = Cyear, 
+                values_from = c("Performance (%)", Result),
+                id_cols = c(QPI,Target), 
+                names_sep = " ",
+                names_vary = "slowest"
+    ) 
+  
+  return(performance_by_year)
+}
+
+
+
+```
+
+<Div custom-style = "Publication Title">I have added ??? in all places where manual editing will be needed.
+TSG??? cancer QPIs YYYY??? to YYYY??? Summary Publication</Div>
+<Div custom-style = "Publication subtitle">Patients diagnosed from Month/YYYY??? to Month/YYYY???</Div>
+<Div custom-style = "Stats designation">An Official statistics release for Scotland</Div>
+<Div custom-style = "Publication date">Publication date: DD Month YYYY???</Div>
+<Div custom-style = "Restricted Stats">Unduly RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy???</Div>
+
+# About this release
+This release by Public Health Scotland (PHS) presents performance against the National 
+TSG??? Quality Performance Indicators (QPIs) in the Cancer QPIs dashboard held within the 
+Scottish Cancer Registry and Intelligence Service (SCRIS).
+
+# Main Points
+???Proin nec ultricies dolor. Maecenas pulvinar, enim et imperdiet cursus, mi
+
+<Div custom-style = "Bullet 1">Maecenas ut sagittis mi. Vestibulum faucibus ligula sit amet facilisis pulvinar. Morbi mollis odio id est consequat, a convallis quam finibus. Morbi id congue turpis, sit amet ultrices tortor. Phasellus vel nisi. There were ??? patients diagnosed etc... ???</Div>
+<Div custom-style = "Bullet 1">Quisque iaculis congue aliquet. Aenean in dictum nisl. Etiam quis ullamcorper ex. Aenean mollis ante eget.??? At Scotland-level, the target was met for ??? of ??? targets ???</Div>
+
+
+
+```{r flextable-table-data, ft.align = "left"}
+# Set up some formatting for flextable to be applied to most tables
+my_ft_format <- function(ft) {
+  ft |>
+    bold(part = "header") |>
+    bg(bg = "#43358B", part = "header") |>
+    color(color = "white", part = "header") |>
+    align(align = "left", part = "header") |>
+    valign(valign = "center", part = "header") |>
+    valign(valign = "top", part = "body") |>
+    colformat_num(big.mark = "") |>
+    fontsize(size = 12, part = "all") |>
+    border(border = fp_border_default(color = "#000000", width = 0.5),
+           part = "all")
+}
+
+
+```
+
+<br>  
+<!---BLOCK_LANDSCAPE_START{break_page: "nextPage"}--->
+<Div custom-style = "Table or chart caption">Percentage performance against Quality Performance Indicators
+Is this table unformattable???</Div>
+  
+
+```{r qpi_summary_table}
+# Add the QPI summary table
+summary_table_for_Rmd <- make_summary_table()
+
+headings <- names(summary_table_for_Rmd)
+
+flextable(summary_table_for_Rmd, theme_fun = NULL) |>
+  my_ft_format() |>
+  set_header_labels(values = headings) |>
+  bold(i = nrow(summary_table_for_Rmd)) |>
+  align(j = 2, align = "right", part = "body") |>
+  height(height = 0.236, part = "body") |>
+  hrule(rule = "atleast", part = "body") |>
+  width(width = 0.9)
+```
+<!---BLOCK_LANDSCAPE_STOP{break_page: "nextPage"}--->
+
+# Background
+National cancer quality performance indicators have been developed to support continuous 
+quality improvement in cancer care ([CEL 06 2012](https://www.sehd.scot.nhs.uk/mels/CEL2012_06.pdf)). 
+NHS Boards are required to report these 
+indicators against a clinically agreed indicator specific target as part of the mandatory national 
+cancer quality programme. They have been developed collaboratively by 
+[North Cancer Alliance](https://www.nhsscotlandnorth.scot/nca/), 
+[South East Scotland Cancer Network](http://www.scan.scot.nhs.uk/), 
+[West of Scotland Cancer Network](http://www.woscan.scot.nhs.uk/), 
+[Healthcare Improvement Scotland](https://www.healthcareimprovementscotland.scot/) 
+and PHS. Figures are gathered and recorded in the central 
+database by specialised cancer audit teams in the cancer networks.
+
+# Contact
+Garry Hecht | Principal Information Analyst | [phs.cancerstats@phs.scot](mailto:phs.cancerstats@phs.scot)
+
+Pauline Ward | Information Analyst | [phs.cancerstats@phs.scot](mailto:phs.cancerstats@phs.scot)
+
+For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
+
+# Further information
+Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/YOUR-PUBLICATION-URL) on our website.
+
+Open data from this publication is available as an Excel file to download from the publication page.
+
+Our statistical practice is regulated by the Office for Statistics Regulation (OSR).
+
+dashboard access etc???
+
+Visit our website for [further information about our statistics and PHS as an Official Statistics producer.](https://publichealthscotland.scot/our-organisation/about-our-statistics/official-statistics/)
+
+The next release of this publication will be DD Month YYYY???.
+
+Other formats of this publication are available on request by calling 0131 314 5300 or emailing [phs.otherformats@phs.scot](mailto:phs.otherformats@phs.scot).
+

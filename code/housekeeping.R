@@ -25,16 +25,16 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Bladder"
+tsg <- "Toenails"
 
-new_years <- c("2020/21", "2021/22", "2022/23")
-new_years_vals <- c(7, 8, 9)
+new_years <- c("1923/24", "1924/27", "1927/29")
+new_years_vals <- c(13, "14 to 17", "17 to 19")
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-04-2020")
+date_start <- dmy("01-04-1923")
 
 # measurability versions (one for each year)
-meas_vers <- c("3.2", "4.2", "4.2")
+meas_vers <- c("3.99", "4.0001", "4.0002")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
@@ -44,7 +44,7 @@ nca_hosps <- c("Aberdeen RI","Albyn","Balfour Hosp","Belford Hosp",
                "Caithness General","Dr Grays Hosp","Gilbert Bain Hosp",
                "Lorn Islands Hosp","Ninewells Hosp","Perth Royal Inf",
                "Raigmore Hosp","Stracathro Hosp","Western Isles Hosp")
-sca_hosps <- c("Borders General Hosp","QMH Fife","Royal Inf Edinburgh",
+sca_hosps <- c("Borders General Hosp","Dumfries & Galloway RI", "QMH Fife","Royal Inf Edinburgh",
                "Victoria Hosp Fife","Western General Hosp")
 wos_hosps <- c("Ayr", "Dumfries & Galloway RI", "Forth Valley Royal", 
                "Gartnavel (West Glasgow)","Glasgow Royal Inf", "Hairmyres","Inverclyde Royal",
@@ -60,15 +60,11 @@ age_groups <- c("85+",
                 "75-79", 
                 "70-74", 
                 "65-69", 
-                "60-64", 
-                "55-59", 
-                "50-54",
-                "45-49",
-                "0-44")
+                "0-64")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/bladder_nov_24/")
+                      "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
@@ -139,6 +135,10 @@ hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
 hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps)
 networks <- c("NCA", "SCAN", "WoSCAN")
+
+# Optional: check tsg is a match by counting rows
+# nrow(hb_hosp_old |> filter(Cancer == tsg)) 
+# If nrow is zero, then max(Cyear) in next line will error, cos no arguments.
 
 if ((hb_hosp_old |>
     filter(Cancer == tsg) |>
