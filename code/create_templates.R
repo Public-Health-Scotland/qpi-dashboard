@@ -12,9 +12,9 @@
 
 #### Step 0 : Housekeeping ----
 
+source("code/packages.R")
 source("code/functions.R")
 source("code/housekeeping.R")
-source("code/packages.R")
 
 
 ### Step 1 : Create excel styles ----
