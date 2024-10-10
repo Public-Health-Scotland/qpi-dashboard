@@ -209,7 +209,8 @@ make_qpis_tabs <- function(dfs, year_nums, years, meas_vers,
       format("%d/%m/%Y")
     
     # date_end is start_date plus one year minus one day
-    date_end_str <- date_start %m+% years(i) -1 |> 
+    date_end_date <- date_start -1
+    date_end_str <- date_end_date %m+% years(i) |> 
       format("%d/%m/%Y")
     
     subtitle_cell <- paste0("Cohort: Patients Diagnosed with ",
@@ -281,12 +282,12 @@ make_background_tab <- function(wb, tsg, network, new_years, new_years_vals,
   date_start_str <- date_start |> format("%d/%m/%Y")
   
   # Calculate date end string as date_start plus one year, minus one day, in two steps
-  date_end_plus_one_day_str <- date_start %m+% years(length(new_years)) |> 
+  date_end_str <- date_start %m+% years(length(new_years)) |> 
     format("%d/%m/%Y")
   
   
-  date_end_str <- as.Date(date_end_plus_one_day_str) -1 |> 
-    format("%d/%m/%Y")
+ # date_end_str <- as.Date(date_end_plus_one_day_str) -1 |> 
+  #  format("%d/%m/%Y")
   
   subtitle_cell <- paste0("Cohort: Patients Diagnosed with ",
                           tsg,
