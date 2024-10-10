@@ -59,8 +59,6 @@ age_groups <- c("85+",
                 "45-49", 
                 "<45")
 
-                "0-64")
-
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
                       "Data/new_process/HPB_2024/")
