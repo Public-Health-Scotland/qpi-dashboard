@@ -49,11 +49,11 @@ wos_hosps <- c("Gartnavel (West Glasgow)", "Queen Elizabeth Hosp")
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "age_groups <- c()"
 age_groups <- c("85+",
-                "80-84",
+                "80-84", 
                 "75-79", 
                 "70-74", 
                 "65-69", 
-                "60-64",
+                "60-64", 
                 "55-59", 
                 "50-54", 
                 "45-49", 
