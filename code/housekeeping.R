@@ -25,46 +25,43 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Toenails"
+tsg <- "HPB"
 
-new_years <- c("1923/24", "1924/27", "1927/29")
-new_years_vals <- c(13, "14 to 17", "17 to 19")
+new_years <- c("2021", "2022", "2023")
+new_years_vals <- c(8, 9, 10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-04-1923")
+date_start <- dmy("01-01-2021")
 
 # measurability versions (one for each year)
-meas_vers <- c("3.99", "4.0001", "4.0002")
+meas_vers <- c("4.0", "4.0", "5.0")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published four years of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c("Aberdeen RI","Albyn","Balfour Hosp","Belford Hosp",
-               "Caithness General","Dr Grays Hosp","Gilbert Bain Hosp",
-               "Lorn Islands Hosp","Ninewells Hosp","Perth Royal Inf",
-               "Raigmore Hosp","Stracathro Hosp","Western Isles Hosp")
-sca_hosps <- c("Borders General Hosp","Dumfries & Galloway RI", "QMH Fife","Royal Inf Edinburgh",
-               "Victoria Hosp Fife","Western General Hosp")
-wos_hosps <- c("Ayr", "Dumfries & Galloway RI", "Forth Valley Royal", 
-               "Gartnavel (West Glasgow)","Glasgow Royal Inf", "Hairmyres","Inverclyde Royal",
-               "Monklands","Queen Elizabeth Hosp","Royal Alexandra","Stobhill",
-               "Victoria Glasgow","Wishaw")
+nca_hosps <- c("Aberdeen RI", "Ninewells Hosp", "Raigmore Hosp")
+sca_hosps <- c("Royal Inf Edinburgh", "Western General Hosp")
+wos_hosps <- c("Gartnavel (West Glasgow)", "Queen Elizabeth Hosp")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "age_groups <- c()"
 age_groups <- c("85+",
-                "80-84",
+                "80-84", 
                 "75-79", 
                 "70-74", 
                 "65-69", 
-                "0-64")
+                "60-64", 
+                "55-59", 
+                "50-54", 
+                "45-49", 
+                "<45")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
-                      "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/")
+                      "Data/new_process/HPB_2024/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
