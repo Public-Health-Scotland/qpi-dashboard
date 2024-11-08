@@ -9,14 +9,14 @@
 # R version 4.1.2 (2021-11-01)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Select which templates to check. Put the names of the files in this vector
-to_check <- c("NCA", "SCAN", "WoSCAN")
-
 #### Step 0 : Housekeeping ----
 
 source("code/functions.R")
 source("code/housekeeping.R")
 source("code/packages.R")
+
+# Select which templates to check. Put the names of the files in this vector
+to_check <- c("NCA", "SCAN", "WoSCAN")
 
 # Create a folder for output
 quality_checking_folder <- sub("/$", "", data_folder)
