@@ -41,8 +41,8 @@ meas_vers <- c("4.0", "4.0", "5.0")
 # the names from the most recent published four years of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
 nca_hosps <- c("Aberdeen RI", "Ninewells Hosp", "Raigmore Hosp")
-sca_hosps <- c("Royal Inf Edinburgh", "Western General Hosp")
-wos_hosps <- c("Gartnavel (West Glasgow)", "Queen Elizabeth Hosp")
+sca_hosps <- c("Royal Hosp Edinburgh", "Royal Inf Edinburgh", "Western General Hosp")
+wos_hosps <- c("Gartnavel (West Glasgow)", "Glasgow Royal Inf", "Queen Elizabeth Hosp")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
