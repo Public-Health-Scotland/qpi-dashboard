@@ -63,7 +63,7 @@ scotland_rows <- new_data %>%
          Comments = NA)
 
 scotland_minus_comments <- scotland_rows |>
-  select(!HB_Comments)
+  select(!Comments)
 write.xlsx(scotland_minus_comments, here("for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
 new_data <- new_data |> 
