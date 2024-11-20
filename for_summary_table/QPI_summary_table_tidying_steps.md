@@ -6,23 +6,23 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 
 * Remove filters.
 * Expand QPI name column A.
-* Save as ... "for_pasting_YYYY_MM_DD_<tsg>_summary_table.xlsx"
+* Save as ... "YYYY_MM_DD_<tsg eg bladder>_cancer_summary_table.xlsx"
 * If applicable, append "%" symbol in the percentage value cells, so it's more obvious it's a percentage value. Planning to code to do this automatically. 
+* If necessary, manually adjust to get 1 decimal place on every performance figure (even on whole numbers). 
 * If applicable, manually adjust the order of the cols to be in QPI number order rather than alphabetical eg so that QPI 10 etc all appear after QPI 9. 
 * Adjust Performance columns to width of 'Performance', wrapping the rest. 
 * Double-click Target column B, to fit to width.
 * Likewise for the Results columns. 
 * Optionally: Copy the fill colour into the cells containing the performance numbers.
- - not met: #E39C8C
- - target met: #C1DD93
+ - not met: #E1C7DF (ie phs-magenta-30)
+ - target met: #C1DD93 (ie phs-green-50)
 
-* If necessary, manually adjust to get 1 decimal place on every performance figure (even on whole numbers). 
-* Save this as the download version for users. 
+* Save this for checking, ie as the download version for users. 
 
 ## For the publication version
 
 * Change "Target not met" to just "Not met". 
-* Save as ... "YYYY_MM_DD_<tsg eg bladder>_cancer_qpi_summary_table.xlsx"
+* Save as ... "for_pasting_YYYY_MM_DD_<tsg>_qpi_summary_table.xlsx"
 * Change column heading from Performance etc to the year eg 2022/23, by deleting "Performance (%) ". 
 * Change Result column headings to just "Result", and a space or two to make each column different, to prevent Excel numbering them. 
 * Colour the table borders - maybe dark purple everywhere, and white lines between the years, but not between the performance column and the result column. 
