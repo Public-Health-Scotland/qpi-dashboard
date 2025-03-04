@@ -551,7 +551,7 @@ make_summary_table <- function() {
     rename("Target" = Target_Label)
   
   # Use pivot_wider to create columns for the years
-  # Needs more work, to add target status column
+  # Needs more work, to appent "%" in the cells so its more obvious they're percentages. 
   performance_by_year <- scotland_performance_all_qpis |>
     pivot_wider(names_from = Cyear, 
                 values_from = c("Performance (%)", Result),
