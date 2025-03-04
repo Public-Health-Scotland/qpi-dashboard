@@ -20,7 +20,7 @@ success_style <- createStyle(
 )
 
 target_not_met_style <- createStyle(
-  bgFill = phs_colors("phs-rust-50")
+  bgFill = phs_colors("phs-magenta-50")
 )
 
 # This colour appears to not work, openxlsx uses a blue heading style
@@ -29,6 +29,8 @@ headerStyle <- createStyle(
   bgFill = phs_colors("phs-purple")
 )
 
+# The make_summary_table function reads in "Scotland_rows_no_comments.xlsx" 
+# from the /for_summary_table folder
 perf_summary_tbl <- make_summary_table()
 
 wb_qpi_summary = createWorkbook()
@@ -57,5 +59,5 @@ conditionalFormatting(wb_qpi_summary,
 saveWorkbook(wb_qpi_summary, here("for_summary_table", "qpi_summary_table.xlsx"))
 
 # Optional - just write the data to file, for manual formatting
-# write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table_plain.xlsx"))
+write.xlsx(perf_summary_tbl, file = here("for_summary_table", "qpi_summary_table_plain.xlsx"))
 
