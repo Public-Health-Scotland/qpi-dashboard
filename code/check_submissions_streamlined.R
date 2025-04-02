@@ -18,7 +18,7 @@ source("code/functions.R")
 source("code/packages.R")
 
 data_folder <- str_c("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
-  "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/head_and_neck_april_2025_just_fr_test/pauline_test")
+  "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/head_and_neck_april_2025_just_fr_test/pauline_test/")
 
 # Create a folder for output
 quality_checking_folder <- sub("/$", "", data_folder)
