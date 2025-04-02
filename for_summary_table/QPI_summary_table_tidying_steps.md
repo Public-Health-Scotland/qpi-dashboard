@@ -12,12 +12,12 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 * If applicable, manually adjust the order of the cols to be in QPI number order rather than alphabetical eg so that QPI 10 etc all appear after QPI 9. 
 * Adjust Performance columns to width of 'Performance', wrapping the rest. 
 * Double-click Target column B, to fit to width.
-* Likewise for the Results columns. 
+* Likewise for the Results columns.
+* Clear any warnings (usually highlighted as a green triangle in the corner of a cell) on the Target column cells stating 'number stored as text' or equivalent - open and click 'ignore error'. 
 * Optionally: Copy the fill colour into the cells containing the performance numbers.
- - not met: #CDA1C9 (ie phs-magenta-50)
+ - not met: #E1C7DF (ie phs-magenta-30)
  - target met: #C1DD93 (ie phs-green-50)
 * Optionally: Check the row borders are of a consistent colour - sometimes there are blue lines along only some of the rows. 
-
 * Save this for checking, ie as the download version for users. 
 
 ## For the publication version

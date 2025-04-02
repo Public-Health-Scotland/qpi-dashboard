@@ -67,7 +67,10 @@ if (nrow(z_hospital_totals) > 0) {
   message("ISSUE FOUND: There are ", nrow(z_hospital_totals), 
           " hospital totals that do not match the sum of the rows. 
           See quality_checking/ folder, non_matching_hospital_totals.csv. 
-          This issue may be caused by rows for hospitals being listed after network sub-total rows(?).")
+          Please check the sum of the hospital totals against the network total in the data manually, to confirm. 
+          Such issues could arise simply as a result of recording differences 
+          that happen when a patient who lives in one board is treated at a hospital belonging to a different board ie transfers. 
+          Or they could just be manual editing / inputting errors too. ")
   
   write_csv(z_hospital_totals, file = here(quality_checking_folder, "non_matching_hospital_totals.csv"))
 }
