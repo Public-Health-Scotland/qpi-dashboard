@@ -62,7 +62,7 @@ age_groups <- c("85+",
                 "0-64")
 
 # Folder
-data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer QPIs/",
+data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
                       "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/")
 
 # Folder containing lookup info on HBs by network
