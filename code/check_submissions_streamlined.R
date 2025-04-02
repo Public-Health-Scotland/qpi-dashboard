@@ -31,6 +31,10 @@ dir.create(quality_checking_folder)
 
 sub_path <- paste0(data_folder, "data_submissions/")
 
+new_years <- c("2021/22", "2022/23", "2023/24")
+new_years_vals <- c(8, 9, 10)
+
+
 new_data <- map(to_check, import_submission,
                 sub_path = sub_path,
                 year_vals = new_years_vals,
