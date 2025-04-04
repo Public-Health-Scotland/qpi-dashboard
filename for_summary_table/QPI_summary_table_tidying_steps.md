@@ -11,8 +11,8 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 * If applicable, manually adjust the order of the rows to be in true QPI number order rather than alphabetical eg so that QPI 10 etc all appear after QPI 9. But beware, try to avoid some rows ending up outside the Excel 'Table', because then Excel won't sort them together with the other rows properly. So follow these steps (if QPI 11 etc is at the top of the table): 
    - select the rows for QPIs 1, 2, 3, 4 to 9 etc (that are incorrectly at the foot of the table). 
    - cut them
-   - place cursor in cell A2, ie first row of the table
-   - right-click and select "Insert cut cells"
+   - select the first row of the table ie row 2
+   - right-click and select "Insert cut cells", so the rows are inserted and all rows remain within the Excel table. 
 * Adjust Performance columns to width of 'Performance', wrapping the rest. 
 * Double-click Target column B, to fit to width.
 * Likewise for the Results columns.
