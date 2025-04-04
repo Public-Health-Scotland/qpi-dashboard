@@ -8,13 +8,12 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 * Expand QPI name column A.
 * Save as ... 
 "YYYY_MM_DD_<tsg eg bladder>_cancer_qpi_summary_table.xlsx"
-* If applicable, append "%" symbol in the percentage value cells, so it's more obvious it's a percentage value. Planning to code to do this automatically. 
-* If necessary, manually adjust to get 1 decimal place on every performance figure (even on whole numbers). 
+* No longer needed - happens automatically: Append "%" symbol in the percentage value cells. If necessary, manually adjust to get 1 decimal place on every performance figure (even on whole numbers). 
 * If applicable, manually adjust the order of the cols to be in QPI number order rather than alphabetical eg so that QPI 10 etc all appear after QPI 9. 
 * Adjust Performance columns to width of 'Performance', wrapping the rest. 
 * Double-click Target column B, to fit to width.
 * Likewise for the Results columns.
-* Clear any warnings (usually highlighted as a green triangle in the corner of a cell) on the Target column cells stating 'number stored as text' or equivalent - open and click 'ignore error'. 
+* Clear any warnings (usually highlighted as a green triangle in the corner of a cell) on the Target column cells stating 'number stored as text' or equivalent - open and click 'ignore error'. Or select area containing all the errors, go into Error Checking Options, and uncheck 'Numbers displayed as text", or just deactivate background error checking, to clear all errors at once. 
 * Optionally: Copy the fill colour into the cells containing the performance numbers.
  - not met: #E1C7DF (ie phs-magenta-30)
  - target met: #C1DD93 (ie phs-green-50)

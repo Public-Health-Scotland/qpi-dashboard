@@ -20,7 +20,7 @@ success_style <- createStyle(
 )
 
 target_not_met_style <- createStyle(
-  bgFill = phs_colors("phs-magenta-50")
+  bgFill = phs_colors("phs-magenta-30")
 )
 
 # This colour appears to not work, openxlsx uses a blue heading style
