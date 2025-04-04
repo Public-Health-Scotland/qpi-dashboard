@@ -25,9 +25,9 @@ target_not_met_style <- createStyle(
 
 # This colour appears to not work, openxlsx uses a blue heading style
 # But colour can be manually set to PHS Table Head style after pasting anyway. 
-headerStyle <- createStyle(
-  bgFill = phs_colors("phs-purple")
-)
+#headerStyle <- createStyle(
+#  bgFill = phs_colors("phs-purple")
+#)
 
 # The make_summary_table function reads in "Scotland_rows_no_comments.xlsx" 
 # from the /for_summary_table folder
