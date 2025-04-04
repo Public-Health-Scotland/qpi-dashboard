@@ -8,8 +8,11 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 * Expand QPI name column A.
 * Save as ... 
 "YYYY_MM_DD_<tsg eg bladder>_cancer_qpi_summary_table.xlsx"
-* No longer needed - happens automatically: Append "%" symbol in the percentage value cells. If necessary, manually adjust to get 1 decimal place on every performance figure (even on whole numbers). 
-* If applicable, manually adjust the order of the cols to be in QPI number order rather than alphabetical eg so that QPI 10 etc all appear after QPI 9. 
+* If applicable, manually adjust the order of the rows to be in true QPI number order rather than alphabetical eg so that QPI 10 etc all appear after QPI 9. But beware, try to avoid some rows ending up outside the Excel 'Table', because then Excel won't sort them together with the other rows properly. So follow these steps (if QPI 11 etc is at the top of the table): 
+   - select the rows for QPIs 1, 2, 3, 4 to 9 etc (that are incorrectly at the foot of the table). 
+   - cut them
+   - place cursor in cell A2, ie first row of the table
+   - right-click and select "Insert cut cells"
 * Adjust Performance columns to width of 'Performance', wrapping the rest. 
 * Double-click Target column B, to fit to width.
 * Likewise for the Results columns.
