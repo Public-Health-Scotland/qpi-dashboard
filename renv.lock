@@ -31,7 +31,7 @@
       "Requirements": [
         "methods",
         "utils"
-      ],
+        ],
       "Hash": "5ea2700d21e038ace58269ecdbeb9ec0"
     },
     "bit": {
@@ -404,13 +404,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.17.3",
+      "Version": "1.1.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "4543b8cd233ae25c6aba8548be9e747e"
+      "Hash": "41b847654f567341725473431dd0d5ab"
     },
     "rlang": {
       "Package": "rlang",
