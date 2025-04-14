@@ -20,7 +20,7 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 * Optionally: Copy the fill colour into the cells containing the performance numbers.
  - not met: #E1C7DF (ie phs-magenta-30)
  - target met: #C1DD93 (ie phs-green-50)
-* Optionally: Check the row borders are of a consistent colour - sometimes there are blue lines along only some of the rows. 
+* Optionally: Right-align the data cells in the columns containing percentages ie Column B (Target) and Performance. 
 * Save this for checking, ie as the download version for users. 
 
 ## For the publication version
