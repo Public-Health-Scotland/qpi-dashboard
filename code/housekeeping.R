@@ -65,7 +65,7 @@ data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
 
 
 # Folder containing lookup info on HBs by network
-regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer QPIs/Data/new_process/regional_cancer_networks")
+regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer_QPIs/Data/new_process/regional_cancer_networks")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
