@@ -103,3 +103,4 @@ export_template(dfs_wos, "WoSCAN", new_years_vals, new_years, meas_vers,
 
 export_template(dfs_nca, "NCA", new_years_vals, new_years, meas_vers,
                 date_start, styles)
+
