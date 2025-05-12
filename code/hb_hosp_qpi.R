@@ -80,7 +80,7 @@ new_data <- new_data |>
 # Sometimes happens because of a typo in the QPI name. 
 # Checking Numerator1 column as a proxy for the whole row in lookup
 rows_with_missing_values <- new_data |> 
-  filter(str_equal(numerator1, "") || is.na(numerator1))
+  filter(str_equal(numerator1, "") )
 
 if (nrow(rows_with_missing_values) > 0 ) {
   message("ISSUE DETECTED: POSSIBLE UN-MATCHED ROWS.\n")
