@@ -4,10 +4,10 @@
     "Repositories": [
       {
         "Name": "CRAN",
-        "URL": "https://ppm-prod.publichealthscotland.org/cran/__linux__/jammy/latest"
+        "URL": "https://ppm-prod.publichealthscotland.org/cran/latest"
       },
       {
-        "Name": "PHSGITHUB",
+        "Name": "PHS GitHub",
         "URL": "https://ppm-prod.publichealthscotland.org/phs-github/latest"
       }
     ]
