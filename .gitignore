@@ -5,6 +5,7 @@
 
 # Ignore data ie do not save any data files to GitHub
 data/
+summary_data/
 
 # The following are standard practice, to avoid disclosure risk,
 # in accordance with https://public-health-scotland.github.io/knowledge-base/docs/Version%20Control?doc=GitHub%20Guidance.md 
