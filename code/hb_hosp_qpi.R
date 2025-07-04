@@ -49,7 +49,7 @@ new_data <- map(networks,
   )
 
 
-#### Step x : Create Scotland totals for new data ----
+#### Step 2 : Create Scotland totals for new data ----
 
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
@@ -69,7 +69,7 @@ write.xlsx(scotland_minus_comments, here("for_summary_table", "Scotland_rows_no_
 new_data <- new_data |> 
   bind_rows(scotland_rows)
 
-#### Step x : Join lookup to new data ----
+#### Step 3 : Join lookup to new data ----
 
 new_data <- new_data |> 
   left_join(lookup, by = c("cyear" = "cyear",
@@ -88,7 +88,7 @@ if (nrow(rows_with_missing_values) > 0 ) {
  write.csv(rows_with_missing_values, file = here(data_folder, "missing_data.csv"))
 }
 
-#### Step x : create derived variables ----
+#### Step 4 : create derived variables ----
 ## There are a series of variables which Tableau requires which are 
 ## derived from the data submissions and the lookups.
 ## Some of them aren't used anymore but for now they are all required
@@ -151,7 +151,7 @@ new_data <- new_data |>
     TRUE ~ board_hosp
   ))
 
-#### Step x : Change names for tableau ----
+#### Step 5 : Change names for tableau ----
 
 new_data <- new_data |> 
   rename(
@@ -180,7 +180,7 @@ new_data <- new_data |>
   ) |> 
   select(-Year)
 
-#### Step x : Bind together to make full hb_hosp_qpi ----
+#### Step 6 : Bind together to make full hb_hosp_qpi ----
 
 hb_hosp_no_tsg <- hb_hosp_old |> 
   filter(Cancer != tsg)
@@ -198,7 +198,7 @@ old_tsg_data <- old_tsg_data |>
 hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |> 
   arrange()
 
-#### Step x : Write to excel ----
+#### Step 7 : Write to excel ----
 
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath, sheetName = "HB_Hosp_QPI")
 
