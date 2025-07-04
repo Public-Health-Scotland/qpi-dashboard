@@ -25,9 +25,9 @@ source("code/packages.R")
 # In development values for tsg
 # "Brain and CNS" "HPB" 
 
-tsg <- "Bladder"
+tsg <- "HPB"
 
-new_years <- c("2019/20", "2020/21", "2022/23")
+new_years <- c("2021", "2022", "2023")
 new_years_vals <- c(8, 9, 10)
 
 # Date of the start of the first new reporting year
@@ -61,8 +61,7 @@ age_groups <- c("85+",
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
-                      "Data/new_process/testing/test_code_toenails_the_new_process/toenails_july24/")
-
+                      "Data/new_process/HPB_2024/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer_QPIs/Data/new_process/regional_cancer_networks")
