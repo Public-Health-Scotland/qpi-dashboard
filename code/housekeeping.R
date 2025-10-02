@@ -1,7 +1,5 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # housekeeping.R
-# Angus Morton
-# 2023-05-22
 # 
 # Contains the values which should be changed each run
 # 
@@ -21,20 +19,18 @@ source("code/packages.R")
 # "Colorectal"      "Endometrial" "Head and Neck"    "Lung"
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
+# "Brain and CNS" "HPB" "Sarcoma"
 
-# In development values for tsg
-# "Brain and CNS" "HPB" 
+tsg <- "Sarcoma"
 
-tsg <- "HPB"
-
-new_years <- c("2021", "2022", "2023")
+new_years <- c("2021/22", "2022/23", "2023/24")
 new_years_vals <- c(8, 9, 10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-01-2021")
+date_start <- dmy("01-04-2021")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.0", "4.0", "5.0")
+meas_vers <- c("3.6", "4.0", "4.0")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
