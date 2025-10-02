@@ -52,12 +52,17 @@ age_groups <- c("85+",
                 "60-64", 
                 "55-59", 
                 "50-54", 
-                "45-49", 
-                "<45")
+                "45-49",
+                "40-44", 
+                "35-39", 
+                "30-34", 
+                "25-29", 
+                "20-24", 
+                "<20")
 
 # Folder
 data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
-                      "Data/new_process/HPB_2024/")
+                      "Data/new_process/sarcoma_2025/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer_QPIs/Data/new_process/regional_cancer_networks")
