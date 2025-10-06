@@ -18,12 +18,14 @@ source("code/functions.R")
 # source("code/housekeeping.R")
 source("code/packages.R")
 
+new_years_vals <- c(1,2,3)
+new_years <- c("2001/02", "2002/03", "2003/04")
+
 # Select which templates to check. Put the names of the files in this vector
 to_check <- c("NCA", "SCAN", "WoSCAN")
 
 # Create a folder for output
-separate_submission_checking_folder <- here("conf", "quality_indicators", "Benchmarking", "Data",
-                                            "new_process", "submission_checking_multiple_sets")
+separate_submission_checking_folder <- "/conf/quality_indicators/Benchmarking/Cancer_QPIs/Data/new_process/submission_checking_multiple_sets"
 
 current_folder_to_check <- here(separate_submission_checking_folder, "prostate_submissions")
 
@@ -34,7 +36,7 @@ quality_checking_folder  <-  current_folder_to_check
 
 # Bring all submissions in and combine into one dataframe
 
-sub_path <- str_c(data_folder, "data_submissions/")
+sub_path <- current_folder_to_check
 
 new_data <- map(to_check, import_submission,
                 sub_path = sub_path,
