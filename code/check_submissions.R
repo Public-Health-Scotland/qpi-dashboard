@@ -76,6 +76,7 @@ if (nrow(z_hospital_totals) > 0) {
 print_error_report(z_board_totals, z_hospital_totals)
 
 
+# WORK IN PROGRESS, NOT YET PROVIDING USEFUL OUTPUT.
 # Generate a report listing the size of differences for hospitals
 hosp_diffs_tbl <- hosp_differences_report(new_data)
 write_csv(hosp_diffs_tbl, file = here(quality_checking_folder, "hospital_differences_amounts.csv"))
