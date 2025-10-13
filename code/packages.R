@@ -1,7 +1,5 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # packages.R
-# Pauline Ward
-# 2025
 # 
 # Import packages required for the project
 # 

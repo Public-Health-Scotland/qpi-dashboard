@@ -7,7 +7,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/functions.R")
-source("code/packages.R")
 
 #### Edit Variables ----
 # The below variables vary depending on the the nature of the update.
