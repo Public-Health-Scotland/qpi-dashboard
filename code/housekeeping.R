@@ -21,7 +21,7 @@ source("code/functions.R")
 # "Brain and CNS" "HPB"  
 
 # In development values for tsg
-# "Sarcoma"
+# "Mesothelioma" "Thyroid"
 
 tsg <- "Sarcoma"
 
