@@ -1,15 +1,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # housekeeping.R
-# Angus Morton
-# 2023-05-22
 # 
 # Contains the values which should be changed each run
 # 
-# R version 4.1.2 (2021-11-01)
+# R version 4.4
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/functions.R")
-source("code/packages.R")
 
 #### Edit Variables ----
 # The below variables vary depending on the the nature of the update.
@@ -21,28 +18,29 @@ source("code/packages.R")
 # "Colorectal"      "Endometrial" "Head and Neck"    "Lung"
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
+# "Brain and CNS" "HPB"  
 
 # In development values for tsg
-# "Brain and CNS" "HPB" 
+# "Mesothelioma" "Thyroid"
 
-tsg <- "HPB"
+tsg <- "Sarcoma"
 
-new_years <- c("2021", "2022", "2023")
+new_years <- c("2021/22", "2022/23", "2023/24")
 new_years_vals <- c(8, 9, 10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-01-2021")
+date_start <- dmy("01-04-2021")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.0", "4.0", "5.0")
+meas_vers <- c("3.6", "4.0", "4.0")
 
 ## hospital names :
 # Enter hospital names manually. If none supplied then the script will use
 # the names from the most recent published four years of QPIs for this TSG.
 # To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c("Aberdeen RI", "Ninewells Hosp", "Raigmore Hosp")
-sca_hosps <- c("Royal Hosp Edinburgh", "Royal Inf Edinburgh", "Western General Hosp")
-wos_hosps <- c("Gartnavel (West Glasgow)", "Glasgow Royal Inf", "Queen Elizabeth Hosp")
+nca_hosps <- c("Aberdeen RI", "Woodend Hosp", "Dr Grays Hosp", "Ninewells Hosp", "Raigmore Hosp", "Stracathro Hosp", "Perth Royal Inf")
+sca_hosps <- c("Borders General Hosp", "Dumfries & Galloway RI", "Victoria Hosp Fife", "QMH Fife", "Royal Inf Edinburgh", "Western General Hosp", "Royal Hosp Sick Children Edinburgh", "St Johns Hosp")
+wos_hosps <- c("Gartnavel (West Glasgow)", "Glasgow Royal Inf", "Queen Elizabeth Hosp", "Ayr", "Stirling Community Hosp", "Stobhill", "Victoria Glasgow", "Monklands")
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
@@ -56,15 +54,20 @@ age_groups <- c("85+",
                 "60-64", 
                 "55-59", 
                 "50-54", 
-                "45-49", 
-                "<45")
+                "45-49",
+                "40-44", 
+                "35-39", 
+                "30-34", 
+                "25-29", 
+                "20-24", 
+                "<20")
 
 # Folder
-data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
-                      "Data/new_process/HPB_2024/")
+data_folder <- paste0("/PHI_conf/CancerGroup2/Cancer_QPIs/",
+                      "Data/new_process/sarcoma_2025/")
 
 # Folder containing lookup info on HBs by network
-regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer_QPIs/Data/new_process/regional_cancer_networks")
+regional_networks_folder <- here("/PHI_conf/CancerGroup2/Cancer_QPIs/Data/new_process/regional_cancer_networks")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~

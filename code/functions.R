@@ -1,11 +1,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # functions.R
-# Angus Morton
-# 2023-06-07
 # 
 # Define functions used in other scripts
 # 
-# R version 4.1.2 (2021-11-01)
+# R version 4.4
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/packages.R")
