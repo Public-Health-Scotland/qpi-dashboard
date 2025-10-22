@@ -1,18 +1,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # hb_hosp_qpi.R
-# Angus Morton
-# 2023-05-22
 # 
 # Update the hb_hosp_qpi.xlsx file with the new data
 # 
-# R version 4.1.2 (2021-11-01)
+# R version 4.4
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
 
-source("code/functions.R")
 source("code/housekeeping.R")
-source("code/packages.R")
 
 #### Step 1 : Import data ----
 
@@ -64,7 +60,7 @@ scotland_rows <- new_data %>%
 
 scotland_minus_comments <- scotland_rows |>
   select(!Comments)
-write.xlsx(scotland_minus_comments, here("for_summary_table", "Scotland_rows_no_comments.xlsx"))
+write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
 new_data <- new_data |> 
   bind_rows(scotland_rows)
@@ -80,7 +76,7 @@ new_data <- new_data |>
 # Sometimes happens because of a typo in the QPI name. 
 # Checking Numerator1 column as a proxy for the whole row in lookup
 rows_with_missing_values <- new_data |> 
-  filter(str_equal(numerator1, "") || is.na(numerator1) ) # needs testing
+  filter(is.na(numerator1) ) # needs testing
 
 if (nrow(rows_with_missing_values) > 0 ) {
   message("ISSUE DETECTED: POSSIBLE UN-MATCHED ROWS.\n")
