@@ -545,10 +545,10 @@ reformat_qpi_number <- function(x) {
   
 }
 
-make_summary_table <- function() {
+make_summary_table <- function(summary_data_path) {
   # Import the summary data 
   # from the separate file containing rows from HB_hosp where Location is Scotland 
-  scotland_performance_all_qpis <- readWorkbook(here("summary_data", "Scotland_rows_no_comments.xlsx"))
+  scotland_performance_all_qpis <- readWorkbook(here(summary_data_path, "Scotland_rows_no_comments.xlsx"))
   
   # Add target status column called Result
   scotland_performance_all_qpis <- scotland_performance_all_qpis |>
