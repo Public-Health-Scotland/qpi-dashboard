@@ -29,7 +29,7 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 ## For the publication version
 
 * Change "Target not met" to just "Not met". Re-apply the colour in the affected cells. 
-* Save as ... "for_pasting_YYYY_MM_DD_<tsg>_qpi_summary_table.xlsx"
+* Save as ... "for_pasting_YYYY_MM_DD_<tsg>_qpi_summary_table1.xlsx"
 * Change column heading from Performance etc to the year eg 2022/23, by deleting "Performance (%) ". 
 * Change Result column headings to just "Result", and a space or two to make each column different, to prevent Excel numbering them. 
 * Colour heading row in purple #3F3685. 
