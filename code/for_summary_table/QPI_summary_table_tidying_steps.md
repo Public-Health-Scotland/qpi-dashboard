@@ -33,7 +33,7 @@ Steps to carry out after using the generate_summary_in_excel.R script to create 
 * Change column heading from Performance etc to the year eg 2022/23, by deleting "Performance (%) ". 
 * Change Result column headings to just "Result", and a space or two to make each column different, to prevent Excel numbering them. 
 * Colour heading row in purple #3F3685. 
-* Colour the table borders - maybe dark purple everywhere, and white lines between the years, but not between the performance column and the result column. 
+* Colour the table borders - maybe dark purple everywhere (usually does not work), and white lines between the years, but not between the performance column and the result column. 
 * You may need to clear errors again. 
 * Copy and paste into Word template draft summary report. 
 * Set style of the table text to "Table body". 
