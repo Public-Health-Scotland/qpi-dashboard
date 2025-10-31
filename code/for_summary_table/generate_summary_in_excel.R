@@ -48,9 +48,18 @@ conditionalFormatting(wb_qpi_summary,
                       style = target_not_met_style
                       )
 
+# The below is activated when we manually edit the cells to "Not met" 
+# to make a narrower table for pasting into the draft publication. 
+conditionalFormatting(wb_qpi_summary,
+                      "Table_1_summary_data",
+                      cols = 1:14,
+                      rows = 1:50,
+                      rule = '="Not met"',
+                      style = target_not_met_style
+)
 
 
-saveWorkbook(wb_qpi_summary, here(summary_data_path, "Table_1_QPIs_summary.xlsx"))
+saveWorkbook(wb_qpi_summary, here(summary_data_path, "cancer_qpi_summary_table1.xlsx"))
 
 # Optional - just write the data to file, for manual formatting
 write.xlsx(perf_summary_tbl, file = here(summary_data_path, "qpi_summary_table_plain.xlsx"))
