@@ -3,11 +3,10 @@
 # 
 # Contains the values which should be changed each run
 # 
-# R version 4.1.2 (2021-11-01)
+# R version 4.4
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/functions.R")
-source("code/packages.R")
 
 #### Edit Variables ----
 # The below variables vary depending on the the nature of the update.
@@ -20,6 +19,9 @@ source("code/packages.R")
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 # "Brain and CNS" "HPB" "Sarcoma"
+# 
+# In development values for tsg
+# "Mesothelioma" "Thyroid"
 
 tsg <- "Sarcoma"
 
@@ -61,11 +63,11 @@ age_groups <- c("85+",
                 "<20")
 
 # Folder
-data_folder <- paste0("/conf/quality_indicators/Benchmarking/Cancer_QPIs/",
+data_folder <- paste0("/PHI_conf/CancerGroup2/Cancer_QPIs/",
                       "Data/new_process/sarcoma_2025/")
 
 # Folder containing lookup info on HBs by network
-regional_networks_folder <- here("/conf/quality_indicators/Benchmarking/Cancer_QPIs/Data/new_process/regional_cancer_networks")
+regional_networks_folder <- here("/PHI_conf/CancerGroup2/Cancer_QPIs/Data/new_process/regional_cancer_networks")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~

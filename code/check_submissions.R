@@ -4,15 +4,13 @@
 # Checks for the data submissions by the three networks to make sure
 # all data is valid.
 # 
-# R version 4.1.2 (2021-11-01)
+# R version 4.4
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
 
-source("code/functions.R")
 # Do manually update the variables in housekeeping.R before running this!
 source("code/housekeeping.R")
-source("code/packages.R")
 
 # Select which templates to check. Put the names of the files in this vector
 to_check <- c("NCA", "SCAN", "WoSCAN")
@@ -78,6 +76,7 @@ if (nrow(z_hospital_totals) > 0) {
 print_error_report(z_board_totals, z_hospital_totals)
 
 
+# WORK IN PROGRESS, NOT YET PROVIDING USEFUL OUTPUT.
 # Generate a report listing the size of differences for hospitals
 hosp_diffs_tbl <- hosp_differences_report(new_data)
 write_csv(hosp_diffs_tbl, file = here(quality_checking_folder, "hospital_differences_amounts.csv"))
