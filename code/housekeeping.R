@@ -18,8 +18,8 @@ source("code/functions.R")
 # "Colorectal"      "Endometrial" "Head and Neck"    "Lung"
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
-# "Brain and CNS" "HPB"  
-
+# "Brain and CNS" "HPB" "Sarcoma"
+# 
 # In development values for tsg
 # "Mesothelioma" "Thyroid"
 
