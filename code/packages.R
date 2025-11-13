@@ -3,10 +3,9 @@
 # 
 # Import packages required for the project
 # 
-# R version 4.4.2 
+# R version 4.5 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 library(tidyverse)
 library(openxlsx)
 library(here)
-library(janitor)

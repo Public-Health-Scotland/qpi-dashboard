@@ -3,7 +3,7 @@
 # 
 # Contains the values which should be changed each run
 # 
-# R version 4.4
+# R version 4.5
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/functions.R")
@@ -54,20 +54,16 @@ age_groups <- c("85+",
                 "60-64", 
                 "55-59", 
                 "50-54", 
-                "45-49",
-                "40-44", 
-                "35-39", 
-                "30-34", 
-                "25-29", 
-                "20-24", 
-                "<20")
+                "45-49", 
+                "0-44")
 
 # Folder
-data_folder <- paste0("/PHI_conf/CancerGroup2/Cancer_QPIs/",
-                      "Data/new_process/sarcoma_2025/")
+data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
+                      "Data", "new_process", "colorectal_2026")
 
 # Folder containing lookup info on HBs by network
-regional_networks_folder <- here("/PHI_conf/CancerGroup2/Cancer_QPIs/Data/new_process/regional_cancer_networks")
+regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
+                            "Data", "new_process", "regional_cancer_networks")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
