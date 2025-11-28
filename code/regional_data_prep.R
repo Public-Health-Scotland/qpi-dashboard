@@ -15,10 +15,11 @@ library(tidyverse)
 
 # Folder
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                    "Data", "new_process", "regional_data")
+                    "Data", "public_dashboard_qpis", "historic_regional_data",
+                    "nov_2025_dashboard_data")
 
 # Import the three CSV files for performance, age and case ascertainment
-historic_performance <- read_c
+historic_performance <- read_csv(here(data_folder, "HB_Hosp_QPI_regional.csv"))
 
 # Save as parquet eg
 # #write parquet file to shiny app data folder
