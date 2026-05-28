@@ -1,13 +1,13 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# prep_SAP_BO_extracts.R
+# update_hb_hosp_from_SAP_BO_extracts.R  ... replaces hb_hosp_qpi.R
+# Run this script *after* prepping the extract using prep_SAP_BO_extracts.R. 
+# Run this script instead of the original hb_hosp_qpi.R. 
 # 
 # Reads in the performance data extract generated using Business Objects, 
 # which replaces the three old data submission templates,
 # ie one Excel for Scotland (aka rectangular multi-QPI report)
 # instead of three regional excel files,
 # and preps them to be pasted into HB_Hosp_QPI.xlsx. 
-# After running this script, 
-# next step is to run update_hb_hosp_from_SAP_BO_extracts.R. 
 # 
 # R version 4.5.1
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
