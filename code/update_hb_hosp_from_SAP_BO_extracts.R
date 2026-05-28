@@ -18,9 +18,18 @@
 #  source("code/housekeeping.R")
 
 # Read in extract. Assuming just one year's worth of data to be read in. 
+# Read the HB data as rows in new_data
+
+# Calculate regional sub-totals, add as rows in new_data
+
+
+# Add Scotland data as rows in new_data 
+
 
 # Read in lookup. 
 
 # Add a column for numerator descriptions and denom descriptions based on lookup. 
 
-# Calculate regional sub-totals
+
+# Calculate whether targets met or not met (ie RAG status) for each row 
+new_data <-  set_rag_status(new_data)
