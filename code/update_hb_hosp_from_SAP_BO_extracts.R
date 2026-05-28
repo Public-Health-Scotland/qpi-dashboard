@@ -13,12 +13,12 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-# Not sure need to call housekeeping
+# Call housekeeping
 #### Step 0 : Housekeeping ----
-#  source("code/housekeeping.R")
+  source("code/housekeeping.R")
 
 # Read in extract. Assuming just one year's worth of data to be read in. 
-# Read the HB data as rows in new_data
+# Add the HB data as rows in new_data
 
 # Calculate regional sub-totals, add as rows in new_data
 

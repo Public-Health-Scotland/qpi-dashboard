@@ -25,22 +25,18 @@ source("code/functions.R")
 
 tsg <- "Colorectal"
 
-new_years <- c("2023/24", "2024/25")
-new_years_vals <- c(11, 12)
+# For the BO input, important to specify just one Cyear at a time 
+# (eg "2023" or "2023/24")
+# Colorectal April to March, 2023/4 then 2024/25 update running summer 2026.
+new_years <- c("2023/24")
+new_years_vals <- c(11)
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-04-2023")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.5", "4.5")
+meas_vers <- c("4.5")
 
-## OBSOLETE - hospital names :
-# Enter hospital names manually. If none supplied then the script will use
-# the names from the most recent published four years of QPIs for this TSG.
-# To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c()
-sca_hosps <- c()
-wos_hosps <- c()
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the

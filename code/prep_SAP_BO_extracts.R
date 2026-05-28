@@ -19,8 +19,5 @@
 
 # Read in extract. Assuming just one year's worth of data to be read in. 
 
-# Read in lookup. 
 
-# Add a column for numerator descriptions and denom descriptions based on lookup. 
 
-# Calculate regional sub-totals
