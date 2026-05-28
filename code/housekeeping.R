@@ -37,6 +37,11 @@ date_start <- dmy("01-04-2023")
 # measurability versions (one for each year)
 meas_vers <- c("4.5")
 
+# Workaround to avoid error - create hospital vectors. 
+# This is just backwards compatibility with the submission / templates approach.
+nca_hosps <- c()
+sca_hosps <- c()
+wos_hosps <- c()
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
@@ -55,7 +60,7 @@ age_groups <- c("85+",
 
 # Folder
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "colorectal_2026")
+                      "Data", "new_process", "colorectal_2026/")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
@@ -125,7 +130,8 @@ case_asc_out_fpath <- paste0(data_folder,
 ### hospital names
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
-hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps)
+# hosp_vectors OBSOLETE but bug when deleted because of hospsurg processing
+hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps) 
 networks <- c("NCA", "SCAN", "WoSCAN")
 
 # Optional: check tsg is a match by counting rows
