@@ -15,6 +15,7 @@
 
 #### Step 0 : Housekeeping ----
 # Calls housekeeping, which calls functions, which calls packages
+library("here")
 source(here("code", "housekeeping.R"))
 
 #### Step 1 : Import data ----

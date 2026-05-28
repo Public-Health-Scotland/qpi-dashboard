@@ -501,19 +501,19 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
 
 #### hb_hosp_qpi.R ----
 
-set_RAG_status <- function(new_data) }
-# RAG status
-new_data <- new_data |> 
-  mutate(rag_status = case_when(
-    direction == "H" & (per_performance >= current_target) ~ "1",
-    direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
-    direction == "H" & per_performance == 0  & Denominator <= 0 ~ "3",
-    direction == "H" & per_performance == 0 & Denominator > 0 ~ "2",
-    direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
-    direction == "L" & per_performance > current_target ~ "2",
-    direction == "L" & per_performance == 0 & Denominator <= 0 ~ "3",
-    direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
-    TRUE ~ "unknown"))
+set_RAG_status <- function(new_data) {
+  # RAG status
+  new_data <- new_data |> 
+    mutate(rag_status = case_when(
+      direction == "H" & (per_performance >= current_target) ~ "1",
+      direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
+      direction == "H" & per_performance == 0  & Denominator <= 0 ~ "3",
+      direction == "H" & per_performance == 0 & Denominator > 0 ~ "2",
+      direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
+      direction == "L" & per_performance > current_target ~ "2",
+      direction == "L" & per_performance == 0 & Denominator <= 0 ~ "3",
+      direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
+      TRUE ~ "unknown"))
 }
 
 # MIGHT BE DEPRECATING THIS
