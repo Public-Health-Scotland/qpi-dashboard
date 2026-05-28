@@ -13,11 +13,31 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-# Call housekeeping
 #### Step 0 : Housekeeping ----
-  source("code/housekeeping.R")
+# Calls housekeeping, which calls functions, which calls packages
+source(here("code", "housekeeping.R"))
 
-# Read in extract. Assuming just one year's worth of data to be read in. 
+#### Step 1 : Import data ----
+
+extract_path <- here(data_folder, "data_extracts")
+
+# Read in extract for HOSPSURG. Assuming just one year's worth of data to be read in. 
+# Filename should contain <Cyear> + 'HOSPSURG' + .xlsx
+hosp_surg_filenm_pattern <- str_c(new_years[0], ".*", "HOSPSURG", ".*", "\\.xlsx")
+# data_extract_file <- list.files(
+#   path = extract_path,
+#   pattern = "daily.*\\.xlsx$",
+#   full.names = TRUE
+# )
+if length(data_extract_file) > 1 {
+  message("More than one filename matches the criteria. Please make sure only the desired HOSPSURG file matches the pattern: " )
+  message(hosp_surg_filenm_pattern) 
+}
+
+
+# Read in non-surgical extract. Assume one year's data. 
+ 
+
 # Add the HB data as rows in new_data
 
 # Calculate regional sub-totals, add as rows in new_data
@@ -27,6 +47,9 @@
 
 
 # Read in lookup. 
+# new lookup
+lookup <- import_lookup(lookup_fpath) |> 
+  select(-SurgDiag)
 
 # Add a column for numerator descriptions and denom descriptions based on lookup. 
 
