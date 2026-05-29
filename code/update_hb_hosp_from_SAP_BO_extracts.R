@@ -26,25 +26,35 @@ if (length(new_years) > 1) {
 
 extract_path <- here(data_folder, "data_extracts")
 
-# Read in extract for HOSPSURG. Assuming just one year's worth of data to read in. 
-# Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
-# Make it match eg 2023-24 or 2024_25
+# Read in extract files. Assume one year's data. 
 year_pattern <- str_replace(new_years[1], "/", "[-_]")
-hosp_surg_filenm_pattern <- str_c(year_pattern, ".*HOSPSURG.*", "\\.xlsx")
-data_extract_file <- list.files(
+filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
+data_extract_files <- list.files(
   path = extract_path,
-  pattern = hosp_surg_filenm_pattern,
+  pattern = filenm_pattern,
   full.names = TRUE,
   ignore.case = TRUE
 )
-if length(data_extract_file) > 1 {
-  message("More than one filename matches the criteria. Please make sure only the desired HOSPSURG file matches the pattern: " )
-  message(hosp_surg_filenm_pattern) 
+
+# Read in extract for HOSPSURG. Assuming just one year's worth of data to read in. 
+# Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
+# Make it match eg 2023-24 or 2024_25
+
+hospsurg_filenm_pattern <- str_c(year_pattern, ".*HOSPSURG.*", "\\.xlsx")
+# hospsurg_extract_file <- list.files(
+#   path = extract_path,
+#   pattern = hospsurg_filenm_pattern,
+#   full.names = TRUE,
+#   ignore.case = TRUE
+# )
+if (length(hospsurg_extract_file) > 1) {
+  message("More than one filename matches the criteria. Please make sure 
+          only the desired HOSPSURG file matches the pattern: " )
+  message(hospsurg_filenm_pattern) 
 }
 
 
-# Read in non-surgical extract. Assume one year's data. 
- 
+
 
 # Add the HB data as rows in new_data
 
