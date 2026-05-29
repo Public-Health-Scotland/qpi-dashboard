@@ -17,6 +17,10 @@
 # Calls housekeeping, which calls functions, which calls packages
 library("here")
 source(here("code", "housekeeping.R"))
+if (length(new_years) > 1) {
+  warning("More than one Cyear detected in housekeeping file. 
+          This script is designed to process one year's data at a time.")
+  }
 
 #### Step 1 : Import data ----
 
@@ -24,7 +28,7 @@ extract_path <- here(data_folder, "data_extracts")
 
 # Read in extract for HOSPSURG. Assuming just one year's worth of data to be read in. 
 # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx
-hosp_surg_filenm_pattern <- str_c(new_years[0], ".*", "HOSPSURG", ".*", "\\.xlsx")
+hosp_surg_filenm_pattern <- str_c(new_years[1], ".*", "HOSPSURG", ".*", "\\.xlsx")
 # data_extract_file <- list.files(
 #   path = extract_path,
 #   pattern = "daily.*\\.xlsx$",
