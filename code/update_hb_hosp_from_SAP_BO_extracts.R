@@ -14,7 +14,7 @@
 
 
 #### Step 0 : Housekeeping ----
-# Calls housekeeping, which calls functions, which calls packages
+# Calls housekeeping, which also calls functions, which also calls packages
 library("here")
 source(here("code", "housekeeping.R"))
 if (length(new_years) > 1) {
@@ -26,9 +26,10 @@ if (length(new_years) > 1) {
 
 extract_path <- here(data_folder, "data_extracts")
 
-# Read in extract for HOSPSURG. Assuming just one year's worth of data to be read in. 
+# Read in extract for HOSPSURG. Assuming just one year's worth of data to read in. 
 # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx
-hosp_surg_filenm_pattern <- str_c(new_years[1], ".*", "HOSPSURG", ".*", "\\.xlsx")
+year_pattern <- str_replace(new_years[1], "/", "[:punct:]")
+hosp_surg_filenm_pattern <- str_c(".*", underscore_year, ".*", "HOSPSURG", ".*", "\\.xlsx")
 # data_extract_file <- list.files(
 #   path = extract_path,
 #   pattern = "daily.*\\.xlsx$",
