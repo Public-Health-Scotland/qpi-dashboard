@@ -27,6 +27,8 @@ if (length(new_years) > 1) {
 extract_path <- here(data_folder, "data_extracts")
 
 # Read in extract files. Assume one year's data. 
+# Usually will find hospsurg file and non-surgical file. 
+# In colorectal, also matches the liver mets file for QPI 15. 
 year_pattern <- str_replace(new_years[1], "/", "[-_]")
 filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
 data_extract_files <- list.files(
