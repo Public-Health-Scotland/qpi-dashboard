@@ -592,6 +592,8 @@ set_up_regions <- function(this_tsg) {
   # "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx" 
   # This reference file should be kept in Excel format to allow
   # colour highlighting for human readability
+  # NB eCASE raw health board names need parsing to NHS opendata format 
+  # here, because they are upper case with ampersands instead of "and"(!).
   
 }
 
