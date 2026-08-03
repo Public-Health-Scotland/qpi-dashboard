@@ -594,6 +594,7 @@ set_up_regions <- function(this_tsg) {
   # colour highlighting for human readability
   # NB eCASE raw health board names need parsing to NHS opendata format 
   # here, because they are upper case with ampersands instead of "and"(!).
+  # Could use new eCASE_name column in the lookup to match. 
   
 }
 
