@@ -595,8 +595,15 @@ set_up_regions <- function(this_tsg) {
   # NB eCASE raw health board names need parsing to NHS opendata format 
   # here, because they are upper case with ampersands instead of "and"(!).
   # Could use new eCASE_name column in the lookup to match. 
-  
-}
+  regions_lookup <- readWorkbook(here(regional_networks_folder, 
+                                      "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx")) 
+  tsg_specific_regions_lookup <-  regions_lookup |>
+    clean_names() 
+  if (str_equal(tsg, "Acute Leukaemia")){
+    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+      mutate(Network = rcn_for_acute_leukaemia)
+  }
+  }
 
 #### check_submissions.R ----
 

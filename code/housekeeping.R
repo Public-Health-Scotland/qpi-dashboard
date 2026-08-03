@@ -64,7 +64,7 @@ data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
-                            "Data", "new_process", "regional_cancer_networks")
+                            "Data", "qpi_lookups", "regional_geography")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
