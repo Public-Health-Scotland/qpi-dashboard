@@ -584,6 +584,16 @@ make_summary_table <- function(summary_data_path) {
   return(performance_by_year)
 }
 
+# Identify what HBs belong to what regions, dependent on the TSG
+# since some HBs differ for brain & CNS, lymphoma and ac leuk
+set_up_regions <- function(this_tsg) { 
+  # Read the data from: 
+  # H:\Cancer_QPIs\Data\new_process\regional_cancer_networks
+  # "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx" 
+  # This reference file should be kept in Excel format to allow
+  # colour highlighting for human readability
+  
+}
 
 #### check_submissions.R ----
 
