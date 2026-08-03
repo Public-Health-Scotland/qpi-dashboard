@@ -38,7 +38,7 @@ data_extract_files <- list.files(
   ignore.case = TRUE
 )
 
-# Read in extract for HOSPSURG. Assuming just one year's worth of data to read in. 
+# Read in extract for HOSPSURG. 
 # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
 # Make it match eg 2023-24 or 2024_25
 

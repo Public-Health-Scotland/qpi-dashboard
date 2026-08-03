@@ -45,7 +45,7 @@ new_data <- map(networks,
   )
 
 
-#### Step 2 : Create Scotland totals for new data ----
+#### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
