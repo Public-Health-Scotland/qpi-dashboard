@@ -1,5 +1,6 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# update_hb_hosp_from_SAP_BO_extracts.R  ... replaces hb_hosp_qpi.R
+# tHIS work is to be incorporated into hb_hosp_qpi.R
+# OBSOLETE update_hb_hosp_from_SAP_BO_extracts.R  ... replaces hb_hosp_qpi.R
 # Run this script *after* prepping the extract using prep_SAP_BO_extracts.R. 
 # Run this script instead of the original hb_hosp_qpi.R. 
 # 
@@ -14,13 +15,7 @@
 
 
 #### Step 0 : Housekeeping ----
-# Calls housekeeping, which also calls functions, which also calls packages
-library("here")
-source(here("code", "housekeeping.R"))
-if (length(new_years) > 1) {
-  warning("More than one Cyear detected in housekeeping file. 
-          This script is designed to process one year's data at a time.")
-  }
+# see hb_hosp_qpi.R, code moved to hb_hosp_qpi.R.
 
 #### Step 1 : Import data ----
 
