@@ -1,5 +1,5 @@
 # *qpi-dashboard*
-*Repository to update the Scottish Cancer QPIs Dashboard (Tableau)*
+*Repository to update the SCRIS Scottish Cancer QPIs Dashboard (Tableau)*
 
 ### Directories
   * /code - R scripts required for project
