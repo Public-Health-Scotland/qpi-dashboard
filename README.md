@@ -8,7 +8,7 @@
     + `packages.R` - list of packages sourced and used in the other script(s) 
     + `create_lookup.R` - compile the list of QPI names and targets
     + `create_templates.R` 
-    + `check_submissions.R` 
+    + `check_submissions.R` - obsolete - QA on data submitted by regions
     + `hb_hosp_qpi.R` - updates the Excel file containing the data, for feeding into Tableau
     + `age_gender.R` - process the demographic data
     + `case_asc.R` - process the case ascertainment data
