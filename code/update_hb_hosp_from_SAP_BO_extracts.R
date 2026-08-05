@@ -19,7 +19,7 @@
 
 #### Step 1 : Import data ----
 
-extract_path <- here(data_folder, "data_extracts")
+extract_path <- here(data_folder, "BOXI_extracts")
 
 # Read in extract files. Assume one year's data. 
 # Usually will find hospsurg file and non-surgical file. 

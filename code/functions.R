@@ -27,6 +27,11 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
 }
 
+# import_extracts replaces import_submission
+import_extracts <- function() {
+  
+}
+
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter
 #    (year_vals are usually integers stored as numerics representing the year 

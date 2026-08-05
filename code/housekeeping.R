@@ -58,9 +58,11 @@ age_groups <- c("85+",
                 "45-49", 
                 "0-44")
 
-# Folder
+# Data Folder
+# The lookup folder and extracts folder will be derived from this path 
+# ie they're sub-folders of the data folder. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "colorectal_2026/")
+                      "Data", "Colorectal", "Data", "2026")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
@@ -82,8 +84,8 @@ tsg_sex <- case_when(
 
 # input files
 
-hb_hosp_in_fpath <- paste0(data_folder,
-                           "excels_for_tableau/initial_run/input/",
+hb_hosp_in_fpath <- here(data_folder,
+                           "HB_Hosp_previous",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_in_fpath <- paste0(data_folder,
@@ -94,29 +96,29 @@ case_asc_in_fpath <- paste0(data_folder,
                             "excels_for_tableau/initial_run/input/",
                             "Background_Data_Case.xlsx")
 
-sca_fpath <- paste0(data_folder,
-                    "data_submissions/scan.xlsx")
-
-nca_fpath <- paste0(data_folder,
-                    "data_submissions/nca.xlsx")
-
-wos_fpath <- paste0(data_folder,
-                    "data_submissions/woscan.xlsx")
+# sca_fpath <- paste0(data_folder,
+#                     "data_submissions/scan.xlsx")
+# 
+# nca_fpath <- paste0(data_folder,
+#                     "data_submissions/nca.xlsx")
+# 
+# wos_fpath <- paste0(data_folder,
+#                     "data_submissions/woscan.xlsx")
 
 # lookup
 
-lookup_fpath <- paste0(data_folder,
-                       "lookup/lookup.xlsx")
+lookup_fpath <- here(data_folder,
+                       "lookup", "lookup.xlsx")
 
 # templates
 
-templates_fpath <- paste0(data_folder,
-                          "templates/")
+#templates_fpath <- paste0(data_folder,
+#                          "templates/")
 
 # output files
 
-hb_hosp_out_fpath <- paste0(data_folder,
-                           "excels_for_tableau/initial_run/output/",
+hb_hosp_out_fpath <- here(data_folder,
+                           "HB_Hosp_updated",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_out_fpath <- paste0(data_folder,
@@ -127,8 +129,11 @@ case_asc_out_fpath <- paste0(data_folder,
                              "excels_for_tableau/initial_run/output/",
                              "Background_Data_Case.xlsx")
 
-### hospital names
+
+# Read in the previous data
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
+
+### hospital names
 
 # hosp_vectors OBSOLETE but bug when deleted because of hospsurg processing
 hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps) 
