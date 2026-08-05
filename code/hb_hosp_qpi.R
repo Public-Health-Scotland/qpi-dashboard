@@ -34,8 +34,7 @@ lookup <- import_lookup(lookup_fpath) |>
   select(-SurgDiag)
 
 # new data
-# obsolete # sub_path <- paste0(data_folder, "data_submissions/")
-extract_path <- here(data_folder, "BOXI_extracts")
+# obsolete: # sub_path <- paste0(data_folder, "data_submissions/")
 
 new_data <- map(networks,
                 import_extracts,

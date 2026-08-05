@@ -27,11 +27,12 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
 }
 
-# import_extracts replaces import_submission
+# import_extracts replaces import_submission, below
 import_extracts <- function() {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
   # In colorectal, also matches the liver mets file for QPI 15. 
+  extract_path <- here(data_folder, "BOXI_extracts")
   year_pattern <- str_replace(new_years[1], "/", "[-_]")
   filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
   data_extract_files <- list.files(
