@@ -1,9 +1,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # functions.R
 # 
-# Define functions used in other scripts
+# Define functions used in other scripts. 
 # 
-# R version 4.4
+# R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/packages.R")
@@ -41,7 +41,7 @@ import_extracts <- function() {
     ignore.case = TRUE
   )
   
-  # Read in extract for HOSPSURG. 
+  # Read in extract for HOSPSURG report. 
   # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
   # Make it match eg 2023-24 or 2024_25
   

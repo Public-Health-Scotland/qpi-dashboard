@@ -12,4 +12,4 @@ Encoding: UTF-8
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
-ProjectName: Breakable DEV qpi-dashboard
+ProjectName: DEV qpi-dashboard plain
