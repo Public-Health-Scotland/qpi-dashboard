@@ -29,7 +29,34 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
 
 # import_extracts replaces import_submission
 import_extracts <- function() {
+  # Read in extract files. Assume one year's data. 
+  # Usually will find hospsurg file and non-surgical file. 
+  # In colorectal, also matches the liver mets file for QPI 15. 
+  year_pattern <- str_replace(new_years[1], "/", "[-_]")
+  filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
+  data_extract_files <- list.files(
+    path = extract_path,
+    pattern = filenm_pattern,
+    full.names = TRUE,
+    ignore.case = TRUE
+  )
   
+  # Read in extract for HOSPSURG. 
+  # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
+  # Make it match eg 2023-24 or 2024_25
+  
+  hospsurg_filenm_pattern <- str_c(year_pattern, ".*HOSPSURG.*", "\\.xlsx")
+  # hospsurg_extract_file <- list.files(
+  #   path = extract_path,
+  #   pattern = hospsurg_filenm_pattern,
+  #   full.names = TRUE,
+  #   ignore.case = TRUE
+  # )
+  if (length(hospsurg_extract_file) > 1) {
+    message("More than one filename matches the criteria. Please make sure 
+          only the desired HOSPSURG file matches the pattern: " )
+    message(hospsurg_filenm_pattern) 
+  }
 }
 
 # Should be called passing in the following arguments: 
