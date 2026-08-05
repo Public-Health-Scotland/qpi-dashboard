@@ -35,7 +35,7 @@ import_extracts <- function() {
   extract_path <- here(data_folder, "BOXI_extracts") # path to input files 
   # Convert the year to a form that will match the relevant bit of the filenames
   year_pattern <- str_replace(new_years[1], "/", "[-_]")
-  filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
+  filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx") 
   data_extract_files <- list.files(
     path = extract_path,
     pattern = filenm_pattern,
@@ -63,6 +63,7 @@ import_extracts <- function() {
     message(hospsurg_filenm_pattern) 
   }
   } # end of reading in HOSPSURG
+  
   
   
 }
