@@ -27,6 +27,38 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
 }
 
+# import_extracts replaces import_submission
+import_extracts <- function() {
+  # Read in extract files. Assume one year's data. 
+  # Usually will find hospsurg file and non-surgical file. 
+  # In colorectal, also matches the liver mets file for QPI 15. 
+  year_pattern <- str_replace(new_years[1], "/", "[-_]")
+  filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
+  data_extract_files <- list.files(
+    path = extract_path,
+    pattern = filenm_pattern,
+    full.names = TRUE,
+    ignore.case = TRUE
+  )
+  
+  # Read in extract for HOSPSURG. 
+  # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
+  # Make it match eg 2023-24 or 2024_25
+  
+  hospsurg_filenm_pattern <- str_c(year_pattern, ".*HOSPSURG.*", "\\.xlsx")
+  # hospsurg_extract_file <- list.files(
+  #   path = extract_path,
+  #   pattern = hospsurg_filenm_pattern,
+  #   full.names = TRUE,
+  #   ignore.case = TRUE
+  # )
+  if (length(hospsurg_extract_file) > 1) {
+    message("More than one filename matches the criteria. Please make sure 
+          only the desired HOSPSURG file matches the pattern: " )
+    message(hospsurg_filenm_pattern) 
+  }
+}
+
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter
 #    (year_vals are usually integers stored as numerics representing the year 
@@ -501,6 +533,21 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
 
 #### hb_hosp_qpi.R ----
 
+set_RAG_status <- function(new_data) {
+  # RAG status
+  new_data <- new_data |> 
+    mutate(rag_status = case_when(
+      direction == "H" & (per_performance >= current_target) ~ "1",
+      direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
+      direction == "H" & per_performance == 0  & Denominator <= 0 ~ "3",
+      direction == "H" & per_performance == 0 & Denominator > 0 ~ "2",
+      direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
+      direction == "L" & per_performance > current_target ~ "2",
+      direction == "L" & per_performance == 0 & Denominator <= 0 ~ "3",
+      direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
+      TRUE ~ "unknown"))
+}
+
 # MIGHT BE DEPRECATING THIS
 read_qpi_data <- function(fpath, network_name, year_names) {
   
@@ -569,6 +616,35 @@ make_summary_table <- function(summary_data_path) {
   return(performance_by_year)
 }
 
+# Identify what HBs belong to what regions, dependent on the TSG
+# since some HBs differ for brain & CNS, lymphoma and ac leuk
+set_up_regions <- function(this_tsg) { 
+  # Read the data from: 
+  # H:\Cancer_QPIs\Data\qpi_lookups\regional_geography
+  # "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx" 
+  # This reference file should be kept in Excel format to allow
+  # colour highlighting for human readability
+  # NB eCASE raw health board names need parsing to NHS opendata format 
+  # here, because they are upper case with ampersands instead of "and"(!).
+  # Could use new eCASE_name column in the lookup to match. 
+  regions_lookup <- readWorkbook(here(regional_networks_folder, 
+                                      "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx")) 
+  tsg_specific_regions_lookup <-  regions_lookup |>
+    clean_names() 
+  if (str_equal(tsg, "Acute Leukaemia")){
+    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+      mutate(Network = rcn_for_acute_leukaemia)
+  } else if(str_equal(tsg, "Lymphoma")) {
+    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+      mutate(Network = rcn_for_lymphoma)
+  } else if(str_equal(tsg, "Brain and CNS")){
+    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |>
+      mutate(Network = rcn_for_brain_and_cns_cancer)
+  } else {
+    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |>
+    mutate(Network = default_regional_cancer_network)
+  }
+}
 
 #### check_submissions.R ----
 

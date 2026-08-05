@@ -1,16 +1,30 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # hb_hosp_qpi.R
 # 
-# Update the hb_hosp_qpi.xlsx file with the new data
+# Update the hb_hosp_qpi.xlsx file with the new data. 
+# Re-written in 2026 to use Business Objects extracts
+# instead of the regional submissions previously used. 
 # 
-# R version 4.4
+# R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
+# Please edit the housekeeping file to specify the tsg and year of diagnosis. # Calls housekeeping, which also calls functions, which also calls packages
+source("code/housekeeping.R") 
 
-source("code/housekeeping.R")
+# Check there is always just one year's worth of data to be read in. 
+if (length(new_years) > 1) {
+  warning("More than one Cyear detected in housekeeping file. 
+          This script is designed to process one year's data at a time.")
+}
 
 #### Step 1 : Import data ----
+# Read in extract(s). 
+# Most TSGs will be two excel files, a hospsurg and non-surg, 
+# whereas ac leuk and lymphoma no hospsurg, 
+# while colorectal qpi 15 liver mets is a special additional report, 
+# ie colorectal has three excel extract files for each year. 
+
 
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
@@ -20,10 +34,11 @@ lookup <- import_lookup(lookup_fpath) |>
   select(-SurgDiag)
 
 # new data
-sub_path <- paste0(data_folder, "data_submissions/")
+# obsolete # sub_path <- paste0(data_folder, "data_submissions/")
+extract_path <- here(data_folder, "BOXI_extracts")
 
 new_data <- map(networks,
-                import_submission,
+                import_extracts,
                 sub_path = sub_path,
                 year_vals = new_years_vals,
                 years = new_years) |>
@@ -45,7 +60,10 @@ new_data <- map(networks,
   )
 
 
-#### Step 2 : Create Scotland totals for new data ----
+#### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
+
+# Assign health boards to regions
+set_up_regions(tsg)
 
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 

@@ -3,7 +3,7 @@
 # 
 # Contains the values which should be changed each run
 # 
-# R version 4.4
+# R version 4.5
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/functions.R")
@@ -23,24 +23,25 @@ source("code/functions.R")
 # In development values for tsg
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Sarcoma"
+tsg <- "Colorectal"
 
-new_years <- c("2021/22", "2022/23", "2023/24")
-new_years_vals <- c(8, 9, 10)
+# For the BO input, important to specify just one Cyear at a time 
+# (eg "2023" or "2023/24")
+# Colorectal April to March, 2023/4 then 2024/25 update running summer 2026.
+new_years <- c("2023/24")
+new_years_vals <- c(11)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-04-2021")
+date_start <- dmy("01-04-2023")
 
 # measurability versions (one for each year)
-meas_vers <- c("3.6", "4.0", "4.0")
+meas_vers <- c("4.5")
 
-## hospital names :
-# Enter hospital names manually. If none supplied then the script will use
-# the names from the most recent published four years of QPIs for this TSG.
-# To use existing names enter a NULL vector e.g. "nca_hosps <- c()"
-nca_hosps <- c("Aberdeen RI", "Woodend Hosp", "Dr Grays Hosp", "Ninewells Hosp", "Raigmore Hosp", "Stracathro Hosp", "Perth Royal Inf")
-sca_hosps <- c("Borders General Hosp", "Dumfries & Galloway RI", "Victoria Hosp Fife", "QMH Fife", "Royal Inf Edinburgh", "Western General Hosp", "Royal Hosp Sick Children Edinburgh", "St Johns Hosp")
-wos_hosps <- c("Gartnavel (West Glasgow)", "Glasgow Royal Inf", "Queen Elizabeth Hosp", "Ayr", "Stirling Community Hosp", "Stobhill", "Victoria Glasgow", "Monklands")
+# Workaround to avoid error - create hospital vectors. 
+# This is just backwards compatibility with the submission / templates approach.
+nca_hosps <- c()
+sca_hosps <- c()
+wos_hosps <- c()
 
 ## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
@@ -54,20 +55,18 @@ age_groups <- c("85+",
                 "60-64", 
                 "55-59", 
                 "50-54", 
-                "45-49",
-                "40-44", 
-                "35-39", 
-                "30-34", 
-                "25-29", 
-                "20-24", 
-                "<20")
+                "45-49", 
+                "0-44")
 
-# Folder
-data_folder <- paste0("/PHI_conf/CancerGroup2/Cancer_QPIs/",
-                      "Data/new_process/sarcoma_2025/")
+# Data Folder
+# The lookup folder and extracts folder will be derived from this path 
+# ie they're sub-folders of the data folder. 
+data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
+                      "Data", "Colorectal", "Data", "2026")
 
 # Folder containing lookup info on HBs by network
-regional_networks_folder <- here("/PHI_conf/CancerGroup2/Cancer_QPIs/Data/new_process/regional_cancer_networks")
+regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
+                            "Data", "qpi_lookups", "regional_geography")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
@@ -85,8 +84,8 @@ tsg_sex <- case_when(
 
 # input files
 
-hb_hosp_in_fpath <- paste0(data_folder,
-                           "excels_for_tableau/initial_run/input/",
+hb_hosp_in_fpath <- here(data_folder,
+                           "HB_Hosp_previous",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_in_fpath <- paste0(data_folder,
@@ -97,29 +96,29 @@ case_asc_in_fpath <- paste0(data_folder,
                             "excels_for_tableau/initial_run/input/",
                             "Background_Data_Case.xlsx")
 
-sca_fpath <- paste0(data_folder,
-                    "data_submissions/scan.xlsx")
-
-nca_fpath <- paste0(data_folder,
-                    "data_submissions/nca.xlsx")
-
-wos_fpath <- paste0(data_folder,
-                    "data_submissions/woscan.xlsx")
+# sca_fpath <- paste0(data_folder,
+#                     "data_submissions/scan.xlsx")
+# 
+# nca_fpath <- paste0(data_folder,
+#                     "data_submissions/nca.xlsx")
+# 
+# wos_fpath <- paste0(data_folder,
+#                     "data_submissions/woscan.xlsx")
 
 # lookup
 
-lookup_fpath <- paste0(data_folder,
-                       "lookup/lookup.xlsx")
+lookup_fpath <- here(data_folder,
+                       "lookup", "lookup.xlsx")
 
 # templates
 
-templates_fpath <- paste0(data_folder,
-                          "templates/")
+#templates_fpath <- paste0(data_folder,
+#                          "templates/")
 
 # output files
 
-hb_hosp_out_fpath <- paste0(data_folder,
-                           "excels_for_tableau/initial_run/output/",
+hb_hosp_out_fpath <- here(data_folder,
+                           "HB_Hosp_updated",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_out_fpath <- paste0(data_folder,
@@ -130,10 +129,14 @@ case_asc_out_fpath <- paste0(data_folder,
                              "excels_for_tableau/initial_run/output/",
                              "Background_Data_Case.xlsx")
 
-### hospital names
+
+# Read in the previous data
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 
-hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps)
+### hospital names
+
+# hosp_vectors OBSOLETE but bug when deleted because of hospsurg processing
+hosp_vectors <- list(nca_hosps, sca_hosps, wos_hosps) 
 networks <- c("NCA", "SCAN", "WoSCAN")
 
 # Optional: check tsg is a match by counting rows
