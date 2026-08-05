@@ -32,7 +32,8 @@ import_extracts <- function() {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
   # In colorectal, also matches the liver mets file for QPI 15. 
-  extract_path <- here(data_folder, "BOXI_extracts")
+  extract_path <- here(data_folder, "BOXI_extracts") # path to input files 
+  # Convert the year to a form that will match the relevant bit of the filenames
   year_pattern <- str_replace(new_years[1], "/", "[-_]")
   filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
   data_extract_files <- list.files(
@@ -42,6 +43,9 @@ import_extracts <- function() {
     ignore.case = TRUE
   )
   
+  # Don't look for HOSPSURG if data is lymphoma or acute leukaemia
+  # since they have no surgical QPIs. 
+  if (! str_detect(str_to_lower( tsg, "leuk|lymphoma"))) {
   # Read in extract for HOSPSURG. 
   # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
   # Make it match eg 2023-24 or 2024_25
@@ -58,6 +62,9 @@ import_extracts <- function() {
           only the desired HOSPSURG file matches the pattern: " )
     message(hospsurg_filenm_pattern) 
   }
+  } # end of reading in HOSPSURG
+  
+  
 }
 
 # Should be called passing in the following arguments: 
