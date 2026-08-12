@@ -23,7 +23,7 @@ source("code/functions.R")
 # In development values for tsg
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Colorectal"
+tsg <- "Bladder"
 
 # For the BO input, important to specify just one Cyear at a time 
 # (eg "2023" or "2023/24")
@@ -31,13 +31,13 @@ tsg <- "Colorectal"
 new_years <- c("2023/24")
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
-new_years_vals <- c(11)
+new_years_vals <- c(10)
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-04-2023")
 
 # measurability versions (one for each year)
-meas_vers <- c("4.5")
+meas_vers <- c("4.x")
 
 # Workaround to avoid error - create hospital vectors. 
 # This is just backwards compatibility with the submission / templates approach.
@@ -64,7 +64,7 @@ age_groups <- c("85+",
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "Colorectal", "Data", "2026")
+                      "Data", "new_process", "bladder_2026")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 

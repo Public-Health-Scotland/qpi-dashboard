@@ -37,7 +37,7 @@ lookup <- import_lookup(lookup_fpath) |>
 # obsolete: # sub_path <- paste0(data_folder, "data_submissions/")
 
 new_data <- map(networks,
-                import_extracts,
+                import_extracts(data_folder),
                 sub_path = sub_path,
                 year_vals = new_years_vals,
                 years = new_years) |>
