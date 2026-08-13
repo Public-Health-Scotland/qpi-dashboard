@@ -33,9 +33,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
   # Usually will find hospsurg file and non-surgical file. 
   extract_path <- here(data_folder, "BOXI_extracts") # path to input files 
   message(c("Path to your input data: ", extract_path))
-  # Convert the year to a form that will match the relevant bit of the filenames
-  year_pattern <- str_replace(new_years[1], "/", "[-_]")
-  filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx") 
+  filenm_pattern <- str_c(".*\\.xlsx") 
   data_folder_files <- list.files(
     path = extract_path,
     pattern = filenm_pattern,
@@ -43,34 +41,21 @@ import_extracts <- function(data_folder, extracts_filenames) {
     ignore.case = TRUE
   )
   
-  message("Comparing extract files named in housekeeping.R to those in data folder...")
-  if (any(!extracts_filenames %in% data_folder_files)){
-  message("Missing input extract files: ")
-    message(!extracts_filenames %in% data_folder_files)
-  } 
+  message("Please check that each of the extract files is named in housekeeping.R, 
+  and is also detected in the data folder...")
+  message("Housekeeping.R: ", extracts_filenames)
+  message("Files detected in data folder: ", data_folder_files)
   
-  # Don't look for HOSPSURG if data is lymphoma or acute leukaemia
-  # since they have no surgical QPIs. 
-  if (! str_detect(str_to_lower( tsg, "leuk|lymphoma"))) {
-  # Read in extract for HOSPSURG. 
-  # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
-  # Make it match eg 2023-24 or 2024_25
   
-  hospsurg_filenm_pattern <- str_c(year_pattern, ".*HOSPSURG.*", "\\.xlsx")
-  # hospsurg_extract_file <- list.files(
-  #   path = extract_path,
-  #   pattern = hospsurg_filenm_pattern,
-  #   full.names = TRUE,
-  #   ignore.case = TRUE
-  # )
-  if (length(hospsurg_extract_file) > 1) {
-    message("More than one filename matches the criteria. Please make sure 
-          only the desired HOSPSURG file matches the pattern: " )
-    message(hospsurg_filenm_pattern) 
+  new_data <- tibble() 
+  for (one_filename in extracts_filenames) {
+    extract_file <- here(extract_path, one_filename)
+    scot_raw_tab <- readWorkbook(extract_file, sheet = 1)
+    hb_raw_tab <- readWorkbook(extract_file, sheet = 2)
+    bind_rows(new_data, scot_raw_tab, hb_raw_tab)
   }
-  } # end of reading in HOSPSURG
   
-  
+  return(new_data)
   
 }
 
