@@ -62,7 +62,7 @@ age_groups <- c("85+",
 
 # Data Folder
 # The lookup folder and extracts folder will be derived from this path 
-# ie they're sub-folders of the data folder. 
+# ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
                       "Data", "new_process", "bladder_2026") 
 
@@ -70,8 +70,10 @@ data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
 # List each extract file. 
 # This is flexible because for some tumours there are additional reports, 
 # not just HOSPSURG and the main QPI eg QPI 12 of testis is separate. 
-# eg 
-extracts_filenames <- c("")
+# eg c("2024_25_Rectangular_QPI_Colorectal_v4_non-surgical.xlsx", 
+# "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
+# "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
+extracts_filenames <- c("2023-2024 Rectglr_QPI_Bladder_v4_non-surgical_-_Archived_-_diag_before_31_mar_2024_only.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
@@ -94,8 +96,8 @@ tsg_sex <- case_when(
 # input files
 
 hb_hosp_in_fpath <- here(data_folder,
-                           "HB_Hosp_previous",
-                           "HB_Hosp_QPI.xlsx")
+                         "excels_for_tableau/initial_run/input/",
+                         "HB_Hosp_QPI.xlsx")
 
 age_gender_in_fpath <- paste0(data_folder,
                               "excels_for_tableau/initial_run/input/",

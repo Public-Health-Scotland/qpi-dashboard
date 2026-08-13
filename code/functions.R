@@ -31,7 +31,6 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
 import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
-  # In colorectal, also matches the liver mets file for QPI 15. 
   extract_path <- here(data_folder, "BOXI_extracts") # path to input files 
   message(c("Path to your input data: ", extract_path))
   # Convert the year to a form that will match the relevant bit of the filenames
