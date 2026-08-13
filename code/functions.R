@@ -53,10 +53,33 @@ import_extracts <- function(data_folder, extracts_filenames) {
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
     extract_file <- here(extract_path, one_filename) 
+    
+    # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
-    scot_sheet_name <- tab_names[str_detect(tab_names, regex("scot", ignore_case = TRUE))][1]
+    scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
     scot_raw_tab <- readWorkbook(extract_file, sheet = scot_sheet_name, colNames = FALSE)
-    hb_sheet_name <- tab_names[str_detect(tab_names, regex("hb", ignore_case = TRUE))][1]
+    # search_string <- "QPI.*dashboard"
+    # data_coord_loc <- which(
+    #   str_detect(tolower(as.matrix(scot_raw_tab)), "QPI 9"), arr.ind = TRUE)
+    # start_row <- data_coord_loc[1, "row"] 
+    # start_col <- data_coord_loc[1, "col"]
+    # 
+    # skip_rows <- NULL
+    # col_skip <- 0
+    # search_string <- "Monthly Returns"
+    # max_cols_to_search <- 10
+    # max_rows_to_search <- 10
+    # 
+    # # Note, for the - 0, you may need to add/subtract a row if you end up skipping too far later.
+    # while (length(skip_rows) == 0) {
+    #   col_skip <- col_skip + 1
+    #   if (col_skip == max_cols_to_search) break
+    #   skip_rows <- which(stringr::str_detect(temp_read[1:max_rows_to_search,col_skip][[1]],search_string)) - 0
+    #   
+    # }
+    
+    
+    hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE)
     bind_rows(new_data, scot_raw_tab, hb_raw_tab)
   }
