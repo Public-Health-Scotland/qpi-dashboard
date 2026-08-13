@@ -44,14 +44,20 @@ import_extracts <- function(data_folder, extracts_filenames) {
   message("Please check that each of the extract files is named in housekeeping.R, 
   and is also detected in the data folder...")
   message("Housekeeping.R: ", extracts_filenames)
-  message("Files detected in data folder: ", data_folder_files)
+  message("Files detected in data folder: ", data_folder_files) 
+  message("WARNING: The script assumes the following:
+          the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
+          the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
   
   
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
-    extract_file <- here(extract_path, one_filename)
-    scot_raw_tab <- readWorkbook(extract_file, sheet = 1)
-    hb_raw_tab <- readWorkbook(extract_file, sheet = 2)
+    extract_file <- here(extract_path, one_filename) 
+    tab_names <- getSheetNames(extract_file)
+    scot_sheet_name <- tab_names[str_detect(tab_names, regex("scot", ignore_case = TRUE))][1]
+    scot_raw_tab <- readWorkbook(extract_file, sheet = scot_sheet_name, colNames = FALSE)
+    hb_sheet_name <- tab_names[str_detect(tab_names, regex("hb", ignore_case = TRUE))][1]
+    hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE)
     bind_rows(new_data, scot_raw_tab, hb_raw_tab)
   }
   
