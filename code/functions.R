@@ -28,7 +28,7 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
 }
 
 # import_extracts replaces import_submission, below
-import_extracts <- function(data_folder) {
+import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
   # In colorectal, also matches the liver mets file for QPI 15. 
@@ -37,12 +37,18 @@ import_extracts <- function(data_folder) {
   # Convert the year to a form that will match the relevant bit of the filenames
   year_pattern <- str_replace(new_years[1], "/", "[-_]")
   filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx") 
-  data_extract_files <- list.files(
+  data_folder_files <- list.files(
     path = extract_path,
     pattern = filenm_pattern,
     full.names = TRUE,
     ignore.case = TRUE
   )
+  
+  message("Comparing extract files named in housekeeping.R to those in data folder...")
+  if (any(!extracts_filenames %in% data_folder_files)){
+  message("Missing input extract files: ")
+    message(!extracts_filenames %in% data_folder_files)
+  } 
   
   # Don't look for HOSPSURG if data is lymphoma or acute leukaemia
   # since they have no surgical QPIs. 

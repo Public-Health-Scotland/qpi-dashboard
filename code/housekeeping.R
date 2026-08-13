@@ -36,7 +36,7 @@ new_years_vals <- c(10)
 # Date of the start of the first new reporting year
 date_start <- dmy("01-04-2023")
 
-# measurability versions (one for each year)
+# measurability versions (one for each year, usually "5.x")
 meas_vers <- c("4.x")
 
 # Workaround to avoid error - create hospital vectors. 
@@ -64,7 +64,14 @@ age_groups <- c("85+",
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "bladder_2026")
+                      "Data", "new_process", "bladder_2026") 
+
+# Extracts filenames
+# List each extract file. 
+# This is flexible because for some tumours there are additional reports, 
+# not just HOSPSURG and the main QPI eg QPI 12 of testis is separate. 
+# eg 
+extracts_filenames <- c("")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
