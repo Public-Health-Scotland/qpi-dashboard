@@ -69,7 +69,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                skipEmptyRows = TRUE,
                                # Not sure why, but offset of 2 is required
                                startRow = as.integer(table_start_position["start_row"]) + 2
-    ) 
+    )  |> 
+      mutate(PerPerformance = as.double(PerPerformance))
 
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
@@ -80,13 +81,13 @@ import_extracts <- function(data_folder, extracts_filenames) {
                               skipEmptyCols = TRUE, 
                               skipEmptyRows = TRUE,
                               startRow = as.integer(hb_table_start_position["start_row"]) + 2
-    )
+    ) |> 
+      mutate(PerPerformance = as.double(PerPerformance)) 
     
     # Rename the column containing health board name 
-    if (any(str_detect(tolower(hb_new_data[ , 2]), "glasgow" ))) {
-      print("found Glasgow, phew.")
-    hb_new_data <- hb_new_data |>
-      mutate(hb_new_data[ , 2], "Location")
+    if (any(str_detect(tolower(hb_new_data[ ,2]), "glasgow"))) {
+      # print("found Glasgow, phew.") # Just checking this is the health board column
+     names(hb_new_data)[2] <- "Location"
     }
     bind_rows(new_data, scot_new_data, hb_new_data)
   }
