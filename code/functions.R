@@ -70,7 +70,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                # Not sure why, but offset of 2 is required
                                startRow = as.integer(table_start_position["start_row"]) + 2
     )  |> 
-      mutate(PerPerformance = as.double(PerPerformance))
+      mutate(PerPerformance = as.double(PerPerformance), 
+             Location = "Scotland")
 
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
@@ -89,7 +90,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
       # print("found Glasgow, phew.") # Just checking this is the health board column
      names(hb_new_data)[2] <- "Location"
     }
-    bind_rows(new_data, scot_new_data, hb_new_data)
+    new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)
   }
   
   return(new_data)
@@ -106,18 +107,14 @@ find_table_start <- function(raw_worksheet){
   max_rows_to_search <- 12
   current_row_checking <- 1
   while (current_row_checking < max_rows_to_search) { 
-    # print(c("row: ", current_row_checking))
     current_col_checking <- 1
     while (current_col_checking < max_cols_to_search) {
-      # print(c("column: ", current_col_checking))
       if (  str_detect(
         raw_worksheet[current_row_checking, current_col_checking], 
         search_string) |>
         coalesce(FALSE) # treat NA values as false
       ){
-        # print(c("MATCH! ", "Curr row is: ", current_row_checking))
         start_positions["start_row"] <- current_row_checking
-        # print(c(" ... and curr col is: ", current_col_checking))
         start_positions["start_col"] <- current_col_checking 
       }
       current_col_checking <- current_col_checking + 1
