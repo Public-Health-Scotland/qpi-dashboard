@@ -1,9 +1,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # functions.R
 # 
-# Define functions used in other scripts
+# Define functions used in other scripts. 
 # 
-# R version 4.4
+# R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/packages.R")
@@ -48,8 +48,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
   message("WARNING: The script assumes the following:
           the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
           the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
-  
-  
+
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
     # for testing   #  one_filename <- extracts_filenames[1]
