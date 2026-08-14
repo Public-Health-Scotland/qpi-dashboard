@@ -9,7 +9,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
-# Please edit the housekeeping file to specify the tsg and year of diagnosis. # Calls housekeeping, which also calls functions, which also calls packages
+# Please edit the housekeeping file to specify the tsg and year of diagnosis. 
+# Calls housekeeping, which also calls functions, which also calls packages. 
 source("code/housekeeping.R") 
 
 # Check there is always just one year's worth of data to be read in. 
@@ -36,15 +37,15 @@ lookup <- import_lookup(lookup_fpath) |>
 # new data
 
 new_data <- import_extracts(data_folder, extracts_filenames)
-                
+
+new_data <- new_data |>
+  rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
+  mutate(Cyear = as.character(new_years[1]))
                
   # list_rbind() |>
   # mutate(
-  #    year_vals = new_years_vals,
-  #               years = new_years) |>
-  #   Year = as.character(Year),
+  #    Year = as.character(Year),
   #   Network = as.character(Network),
-  #   Location = as.character(Location),
   #   QPI = as.character(QPI),
   #   surg_diag = as.character(surg_diag),
   #   board_hosp = as.character(board_hosp),
