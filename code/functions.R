@@ -63,15 +63,23 @@ import_extracts <- function(data_folder, extracts_filenames) {
     table_start_position <- find_table_start(scot_raw_tab)
 
     scot_new_data <- read.xlsx(extract_file, 
-                                  sheet = scot_sheet_name, 
-                                  colNames = FALSE, 
-                                  #start_col = table_start_position["start_col"],
-                                  startRow = table_start_position["start_row"] 
-                                  )
+                               sheet = scot_sheet_name, 
+                               colNames = TRUE, 
+                               skipEmptyCols = TRUE, 
+                               startRow = table_start_position["start_row"] 
+    )
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
-    hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE)
-    bind_rows(new_data, scot_new_data, hb_raw_tab)
+    hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
+    table_start_position <- find_table_start(hb_raw_tab)
+    hb_new_data  <- read.xlsx(extract_file, 
+                              sheet = hb_sheet_name, 
+                              colNames = TRUE, 
+                              skipEmptyCols = TRUE, 
+                              startRow = table_start_position["start_row"] 
+    )
+    
+    bind_rows(new_data, scot_new_data, hb_new_data)
   }
   
   return(new_data)
