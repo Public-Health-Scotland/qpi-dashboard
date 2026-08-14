@@ -23,19 +23,21 @@ source("code/functions.R")
 # In development values for tsg
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Colorectal"
+tsg <- "Bladder"
 
 # For the BO input, important to specify just one Cyear at a time 
 # (eg "2023" or "2023/24")
 # Colorectal April to March, 2023/4 then 2024/25 update running summer 2026.
 new_years <- c("2023/24")
-new_years_vals <- c(11)
+# new_years_vals is the Year X year number eg most cancers started QPI data 
+# collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
+new_years_vals <- c(10)
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-04-2023")
 
-# measurability versions (one for each year)
-meas_vers <- c("4.5")
+# measurability versions (one for each year, usually "5.x")
+meas_vers <- c("4.x")
 
 # Workaround to avoid error - create hospital vectors. 
 # This is just backwards compatibility with the submission / templates approach.
@@ -60,9 +62,20 @@ age_groups <- c("85+",
 
 # Data Folder
 # The lookup folder and extracts folder will be derived from this path 
-# ie they're sub-folders of the data folder. 
+# ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "Colorectal", "Data", "2026")
+                      "Data", "new_process", "bladder_2026") 
+
+extract_path <- here(data_folder, "BOXI_extracts") # path to input files
+
+# Extracts filenames
+# List each extract file. 
+# This is flexible because for some tumours there are additional reports, 
+# not just HOSPSURG and the main QPI eg QPI 12 of testis is separate. 
+# eg c("2024_25_Rectangular_QPI_Colorectal_v4_non-surgical.xlsx", 
+# "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
+# "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
+extracts_filenames <- c("2023-2024 Rectglr_QPI_Bladder_v4_non-surgical_-_Archived_-_diag_before_31_mar_2024_only.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
@@ -85,8 +98,8 @@ tsg_sex <- case_when(
 # input files
 
 hb_hosp_in_fpath <- here(data_folder,
-                           "HB_Hosp_previous",
-                           "HB_Hosp_QPI.xlsx")
+                         "excels_for_tableau/initial_run/input/",
+                         "HB_Hosp_QPI.xlsx")
 
 age_gender_in_fpath <- paste0(data_folder,
                               "excels_for_tableau/initial_run/input/",

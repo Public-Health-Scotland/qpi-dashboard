@@ -34,30 +34,28 @@ lookup <- import_lookup(lookup_fpath) |>
   select(-SurgDiag)
 
 # new data
-# obsolete # sub_path <- paste0(data_folder, "data_submissions/")
-extract_path <- here(data_folder, "BOXI_extracts")
 
-new_data <- map(networks,
-                import_extracts,
-                sub_path = sub_path,
-                year_vals = new_years_vals,
-                years = new_years) |>
-  list_rbind() |>
-  mutate(
-    Year = as.character(Year),
-    Network = as.character(Network),
-    Location = as.character(Location),
-    QPI = as.character(QPI),
-    surg_diag = as.character(surg_diag),
-    board_hosp = as.character(board_hosp),
-    Cancer = as.character(Cancer),
-    Numerator = as.numeric(Numerator),
-    Denominator = as.numeric(Denominator),
-    nr_numerator = as.numeric(nr_numerator),
-    nr_exclusions = as.numeric(nr_exclusions),
-    nr_denominator = as.numeric(nr_denominator),
-    Comments = as.character(Comments)
-  )
+new_data <- import_extracts(data_folder, extracts_filenames)
+                
+               
+  # list_rbind() |>
+  # mutate(
+  #    year_vals = new_years_vals,
+  #               years = new_years) |>
+  #   Year = as.character(Year),
+  #   Network = as.character(Network),
+  #   Location = as.character(Location),
+  #   QPI = as.character(QPI),
+  #   surg_diag = as.character(surg_diag),
+  #   board_hosp = as.character(board_hosp),
+  #   Cancer = as.character(Cancer),
+  #   Numerator = as.numeric(Numerator),
+  #   Denominator = as.numeric(Denominator),
+  #   nr_numerator = as.numeric(nr_numerator),
+  #   nr_exclusions = as.numeric(nr_exclusions),
+  #   nr_denominator = as.numeric(nr_denominator),
+  #   Comments = as.character(Comments)
+  #)
 
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
