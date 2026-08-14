@@ -31,7 +31,7 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
 import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
-  extract_path <- here(data_folder, "BOXI_extracts") # path to input files 
+   
   message(c("Path to your input data: ", extract_path))
   filenm_pattern <- str_c(".*\\.xlsx") 
   data_folder_files <- list.files(
@@ -60,15 +60,14 @@ import_extracts <- function(data_folder, extracts_filenames) {
     scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
     scot_raw_tab <- readWorkbook(extract_file, sheet = scot_sheet_name, colNames = FALSE)
     
-    table_start <- find_table_start(scot_raw_tab)
+    table_start_position <- find_table_start(scot_raw_tab)
 
-    
-    scot_new_data <- readWorkbook(extract_file, sheet = scot_sheet_name, 
+    scot_new_data <- read.xlsx(extract_file, 
+                                  sheet = scot_sheet_name, 
                                   colNames = FALSE, 
-                                  start_col = find_table_start["start_col"],
-                                  start_row = find_table_start["start_row"] 
+                                  #start_col = table_start_position["start_col"],
+                                  startRow = table_start_position["start_row"] 
                                   )
-    
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE)
@@ -81,31 +80,35 @@ import_extracts <- function(data_folder, extracts_filenames) {
 
 find_table_start <- function(raw_worksheet){
   
-  search_string <- "QPI.*dashboard" 
+  search_string <- "QPI.*dashboard name" 
   
   # Create named vector, for returning the result 
-  start_position <- c(start_row = 0, start_col = 0)
-  max_cols_to_search <- 12
+  start_positions <- c(start_row = 0, start_col = 0)
+  max_cols_to_search <- 7
   max_rows_to_search <- 12
   current_row_checking <- 1
-  current_col_checking <- 1
   while (current_row_checking < max_rows_to_search) { 
+    # print(c("row: ", current_row_checking))
+    current_col_checking <- 1
     while (current_col_checking < max_cols_to_search) {
-      
-    if (  str_detect(raw_worksheet[current_row_checking, current_col_checking], 
-                     search_string) |>
-          coalesce(FALSE) # treat NA values as false
-          ){
-      print("Curr row is: ", current_row_checking)
-      print(" ... and curr col is: ", current_col_checking)
-    }
+      # print(c("column: ", current_col_checking))
+      if (  str_detect(
+        raw_worksheet[current_row_checking, current_col_checking], 
+        search_string) |>
+        coalesce(FALSE) # treat NA values as false
+      ){
+        # print(c("MATCH! ", "Curr row is: ", current_row_checking))
+        start_positions["start_row"] <- current_row_checking
+        # print(c(" ... and curr col is: ", current_col_checking))
+        start_positions["start_col"] <- current_col_checking 
+      }
       current_col_checking <- current_col_checking + 1
     }
     
     current_row_checking <- current_row_checking + 1 
-    }
-  return(start_positions) 
   }
+  return(start_positions) 
+}
 
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter

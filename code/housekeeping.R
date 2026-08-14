@@ -66,6 +66,8 @@ age_groups <- c("85+",
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
                       "Data", "new_process", "bladder_2026") 
 
+extract_path <- here(data_folder, "BOXI_extracts") # path to input files
+
 # Extracts filenames
 # List each extract file. 
 # This is flexible because for some tumours there are additional reports, 
