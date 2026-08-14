@@ -65,8 +65,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
     
     scot_new_data <- readWorkbook(extract_file, sheet = scot_sheet_name, 
                                   colNames = FALSE, 
-                                  start_col = table_start["start_col"],
-                                  start_row = table_start["start_row"] 
+                                  start_col = find_table_start["start_col"],
+                                  start_row = find_table_start["start_row"] 
                                   )
     
     
