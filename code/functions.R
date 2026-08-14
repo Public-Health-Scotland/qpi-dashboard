@@ -52,41 +52,60 @@ import_extracts <- function(data_folder, extracts_filenames) {
   
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
+    # for testing # one_filename <- extracts_filenames[1]
     extract_file <- here(extract_path, one_filename) 
     
     # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
     scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
     scot_raw_tab <- readWorkbook(extract_file, sheet = scot_sheet_name, colNames = FALSE)
-    # search_string <- "QPI.*dashboard"
-    # data_coord_loc <- which(
-    #   str_detect(tolower(as.matrix(scot_raw_tab)), "QPI 9"), arr.ind = TRUE)
-    # start_row <- data_coord_loc[1, "row"] 
-    # start_col <- data_coord_loc[1, "col"]
-    # 
-    # skip_rows <- NULL
-    # col_skip <- 0
-    # search_string <- "Monthly Returns"
-    # max_cols_to_search <- 10
-    # max_rows_to_search <- 10
-    # 
-    # # Note, for the - 0, you may need to add/subtract a row if you end up skipping too far later.
-    # while (length(skip_rows) == 0) {
-    #   col_skip <- col_skip + 1
-    #   if (col_skip == max_cols_to_search) break
-    #   skip_rows <- which(stringr::str_detect(temp_read[1:max_rows_to_search,col_skip][[1]],search_string)) - 0
-    #   
-    # }
+    
+    table_start <- find_table_start(scot_raw_tab)
+
+    
+    scot_new_data <- readWorkbook(extract_file, sheet = scot_sheet_name, 
+                                  colNames = FALSE, 
+                                  start_col = table_start["start_col"],
+                                  start_row = table_start["start_row"] 
+                                  )
     
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE)
-    bind_rows(new_data, scot_raw_tab, hb_raw_tab)
+    bind_rows(new_data, scot_new_data, hb_raw_tab)
   }
   
   return(new_data)
   
-}
+} 
+
+find_table_start <- function(raw_worksheet){
+  
+  search_string <- "QPI.*dashboard" 
+  
+  # Create named vector, for returning the result 
+  start_position <- c(start_row = 0, start_col = 0)
+  max_cols_to_search <- 12
+  max_rows_to_search <- 12
+  current_row_checking <- 1
+  current_col_checking <- 1
+  while (current_row_checking < max_rows_to_search) { 
+    while (current_col_checking < max_cols_to_search) {
+      
+    if (  str_detect(raw_worksheet[current_row_checking, current_col_checking], 
+                     search_string) |>
+          coalesce(FALSE) # treat NA values as false
+          ){
+      print("Curr row is: ", current_row_checking)
+      print(" ... and curr col is: ", current_col_checking)
+    }
+      current_col_checking <- current_col_checking + 1
+    }
+    
+    current_row_checking <- current_row_checking + 1 
+    }
+  return(start_positions) 
+  }
 
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter
