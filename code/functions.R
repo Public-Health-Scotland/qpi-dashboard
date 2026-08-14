@@ -52,7 +52,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
   
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
-    # for testing # one_filename <- extracts_filenames[1]
+    # for testing   #  one_filename <- extracts_filenames[1]
     extract_file <- here(extract_path, one_filename) 
     
     # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
@@ -66,6 +66,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                sheet = scot_sheet_name, 
                                colNames = TRUE, 
                                skipEmptyCols = TRUE, 
+                               skipEmptyRows = TRUE,
                                startRow = as.integer(table_start_position["start_row"]) + 2
     ) 
     cols_to_drop <- as.integer(table_start_position["start_col"]) - 2 
@@ -76,12 +77,13 @@ import_extracts <- function(data_folder, extracts_filenames) {
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
-    table_start_position <- find_table_start(hb_raw_tab)
+    hb_table_start_position <- find_table_start(hb_raw_tab)
     hb_new_data  <- readWorkbook(extract_file, 
                               sheet = hb_sheet_name, 
                               colNames = TRUE, 
                               skipEmptyCols = TRUE, 
-                              startRow = as.integer(table_start_position["start_row"]) + 2
+                              skipEmptyRows = TRUE,
+                              startRow = as.integer(hb_table_start_position["start_row"]) + 2
     )
     cols_to_drop <- as.integer(table_start_position["start_col"]) - 1 
     for (i in 1:cols_to_drop) {
