@@ -27,36 +27,102 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
 }
 
-# import_extracts replaces import_submission
-import_extracts <- function() {
+# import_extracts replaces import_submission, below
+import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
-  # In colorectal, also matches the liver mets file for QPI 15. 
-  year_pattern <- str_replace(new_years[1], "/", "[-_]")
-  filenm_pattern <- str_c(".*", year_pattern, ".*\\.xlsx")
-  data_extract_files <- list.files(
+   
+  message(c("Path to your input data: ", extract_path))
+  filenm_pattern <- str_c(".*\\.xlsx") 
+  data_folder_files <- list.files(
     path = extract_path,
     pattern = filenm_pattern,
     full.names = TRUE,
     ignore.case = TRUE
   )
   
-  # Read in extract for HOSPSURG. 
-  # Filename should contain <Cyear> + 'HOSPSURG' + .xlsx 
-  # Make it match eg 2023-24 or 2024_25
+  message("Please check that each of the extract files is named in housekeeping.R, 
+  and is also detected in the data folder...")
+  message("Housekeeping.R: ", extracts_filenames)
+  message("Files detected in data folder: ", data_folder_files) 
+  message("WARNING: The script assumes the following:
+          the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
+          the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
   
-  hospsurg_filenm_pattern <- str_c(year_pattern, ".*HOSPSURG.*", "\\.xlsx")
-  # hospsurg_extract_file <- list.files(
-  #   path = extract_path,
-  #   pattern = hospsurg_filenm_pattern,
-  #   full.names = TRUE,
-  #   ignore.case = TRUE
-  # )
-  if (length(hospsurg_extract_file) > 1) {
-    message("More than one filename matches the criteria. Please make sure 
-          only the desired HOSPSURG file matches the pattern: " )
-    message(hospsurg_filenm_pattern) 
+  
+  new_data <- tibble() 
+  for (one_filename in extracts_filenames) {
+    # for testing   #  one_filename <- extracts_filenames[1]
+    extract_file <- here(extract_path, one_filename) 
+    
+    # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
+    tab_names <- getSheetNames(extract_file)
+    scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
+    scot_raw_tab <- readWorkbook(extract_file, sheet = scot_sheet_name, colNames = FALSE)
+    
+    table_start_position <- find_table_start(scot_raw_tab)
+
+    scot_new_data <- readWorkbook(extract_file, 
+                               sheet = scot_sheet_name, 
+                               colNames = TRUE, 
+                               skipEmptyCols = TRUE, 
+                               skipEmptyRows = TRUE,
+                               # Not sure why, but offset of 2 is required
+                               startRow = as.integer(table_start_position["start_row"]) + 2
+    )  |> 
+      mutate(PerPerformance = as.double(PerPerformance), 
+             Location = "Scotland")
+
+    hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
+    hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
+    hb_table_start_position <- find_table_start(hb_raw_tab)
+    hb_new_data  <- readWorkbook(extract_file, 
+                              sheet = hb_sheet_name, 
+                              colNames = TRUE, 
+                              skipEmptyCols = TRUE, 
+                              skipEmptyRows = TRUE,
+                              startRow = as.integer(hb_table_start_position["start_row"]) + 2
+    ) |> 
+      mutate(PerPerformance = as.double(PerPerformance)) 
+    
+    # Rename the column containing health board name 
+    if (any(str_detect(tolower(hb_new_data[ ,2]), "glasgow"))) {
+      # print("found Glasgow, phew.") # Just checking this is the health board column
+     names(hb_new_data)[2] <- "Location"
+    }
+    new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)
   }
+  
+  return(new_data)
+  
+} 
+
+find_table_start <- function(raw_worksheet){
+  
+  search_string <- "QPI.*dashboard name" 
+  
+  # Create named vector, for returning the result 
+  start_positions <- c(start_row = 0, start_col = 0)
+  max_cols_to_search <- 7
+  max_rows_to_search <- 12
+  current_row_checking <- 1
+  while (current_row_checking < max_rows_to_search) { 
+    current_col_checking <- 1
+    while (current_col_checking < max_cols_to_search) {
+      if (  str_detect(
+        raw_worksheet[current_row_checking, current_col_checking], 
+        search_string) |>
+        coalesce(FALSE) # treat NA values as false
+      ){
+        start_positions["start_row"] <- current_row_checking
+        start_positions["start_col"] <- current_col_checking 
+      }
+      current_col_checking <- current_col_checking + 1
+    }
+    
+    current_row_checking <- current_row_checking + 1 
+  }
+  return(start_positions) 
 }
 
 # Should be called passing in the following arguments: 
