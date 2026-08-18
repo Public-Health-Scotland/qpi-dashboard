@@ -12,24 +12,23 @@ source("code/functions.R")
 # The below variables vary depending on the the nature of the update.
 # They will need edited for each new dashboard update.
 
-# tsg stands for "Tumour Specific Group"
-# The following are acceptable values:
+# tsg = "Tumour Specific Group"
+# The following are acceptable values
 # "Acute Leukaemia" "Bladder"     "Breast"           "Cervical"
 # "Colorectal"      "Endometrial" "Head and Neck"    "Lung"
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 # "Brain and CNS" "HPB" "Sarcoma"
 # 
-# In-development values for tsg:
+# In development values for tsg
 # "Mesothelioma" "Thyroid"
 
+tsg <- "Bladder"
 
-
-tsg <- "Ovarian"
-
-# For the BO input, important to specify JUST ONE Cyear at a time 
+# For the BO input, important to specify just one Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2022/23")
+# Colorectal April to March, 2023/4 then 2024/25 update running summer 2026.
+new_years <- c("2023/24")
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
 new_years_vals <- c(10)
@@ -80,7 +79,7 @@ extracts_filenames <- c("2023-2024 Rectglr_QPI_Bladder_v4_non-surgical_-_Archive
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
-                            "Data", "QPI_lookups", "regional_geography")
+                            "Data", "qpi_lookups", "regional_geography")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
