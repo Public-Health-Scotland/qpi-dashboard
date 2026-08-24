@@ -693,7 +693,7 @@ set_up_regions <- function() {
   # here, because they are upper case with ampersands instead of "and"(!).
   # Could use new eCASE_name column in the lookup to match. 
   regions_lookup <- readWorkbook(here(regional_networks_folder, 
-                                      "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx")) |>
+                                      "lookup_health_board_by_cancer_hb_14_hb19_all_regions.xlsx")) |>
     clean_names()
   
   if (str_equal(tsg, "Acute Leukaemia")){
