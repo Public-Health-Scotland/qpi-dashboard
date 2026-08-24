@@ -697,16 +697,16 @@ set_up_regions <- function() {
     clean_names()
   
   if (str_equal(tsg, "Acute Leukaemia")){
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+    tsg_specific_regions_lookup <- regions_lookup |> 
       mutate(Network = rcn_for_acute_leukaemia)
   } else if(str_equal(tsg, "Lymphoma")) {
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+    tsg_specific_regions_lookup <- regions_lookup |> 
       mutate(Network = rcn_for_lymphoma)
   } else if(str_equal(tsg, "Brain and CNS")){
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |>
+    tsg_specific_regions_lookup <- regions_lookup |>
       mutate(Network = rcn_for_brain_and_cns_cancer)
   } else {
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |>
+    tsg_specific_regions_lookup <- regions_lookup |>
       mutate(Network = default_regional_cancer_network)
   }
   return(tsg_specific_regions_lookup)

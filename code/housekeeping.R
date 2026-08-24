@@ -79,7 +79,7 @@ extracts_filenames <- c("Draft_Rectangular_2022-2023_QPI_Ovarian_-_v4.xlsx",
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
-                            "Data", "QPI_lookups", "regional_geography") 
+                            "Data", "new_process", "regional_cancer_networks") 
 HB_geo_groups <- set_up_regions()
 
 
