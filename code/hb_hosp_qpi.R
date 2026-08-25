@@ -68,8 +68,7 @@ new_data <- new_data |>
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
-# Assign health boards to regions
-set_up_regions(tsg)
+
 
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
