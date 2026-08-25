@@ -65,10 +65,13 @@ new_data <- new_data |>
 new_data <- new_data |>
   left_join(
     HB_geo_groups |>
-      select(e_case_hb_name, Network), 
+      select(e_case_hb_name, Network, qpi_dashboard_hb_abbreviation), 
     by = join_by("Location" == "e_case_hb_name")) |>
-  mutate(Location = e_case_hb_name) |>
-  select(-e_case_hb_name) 
+  mutate(Location = qpi_dashboard_hb_abbreviation) 
+
+
+#|>
+  #select(-e_case_hb_name) 
 
 
 
