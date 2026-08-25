@@ -62,17 +62,20 @@ new_data <- new_data |>
   mutate(Cyear = as.character(new_years[1])) 
 
 # Convert HB names to dashboard abbreviation
+# try re-writing using recode_values
+
+# new_data <- new_data |>
+#   left_join(
+#     HB_geo_groups |>
+#       select(e_case_hb_name, Network, qpi_dashboard_hb_abbreviation), 
+#     by = join_by("Location" == "e_case_hb_name")) |>
+#   mutate(Location = qpi_dashboard_hb_abbreviation) |>
+#   select(-qpi_dashboard_hb_abbreviation) 
+
+# NEED TO FIX BUG - DELETES SCOTLAND VALUES COS MISSING
 new_data <- new_data |>
-  left_join(
-    HB_geo_groups |>
-      select(e_case_hb_name, Network, qpi_dashboard_hb_abbreviation), 
-    by = join_by("Location" == "e_case_hb_name")) |>
-  mutate(Location = qpi_dashboard_hb_abbreviation) 
-
-
-#|>
-  #select(-e_case_hb_name) 
-
+  mutate(Location = recode_values(Location, from = HB_geo_groups$e_case_hb_name, 
+                                  to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
 
 
