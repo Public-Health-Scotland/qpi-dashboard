@@ -683,7 +683,7 @@ make_summary_table <- function(summary_data_path) {
 
 # Identify what HBs belong to what regions, dependent on the TSG
 # since some HBs differ for brain & CNS, lymphoma and ac leuk
-set_up_regions <- function(this_tsg) { 
+set_up_regions <- function() { 
   # Read the data from: 
   # H:\Cancer_QPIs\Data\qpi_lookups\regional_geography
   # "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx" 
@@ -693,22 +693,23 @@ set_up_regions <- function(this_tsg) {
   # here, because they are upper case with ampersands instead of "and"(!).
   # Could use new eCASE_name column in the lookup to match. 
   regions_lookup <- readWorkbook(here(regional_networks_folder, 
-                                      "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx")) 
-  tsg_specific_regions_lookup <-  regions_lookup |>
-    clean_names() 
+                                      "lookup_health_board_by_cancer_hb_14_hb19_all_regions.xlsx")) |>
+    clean_names()
+  
   if (str_equal(tsg, "Acute Leukaemia")){
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+    tsg_specific_regions_lookup <- regions_lookup |> 
       mutate(Network = rcn_for_acute_leukaemia)
   } else if(str_equal(tsg, "Lymphoma")) {
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |> 
+    tsg_specific_regions_lookup <- regions_lookup |> 
       mutate(Network = rcn_for_lymphoma)
   } else if(str_equal(tsg, "Brain and CNS")){
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |>
+    tsg_specific_regions_lookup <- regions_lookup |>
       mutate(Network = rcn_for_brain_and_cns_cancer)
   } else {
-    tsg_specific_regions_lookup <- tsg_specific_regions_lookup |>
-    mutate(Network = default_regional_cancer_network)
+    tsg_specific_regions_lookup <- regions_lookup |>
+      mutate(Network = default_regional_cancer_network)
   }
+  return(tsg_specific_regions_lookup)
 }
 
 #### check_submissions.R ----

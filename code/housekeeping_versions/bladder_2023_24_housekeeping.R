@@ -12,28 +12,29 @@ source("code/functions.R")
 # The below variables vary depending on the the nature of the update.
 # They will need edited for each new dashboard update.
 
-# tsg stands for "Tumour Specific Group"
-# The following are acceptable values:
+# tsg = "Tumour Specific Group"
+# The following are acceptable values
 # "Acute Leukaemia" "Bladder"     "Breast"           "Cervical"
 # "Colorectal"      "Endometrial" "Head and Neck"    "Lung"
 # "Lymphoma"        "Melanoma"    "Ovarian"          "Prostate"
 # "Renal"           "Testicular"  "Upper GI-Gastric" "Upper GI-Oesophageal"
 # "Brain and CNS" "HPB" "Sarcoma"
 # 
-# In-development values for tsg:
+# In development values for tsg
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Ovarian"
+tsg <- "Bladder"
 
-# For the BO input, important to specify JUST ONE Cyear at a time 
+# For the BO input, important to specify just one Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2022/23")
+# Colorectal April to March, 2023/4 then 2024/25 update running summer 2026.
+new_years <- c("2023/24")
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
 new_years_vals <- c(10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2022")
+date_start <- dmy("01-04-2023")
 
 # measurability versions (one for each year, usually "5.x")
 meas_vers <- c("4.x")
@@ -44,7 +45,7 @@ nca_hosps <- c()
 sca_hosps <- c()
 wos_hosps <- c()
 
-## OBSOLETE - Should not need to update - age groups for template :
+## age groups for template :
 # Enter age groups for background info manually. If none supplied then the
 # script will use the most common set of (<45, 45-49 ... 80-84, >85)
 # To use default age groups enter a NULL vector e.g. "age_groups <- c()"
@@ -63,7 +64,7 @@ age_groups <- c("85+",
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "ovarian_2026") 
+                      "Data", "new_process", "bladder_2026") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -74,13 +75,11 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # eg c("2024_25_Rectangular_QPI_Colorectal_v4_non-surgical.xlsx", 
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
-extracts_filenames <- c("Draft_Rectangular_2022-2023_QPI_Ovarian_-_v4.xlsx", 
-                        "Draft_Rectangular_2022-2023_QPI_Ovarian_HOSPSURG_v4.xlsx")
+extracts_filenames <- c("2023-2024 Rectglr_QPI_Bladder_v4_non-surgical_-_Archived_-_diag_before_31_mar_2024_only.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
-                            "Data", "new_process", "regional_cancer_networks") 
-HB_geo_groups <- set_up_regions()
+                            "Data", "qpi_lookups", "regional_geography")
 
 
 #~~~~~~~~~~~~~~~~~ Nothing below this line should need edited ~~~~~~~~~~~~~~
@@ -189,12 +188,30 @@ if (any_hosp_qpis == 1) {
 
 ### board names
 ### Creates a data frame, listing the boards belonging to each network, 
-### for the present tsg, based on the last dataset. 
-### Column names are Location and Network. 
-### Migrate to use the excel regions lookup instead of old data. 
-board_names <- set_up_regions() |>
-  select(qpi_dashboard_hb_abbreviation, Network) |>
-  rename(Location = qpi_dashboard_hb_abbreviation)
+### for the present tsg, based on the last dataset 
+### For tsg with no pre-existing list, need to add that. 
+board_names <- hb_hosp_old |> 
+  filter(Board_Hospital == "NHS Board",
+         Cancer == tsg,
+         Location != "Scotland") |>
+  filter(Cyear == max(Cyear)) |> 
+  select(Network, Location) |>
+  arrange(Network, Network == Location) |> 
+  distinct()
+
+# If board_names is empty / null 
+# read in the file "health_boards_to_default_RegionalCancerNetworks.csv" 
+# into df new_tsg_board_names
+
+if ( nrow(board_names) < 1 ) {
+    board_names <- read.csv(file = here(regional_networks_folder,"health_boards_to_default_RegionalCancerNetworks.csv"))
+} 
+
+# If tsg is brain, overwrite board_names
+if ( str_detect(tsg, "^Brain and CNS$" ) ) { 
+    # read in the brain / CNS networks memberships
+    board_names <- read.csv(file = here(regional_networks_folder, "brain_cns_health_boards_to_RegionalCancerNetworks.csv"))
+  } 
 
 
 ### age groups
