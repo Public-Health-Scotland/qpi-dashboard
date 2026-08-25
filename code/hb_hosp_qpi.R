@@ -15,7 +15,7 @@ source("code/housekeeping.R")
 
 # Check there is always just one year's worth of data to be read in. 
 if (length(new_years) > 1) {
-  warning("More than one Cyear detected in housekeeping file. 
+  stop("More than one Cyear detected in housekeeping file. 
           This script is designed to process one year's data at a time.")
 }
 
@@ -34,29 +34,37 @@ hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
 
+# Check that the lookup rows are for same tumour as set in housekeeping global variable 
+if (any(!str_equal(lookup$cancer, tsg))){
+ stop("Problem in lookup.xlsx: The tsg string value specified in 
+      housekeeping.R (", tsg, ") is NOT matched in at least one of the values 
+      in the Cancer column of lookup.xlsx: ", unique(lookup$cancer)) 
+}
+
 # new data
+new_data <- import_extracts(data_folder, extracts_filenames) 
 
-new_data <- import_extracts(data_folder, extracts_filenames)
+# Shorten the QPI name column header to just 'QPI'. 
+# The import functions already identified the first column 
+# by matching search_string "QPI.*dashboard name", so we assume the column index
+# is equal to 1, and do this step first, before any column re-ordering.  
+names(new_data)[1] <- "QPI"
 
+# Add Board_Hospital and cancer aka tsg
+new_data <- new_data |>
+  mutate(Board_Hospital = "NHS Board") |> 
+  mutate(Cancer = tsg)
+
+# Set the Cyear value from housekeeping. 
+# This code should tolerate where column name is already 'Cyear'. 
 new_data <- new_data |>
   rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
-  mutate(Cyear = as.character(new_years[1]))
-               
-  # list_rbind() |>
-  # mutate(
-  #    Year = as.character(Year),
-  #   Network = as.character(Network),
-  #   QPI = as.character(QPI),
-  #   surg_diag = as.character(surg_diag),
-  #   board_hosp = as.character(board_hosp),
-  #   Cancer = as.character(Cancer),
-  #   Numerator = as.numeric(Numerator),
-  #   Denominator = as.numeric(Denominator),
-  #   nr_numerator = as.numeric(nr_numerator),
-  #   nr_exclusions = as.numeric(nr_exclusions),
-  #   nr_denominator = as.numeric(nr_denominator),
-  #   Comments = as.character(Comments)
-  #)
+  mutate(Cyear = as.character(new_years[1])) 
+
+
+
+
+# Set the value of cancer column from the global variable or housekeeping
 
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
