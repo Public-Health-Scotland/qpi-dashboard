@@ -50,7 +50,7 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 # is equal to 1, and do this step first, before any column re-ordering.  
 names(new_data)[1] <- "QPI"
 
-# Add Board_Hospital and cancer aka tsg
+# Add Board_Hospital (constant) and Cancer from tsg global variable
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
   mutate(Cancer = tsg)
@@ -64,7 +64,6 @@ new_data <- new_data |>
 
 
 
-# Set the value of cancer column from the global variable or housekeeping
 
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
