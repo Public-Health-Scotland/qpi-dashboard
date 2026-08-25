@@ -61,7 +61,14 @@ new_data <- new_data |>
   rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
   mutate(Cyear = as.character(new_years[1])) 
 
-
+# Convert HB names to dashboard abbreviation
+new_data <- new_data |>
+  left_join(
+    HB_geo_groups |>
+      select(e_case_hb_name, Network), 
+    by = join_by("Location" == "e_case_hb_name")) |>
+  mutate(Location = e_case_hb_name) |>
+  select(-e_case_hb_name) 
 
 
 
