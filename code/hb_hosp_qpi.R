@@ -50,22 +50,13 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 # is equal to 1, and do this step first, before any column re-ordering.  
 names(new_data)[1] <- "QPI"
 
-# Remove rows for England and empty rows and non-NHS 
-new_data <-  new_data |>
-  filter_out(str_detect(tolower(Location), "england")) |>
-  filter_out(str_detect(tolower(Location), "non.*nhs")) |>
-  filter_out(is.na(Location))
+
 
 # Add Board_Hospital (constant) and Cancer from tsg global variable
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
   mutate(Cancer = tsg)
 
-# Set the Cyear value from housekeeping. 
-# This code should tolerate where column name is already 'Cyear'. 
-new_data <- new_data |>
-  rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
-  mutate(Cyear = as.character(new_years[1])) 
 
 # Populate the Network column in Scotland rows
 new_data <- new_data |>
