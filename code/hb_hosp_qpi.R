@@ -66,24 +66,19 @@ new_data <- new_data |>
   rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
   mutate(Cyear = as.character(new_years[1])) 
 
-# Convert HB names to dashboard abbreviation
-# try re-writing using recode_values
 
-# new_data <- new_data |>
-#   left_join(
-#     HB_geo_groups |>
-#       select(e_case_hb_name, Network, qpi_dashboard_hb_abbreviation), 
-#     by = join_by("Location" == "e_case_hb_name")) |>
-#   mutate(Location = qpi_dashboard_hb_abbreviation) |>
-#   select(-qpi_dashboard_hb_abbreviation) 
-
-# NEED TO FIX BUG - DELETES SCOTLAND VALUES COS MISSING
+# Swap in the health board abbreviations used in the SCRIS Tableau dashboard
 new_data <- new_data |>
   mutate(Location = replace_values(Location, 
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
-
+# Populate the Network column
+new_data <- new_data |>
+  mutate(Network = if_else(
+    str_detect(tolower(Location), "scotland"), 
+    "Scotland", 
+    NA_character_))
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
