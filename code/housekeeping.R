@@ -44,21 +44,6 @@ nca_hosps <- c()
 sca_hosps <- c()
 wos_hosps <- c()
 
-## OBSOLETE - Should not need to update - age groups for template :
-# Enter age groups for background info manually. If none supplied then the
-# script will use the most common set of (<45, 45-49 ... 80-84, >85)
-# To use default age groups enter a NULL vector e.g. "age_groups <- c()"
-age_groups <- c("85+",
-                "80-84", 
-                "75-79", 
-                "70-74", 
-                "65-69", 
-                "60-64", 
-                "55-59", 
-                "50-54", 
-                "45-49", 
-                "0-44")
-
 # Data Folder
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
@@ -67,9 +52,8 @@ data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
-# Extracts filenames
-# List each extract file. 
-# This is flexible because for some tumours there are additional reports, 
+# Extracts' filenames - list each extract file. No strict string-checking... 
+# this is kept flexible because, for some tumours, there are additional reports, 
 # not just HOSPSURG and the main QPI eg QPI 12 of testis is separate. 
 # eg c("2024_25_Rectangular_QPI_Colorectal_v4_non-surgical.xlsx", 
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
@@ -110,22 +94,11 @@ case_asc_in_fpath <- paste0(data_folder,
                             "excels_for_tableau/initial_run/input/",
                             "Background_Data_Case.xlsx")
 
-# sca_fpath <- paste0(data_folder,
-#                     "data_submissions/scan.xlsx")
-# 
-# nca_fpath <- paste0(data_folder,
-#                     "data_submissions/nca.xlsx")
-# 
-# wos_fpath <- paste0(data_folder,
-#                     "data_submissions/woscan.xlsx")
-
 # lookup
-
 lookup_fpath <- here(data_folder,
                        "lookup", "lookup.xlsx")
 
 # templates
-
 #templates_fpath <- paste0(data_folder,
 #                          "templates/")
 
@@ -195,9 +168,3 @@ if (any_hosp_qpis == 1) {
 board_names <- set_up_regions() |>
   select(qpi_dashboard_hb_abbreviation, Network) |>
   rename(Location = qpi_dashboard_hb_abbreviation)
-
-
-### age groups
-
-age_groups <- get_age_groups(age_groups)
-

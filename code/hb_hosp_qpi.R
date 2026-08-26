@@ -50,7 +50,13 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 # is equal to 1, and do this step first, before any column re-ordering.  
 names(new_data)[1] <- "QPI"
 
-# Add Board_Hospital and cancer aka tsg
+# Remove rows for England and empty rows and non-NHS 
+new_data <-  new_data |>
+  filter_out(str_detect(tolower(Location), "england")) |>
+  filter_out(str_detect(tolower(Location), "non.*nhs")) |>
+  filter_out(is.na(Location))
+
+# Add Board_Hospital (constant) and Cancer from tsg global variable
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
   mutate(Cancer = tsg)
@@ -61,16 +67,28 @@ new_data <- new_data |>
   rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
   mutate(Cyear = as.character(new_years[1])) 
 
+# Populate the Network column in Scotland rows
+new_data <- new_data |>
+  mutate(Network = if_else(
+    str_detect(tolower(Location), "scotland"), 
+    "Scotland", 
+    NA_character_)) 
 
-
-
-# Set the value of cancer column from the global variable or housekeeping
-
-
+# Join to allocate rows to regional networks
+new_data <-  new_data |>
+  mutate(Network = replace_values(
+    Location, 
+    from = HB_geo_groups$e_case_hb_name, 
+    to = HB_geo_groups$Network))
+    
+# Swap in the health board abbreviations used in the SCRIS Tableau dashboard
+new_data <- new_data |>
+  mutate(Location = replace_values(Location, 
+                                   from = HB_geo_groups$e_case_hb_name, 
+                                   to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
-# Assign health boards to regions
-set_up_regions(tsg)
+
 
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
