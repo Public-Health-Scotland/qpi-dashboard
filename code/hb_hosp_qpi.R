@@ -86,8 +86,8 @@ new_data <- new_data |>
   mutate(Location = replace_values(Location, 
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
-#### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
+#### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
 
 scotland_rows <- new_data %>% 
