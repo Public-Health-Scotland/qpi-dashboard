@@ -53,7 +53,8 @@ names(new_data)[1] <- "QPI"
 # Remove rows for England and empty rows and non-NHS 
 new_data <-  new_data |>
   filter_out(str_detect(tolower(Location), "england")) |>
-  filter_out(str_detect(tolower(Location), "non.*nhs"))
+  filter_out(str_detect(tolower(Location), "non.*nhs")) |>
+  filter_out(is.na(Location))
 
 # Add Board_Hospital (constant) and Cancer from tsg global variable
 new_data <- new_data |>
@@ -78,7 +79,7 @@ new_data <-  new_data |>
   mutate(Network = replace_values(
     Location, 
     from = HB_geo_groups$e_case_hb_name, 
-    to = HB_geo_groups$Network)
+    to = HB_geo_groups$Network))
     
 # Swap in the health board abbreviations used in the SCRIS Tableau dashboard
 new_data <- new_data |>
