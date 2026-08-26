@@ -66,20 +66,25 @@ new_data <- new_data |>
   rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
   mutate(Cyear = as.character(new_years[1])) 
 
+# Populate the Network column in Scotland rows
+new_data <- new_data |>
+  mutate(Network = if_else(
+    str_detect(tolower(Location), "scotland"), 
+    "Scotland", 
+    NA_character_)) 
 
+# Join to allocate rows to regional networks
+new_data <-  new_data |>
+  mutate(Network = replace_values(
+    Location, 
+    from = HB_geo_groups$e_case_hb_name, 
+    to = HB_geo_groups$Network)
+    
 # Swap in the health board abbreviations used in the SCRIS Tableau dashboard
 new_data <- new_data |>
   mutate(Location = replace_values(Location, 
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
-
-# Populate the Network column
-new_data <- new_data |>
-  mutate(Network = if_else(
-    str_detect(tolower(Location), "scotland"), 
-    "Scotland", 
-    NA_character_))
-
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
 
