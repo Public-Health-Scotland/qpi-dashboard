@@ -102,7 +102,7 @@ new_data <- new_data |>
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
 
-#### Step 2 : Create regional totals for new data, and build publication summary table ----
+#### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
 
 regional_rows <- new_data |>
   # Sum of performance is invalid, so firstly drop this column if it exists
