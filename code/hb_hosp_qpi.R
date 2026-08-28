@@ -58,10 +58,15 @@ new_data <- new_data |>
     )
   )
          
-# Add Board_Hospital (constant) and Cancer from tsg global variable
+# Get the tsg global variable
+new_data <- new_data |>
+  mutate(Cancer = tsg)
+
+# Add SCRIS-specific columns ie Board_Hospital and Comments
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
-  mutate(Cancer = tsg)
+  mutate(Comments = NA)
+
 
 # Populate the Network column in Scotland rows
 new_data <- new_data |>
@@ -97,13 +102,13 @@ new_data <- new_data |>
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
 
-  
-
-#### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
+#### Step 2 : Create regional totals for new data, and build publication summary table ----
 
 regional_rows <- new_data |>
+  # Sum of performance is invalid, so firstly drop this column if it exists
+  select(-any_of("PerPerformance")) |> 
   filter(!str_detect(tolower(Location), "scotland")) |>
-           group_by(QPI, Network) |>
+           group_by(QPI, Network, Cyear) |>
            summarise(
              across(
               where(is.numeric), 
@@ -113,9 +118,13 @@ regional_rows <- new_data |>
            mutate(Location = Network,
                   Board_Hospital = "NHS Board",
                   Cancer = tsg,
-                  Comments = NA)
+                  Comments = NA
+                  ) |> 
+  
+new_data <- new_data |> 
+  bind_rows(regional_rows)
 
-
+#### Step 2b: Build summary table for publications
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
   group_by(QPI, cyear, Year, surg_diag) %>% 
@@ -131,8 +140,7 @@ scotland_minus_comments <- scotland_rows |>
   select(!Comments)
 write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
-new_data <- new_data |> 
-  bind_rows(scotland_rows)
+
 
 #### Step 3 : Join lookup to new data ----
 
