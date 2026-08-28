@@ -50,22 +50,23 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 # is equal to 1, and do this step first, before any column re-ordering.  
 names(new_data)[1] <- "QPI"
 
-# Remove rows for England and empty rows and non-NHS 
-new_data <-  new_data |>
-  filter_out(str_detect(tolower(Location), "england")) |>
-  filter_out(str_detect(tolower(Location), "non.*nhs")) |>
-  filter_out(is.na(Location))
-
-# Add Board_Hospital (constant) and Cancer from tsg global variable
+# Handle NAs in numeric columns only - convert to zeroes
 new_data <- new_data |>
-  mutate(Board_Hospital = "NHS Board") |> 
+  mutate(
+    across(
+    where(is.numeric), ~ replace(.x, is.na(.x), 0)
+    )
+  )
+         
+# Get the tsg global variable
+new_data <- new_data |>
   mutate(Cancer = tsg)
 
-# Set the Cyear value from housekeeping. 
-# This code should tolerate where column name is already 'Cyear'. 
+# Add SCRIS-specific columns ie Board_Hospital and Comments
 new_data <- new_data |>
-  rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
-  mutate(Cyear = as.character(new_years[1])) 
+  mutate(Board_Hospital = "NHS Board") |> 
+  mutate(Comments = NA)
+
 
 # Populate the Network column in Scotland rows
 new_data <- new_data |>
@@ -73,6 +74,19 @@ new_data <- new_data |>
     str_detect(tolower(Location), "scotland"), 
     "Scotland", 
     NA_character_)) 
+
+# Add Golden Jubilee (aka national facility) figures to Glasgow, then drop rows
+new_data <- new_data |>
+  mutate(
+    Location = if_else(str_detect(tolower(Location), "national facility"), 
+                       "NHS GREATER GLASGOW & CLYDE",
+                       Location) 
+  ) |>
+  summarise(
+    across(where(is.numeric), sum),
+    .by = !where(is.numeric)
+  )
+
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
@@ -86,27 +100,38 @@ new_data <- new_data |>
   mutate(Location = replace_values(Location, 
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
-#### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
 
+#### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
 
-scotland_rows <- new_data %>% 
-  filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
-  group_by(QPI, cyear, Year, surg_diag) %>% 
-  summarise_if(is.numeric,sum) %>%
-  ungroup() %>% 
-  mutate(board_hosp = "NHS Board",
-         Cancer = tsg,
-         Location = "Scotland",
-         Network = "Scotland",
-         Comments = NA)
+regional_rows <- new_data |>
+  # Sum of performance is invalid, so firstly drop this column if it exists
+  select(-any_of("PerPerformance")) |> 
+  filter(!str_detect(tolower(Location), "scotland")) |>
+           group_by(QPI, Network, Cyear) |>
+           summarise(
+             across(
+              where(is.numeric), 
+              ~ sum(.x, na.rm = TRUE)
+              ) |> 
+           ungroup()) |>
+           mutate(Location = Network,
+                  Board_Hospital = "NHS Board",
+                  Cancer = tsg,
+                  Comments = NA
+                  ) 
+  
+new_data <- new_data |> 
+  bind_rows(regional_rows)
+
+#### Step 2b: Build summary table for publications
+scotland_rows <- new_data |> 
+  filter(str_detect(tolower(Location), "scotland"))
 
 scotland_minus_comments <- scotland_rows |>
-  select(!Comments)
+  select(-any_of("Comments")) 
 write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
-new_data <- new_data |> 
-  bind_rows(scotland_rows)
 
 #### Step 3 : Join lookup to new data ----
 

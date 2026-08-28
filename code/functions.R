@@ -92,6 +92,21 @@ import_extracts <- function(data_folder, extracts_filenames) {
     new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)
   }
   
+  # Possibly add data cleaning steps here instead of hb_hosp
+  
+  # Remove rows for England and empty rows and non-NHS 
+  new_data <-  new_data |>
+    filter_out(str_detect(tolower(Location), "england")) |>
+    filter_out(str_detect(tolower(Location), "non.*nhs")) |>
+    filter_out(is.na(Location))
+  
+  # Set the Cyear value from housekeeping. 
+  # This code should tolerate where column name is already 'Cyear'. 
+  new_data <- new_data |>
+    rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
+    mutate(Cyear = as.character(new_years[1])) 
+  
+  
   return(new_data)
   
 } 
