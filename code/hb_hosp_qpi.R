@@ -50,7 +50,7 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 # is equal to 1, and do this step first, before any column re-ordering.  
 names(new_data)[1] <- "QPI"
 
-# Handle NAs
+# Handle NAs in numeric columns only - convert to zeroes
 new_data <- new_data |>
   mutate(
     across(
@@ -63,7 +63,6 @@ new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
   mutate(Cancer = tsg)
 
-
 # Populate the Network column in Scotland rows
 new_data <- new_data |>
   mutate(Network = if_else(
@@ -71,14 +70,18 @@ new_data <- new_data |>
     "Scotland", 
     NA_character_)) 
 
-# Add figures from Golden Jubilee ie (national facility) to Greater Glasgow & Clyde
+# Add Golden Jubilee (aka national facility) figures to Glasgow, then drop rows
 new_data <- new_data |>
   mutate(
-    Location = 
-      replace_when(Location, 
-                   str_detect(tolower(Location), "national facility") ~ "NHS GREATER GLASGOW & CLYDE"
-      )
+    Location = if_else(str_detect(tolower(Location), "national facility"), 
+                       "NHS GREATER GLASGOW & CLYDE",
+                       Location) 
+  ) |>
+  summarise(
+    across(where(is.numeric), sum),
+    .by = !where(is.numeric)
   )
+
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
