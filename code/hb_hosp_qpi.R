@@ -50,8 +50,14 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 # is equal to 1, and do this step first, before any column re-ordering.  
 names(new_data)[1] <- "QPI"
 
-
-
+# Handle NAs
+new_data <- new_data |>
+  mutate(
+    across(
+    where(is.numeric), ~ replace(.x, is.na(.x), 0)
+    )
+  )
+         
 # Add Board_Hospital (constant) and Cancer from tsg global variable
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
@@ -64,6 +70,15 @@ new_data <- new_data |>
     str_detect(tolower(Location), "scotland"), 
     "Scotland", 
     NA_character_)) 
+
+# Add figures from Golden Jubilee ie (national facility) to Greater Glasgow & Clyde
+new_data <- new_data |>
+  mutate(
+    Location = 
+      replace_when(Location, 
+                   str_detect(tolower(Location), "national facility") ~ "NHS GREATER GLASGOW & CLYDE"
+      )
+  )
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
@@ -78,9 +93,7 @@ new_data <- new_data |>
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
-# Add figures from Golden Jubilee to Greater Glasgow & Clyde
 
-#new_data <- new_data |>
   
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
