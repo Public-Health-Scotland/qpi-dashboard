@@ -80,6 +80,14 @@ new_data <- new_data |>
 
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
+regional_rows <- new_data |>
+  filter(!str_detect(tolower(Location), "scotland")) |>
+           group_by(QPI, Cyear, Network) |>
+           summarise(sum) |>
+           ungroup() |>
+           mutate(Location = Network,
+                  Comments = NA)
+
 
 scotland_rows <- new_data %>% 
   filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
