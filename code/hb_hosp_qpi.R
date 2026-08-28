@@ -78,14 +78,25 @@ new_data <- new_data |>
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
+# Add figures from Golden Jubilee to Greater Glasgow & Clyde
+
+#new_data <- new_data |>
+  
+
 #### Step 2 : Create Scotland totals for new data (to be changed to create regional rows instead) ----
 
 regional_rows <- new_data |>
   filter(!str_detect(tolower(Location), "scotland")) |>
-           group_by(QPI, Cyear, Network) |>
-           summarise(sum) |>
-           ungroup() |>
+           group_by(QPI, Network) |>
+           summarise(
+             across(
+              where(is.numeric), 
+              ~ sum(.x, na.rm = TRUE)
+              ) |> 
+           ungroup()) |>
            mutate(Location = Network,
+                  Board_Hospital = "NHS Board",
+                  Cancer = tsg,
                   Comments = NA)
 
 
