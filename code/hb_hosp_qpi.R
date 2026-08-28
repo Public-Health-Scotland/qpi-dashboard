@@ -119,7 +119,7 @@ regional_rows <- new_data |>
                   Board_Hospital = "NHS Board",
                   Cancer = tsg,
                   Comments = NA
-                  ) |> 
+                  ) 
   
 new_data <- new_data |> 
   bind_rows(regional_rows)
