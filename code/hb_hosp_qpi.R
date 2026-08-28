@@ -125,21 +125,12 @@ new_data <- new_data |>
   bind_rows(regional_rows)
 
 #### Step 2b: Build summary table for publications
-scotland_rows <- new_data %>% 
-  filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
-  group_by(QPI, cyear, Year, surg_diag) %>% 
-  summarise_if(is.numeric,sum) %>%
-  ungroup() %>% 
-  mutate(board_hosp = "NHS Board",
-         Cancer = tsg,
-         Location = "Scotland",
-         Network = "Scotland",
-         Comments = NA)
+scotland_rows <- new_data |> 
+  filter(str_detect(tolower(Location), "scotland"))
 
 scotland_minus_comments <- scotland_rows |>
-  select(!Comments)
+  select(-any_of("Comments")) 
 write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
-
 
 
 #### Step 3 : Join lookup to new data ----
