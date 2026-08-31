@@ -27,3 +27,4 @@ summary_data/
 # The following are files that may be created while running these QPI processing scripts
 Basic_Check_Results.txt
 Exploring_data.html
+scratchpad.R
