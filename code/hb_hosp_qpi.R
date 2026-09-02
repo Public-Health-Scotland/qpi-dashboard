@@ -3,7 +3,7 @@
 # 
 # Update the hb_hosp_qpi.xlsx file with the new data. 
 # Re-written in 2026 to use Business Objects extracts
-# instead of the regional submissions previously used. 
+# instead of the three regional submissions previously used. 
 # 
 # R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
