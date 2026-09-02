@@ -3,7 +3,7 @@
 # 
 # Update the hb_hosp_qpi.xlsx file with the new data. 
 # Re-written in 2026 to use Business Objects extracts
-# instead of the regional submissions previously used. 
+# instead of the three regional submissions previously used. 
 # 
 # R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +29,8 @@ if (length(new_years) > 1) {
 
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
+max(hb_hosp_old$Cyear)       # check 1 that condensed hbhosp data is being used
+unique(hb_hosp_old$Cancer)   # check 2 that condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
@@ -60,7 +62,8 @@ new_data <- new_data |>
          
 # Get the tsg global variable
 new_data <- new_data |>
-  mutate(Cancer = tsg)
+  mutate(Cancer = tsg, 
+         SurgDiag = "Not applicable")
 
 # Add SCRIS-specific columns ie Board_Hospital and Comments
 new_data <- new_data |>
@@ -124,7 +127,7 @@ regional_rows <- new_data |>
 new_data <- new_data |> 
   bind_rows(regional_rows)
 
-#### Step 2b: Build summary table for publications
+#### Step 2b: Build summary table for publications ----
 scotland_rows <- new_data |> 
   filter(str_detect(tolower(Location), "scotland"))
 
