@@ -27,11 +27,10 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
 }
 
-# import_extracts replaces import_submission, below
 import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
-   
+  
   message(c("Path to your input data: ", extract_path))
   filenm_pattern <- str_c(".*\\.xlsx") 
   data_folder_files <- list.files(
@@ -48,7 +47,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
   message("WARNING: The script assumes the following:
           the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
           the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
-
+  
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
     # for testing   #  one_filename <- extracts_filenames[1]
@@ -56,64 +55,44 @@ import_extracts <- function(data_folder, extracts_filenames) {
     
     # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
-    
     scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
-    scot_raw_tab <- readWorkbook(extract_file, 
-                                 sheet = scot_sheet_name, 
-                                 colNames = FALSE,
-                                 skipEmptyRows = FALSE)
+    scot_raw_tab <- readWorkbook(extract_file, sheet = scot_sheet_name, colNames = FALSE)
+    
     table_start_position <- find_table_start(scot_raw_tab)
+    
     scot_new_data <- readWorkbook(extract_file, 
-                               sheet = scot_sheet_name, 
-                               # Use colNames to take column names from row 
-                               # whose number is the same as startRow
-                               colNames = TRUE, 
-                               skipEmptyCols = TRUE, 
-                               skipEmptyRows = TRUE,
-                               # Not sure why, but offset of 2 is required
-                               startRow = as.integer(table_start_position["start_row"])
-    )  
-    scot_new_data <- scot_new_data |> 
-      mutate(PerPerformance = as.double(PerPerformance), 
-             Location = "Scotland")
-
+                                  sheet = scot_sheet_name, 
+                                  colNames = TRUE, 
+                                  
+                                  skipEmptyCols = TRUE, 
+                                  skipEmptyRows = TRUE,
+                                  # Not sure why, but offset of 2 is required
+                                  startRow = as.integer(table_start_position["start_row"]) + 2
+    )  |> 
+      select (-c(PerPerformance, Target_Label))
+    
+    scot_new_data <- scot_new_data %>% mutate(Location = "Scotland")
+    
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
-    hb_raw_tab <- readWorkbook(extract_file, 
-                               sheet = hb_sheet_name, 
-                               colNames = FALSE,
-                               skipEmptyRows = FALSE) 
-    start_position <- find_table_start(hb_raw_tab)
+    hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
+    hb_table_start_position <- find_table_start(hb_raw_tab)
     hb_new_data  <- readWorkbook(extract_file, 
-                              sheet = hb_sheet_name, 
-                              colNames = TRUE, 
-                              skipEmptyCols = TRUE, 
-                              skipEmptyRows = TRUE,
-                              startRow = as.integer(start_position["start_row"])
+                                 sheet = hb_sheet_name, 
+                                 colNames = TRUE, 
+                                 skipEmptyCols = TRUE, 
+                                 skipEmptyRows = TRUE,
+                                 startRow = as.integer(hb_table_start_position["start_row"]) + 2
     ) |> 
-      mutate(PerPerformance = as.double(PerPerformance)) 
+      select (-c(PerPerformance, Target_Label))
+    
     
     # Rename the column containing health board name 
     if (any(str_detect(tolower(hb_new_data[ ,2]), "glasgow"))) {
       # print("found Glasgow, phew.") # Just checking this is the health board column
-     names(hb_new_data)[2] <- "Location"
+      names(hb_new_data)[2] <- "Location"
     }
-    new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)
+    new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)  
   }
-  
-  # Possibly add data cleaning steps here instead of hb_hosp
-  
-  # Remove rows for England and empty rows and non-NHS 
-  new_data <-  new_data |>
-    filter_out(str_detect(tolower(Location), "england")) |>
-    filter_out(str_detect(tolower(Location), "non.*nhs")) |>
-    filter_out(is.na(Location))
-  
-  # Set the Cyear value from housekeeping. 
-  # This code should tolerate where column name is already 'Cyear'. 
-  new_data <- new_data |>
-    rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
-    mutate(Cyear = as.character(new_years[1])) 
-  
   
   return(new_data)
   

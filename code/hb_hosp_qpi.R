@@ -127,7 +127,7 @@ regional_rows <- new_data |>
 new_data <- new_data |> 
   bind_rows(regional_rows)
 
-#### Step 2b: Build summary table for publications
+#### Step 2b: Build summary table for publications ----
 scotland_rows <- new_data |> 
   filter(str_detect(tolower(Location), "scotland"))
 
