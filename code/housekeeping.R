@@ -106,7 +106,7 @@ lookup_fpath <- here(data_folder,
 # output files
 
 hb_hosp_out_fpath <- here(data_folder,
-                           "excels_for_tableau/initial_run/output/",
+                           "HB_Hosp_updated",
                            "HB_Hosp_QPI.xlsx")
 
 age_gender_out_fpath <- paste0(data_folder,
