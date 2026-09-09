@@ -29,8 +29,8 @@ if (length(new_years) > 1) {
 
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
-max(hb_hosp_old$Cyear)       # check 1 that condensed hbhosp data is being used
-unique(hb_hosp_old$Cancer)   # check 2 that condensed hbhosp data is being used
+max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
+unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
@@ -139,7 +139,7 @@ write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_
 #### Step 3 : Join lookup to new data ----
 
 new_data <- new_data |> 
-  left_join(lookup, by = c("cyear" = "cyear",
+  left_join(lookup, by = c("Cyear" = "cyear",
                            "Cancer" = "cancer",
                            "QPI" = "qpi"))
 
@@ -163,8 +163,8 @@ if (nrow(rows_with_missing_values) > 0 ) {
 ## cyear_abr
 new_data <- new_data |>
   mutate(cyear_abr = case_when(
-    str_length(cyear) == 4 ~ str_sub(cyear, 1, 4),
-    str_length(cyear) == 7 ~ str_sub(cyear, 3, 7)
+    str_length(Cyear) == 4 ~ str_sub(Cyear, 1, 4),
+    str_length(Cyear) == 7 ~ str_sub(Cyear, 3, 7)
   ))
 
 # per_performance
@@ -182,7 +182,7 @@ new_data <- new_data |>
 
 # year_lk (same as cyear?)
 new_data <- new_data |> 
-  mutate(year_lk = cyear)
+  mutate(year_lk = Cyear)
 
 # direction_text
 new_data <- new_data |> 
@@ -211,23 +211,17 @@ new_data <- new_data |>
     direction == "L" ~ paste0("<", current_target, "%")
   ))
 
-# Recode board_hospital
-new_data <- new_data |> 
-  mutate(board_hosp = case_when(
-    board_hosp %in% c("Board","Network") ~ "NHS Board",
-    TRUE ~ board_hosp
-  ))
 
 #### Step 5 : Change names for tableau ----
 
 new_data <- new_data |> 
   rename(
-    Board_Hospital = board_hosp,
-    Cyear = cyear,
-    SurgDiag = surg_diag,
-    NRforDenominator = nr_denominator,
-    NRforExclusion = nr_exclusions,
-    NRforNumerator = nr_numerator,
+    # Board_Hospital = board_hosp,
+    # Cyear = cyear,
+    # SurgDiag = surg_diag,
+    # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
+    # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
+    # NRforNumerator = nr_numerator,
     PerPerformance = per_performance,
     Cyear_Abr = cyear_abr,
     Year_Lk = year_lk,
@@ -244,10 +238,13 @@ new_data <- new_data |>
     HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
-  ) |> 
-  select(-Year)
+  ) # |> 
+  #select(-Year)
 
 #### Step 6 : Bind together to make full hb_hosp_qpi ----
+
+hb_hosp_old <- hb_hosp_old |>
+  mutate(QPI_Subtitle = as.character(QPI_Subtitle))
 
 hb_hosp_no_tsg <- hb_hosp_old |> 
   filter(Cancer != tsg)

@@ -62,7 +62,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  colNames = FALSE, 
                                  skipEmptyRows = FALSE)
     
-    table_start_position <- find_table_start(scot_raw_tab)
+    scot_table_start_position <- find_table_start(scot_raw_tab)
     
     scot_new_data <- readWorkbook(extract_file, 
                                   sheet = scot_sheet_name, 
@@ -71,7 +71,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                   colNames = TRUE, 
                                   skipEmptyCols = TRUE, 
                                   skipEmptyRows = TRUE,
-                                  startRow = as.integer(table_start_position["start_row"])
+                                  startRow = as.integer(scot_table_start_position["start_row"])
     )   |> 
       select (-c(PerPerformance, Target_Label))
     
@@ -88,7 +88,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  colNames = TRUE, 
                                  skipEmptyCols = TRUE, 
                                  skipEmptyRows = TRUE,
-                                 startRow = as.integer(start_position["start_row"])
+                                 startRow = as.integer(hb_table_start_position["start_row"])
     )      |> 
       select (-c(PerPerformance, Target_Label))
     
