@@ -29,8 +29,8 @@ if (length(new_years) > 1) {
 
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
-max(hb_hosp_old$Cyear)       # check 1 that condensed hbhosp data is being used
-unique(hb_hosp_old$Cancer)   # check 2 that condensed hbhosp data is being used
+# max(hb_hosp_old$Cyear)       # check 1 that condensed hbhosp data is being used
+# unique(hb_hosp_old$Cancer)   # check 2 that condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
@@ -139,7 +139,7 @@ write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_
 #### Step 3 : Join lookup to new data ----
 
 new_data <- new_data |> 
-  left_join(lookup, by = c("cyear" = "cyear",
+  left_join(lookup, by = c("Cyear" = "cyear",
                            "Cancer" = "cancer",
                            "QPI" = "qpi"))
 
