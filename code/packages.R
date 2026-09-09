@@ -14,3 +14,4 @@ library(openxlsx)
 # so would require a non-trivial amount of migration work and testing. 
 library(here)
 library(janitor)
+library(waldo)
