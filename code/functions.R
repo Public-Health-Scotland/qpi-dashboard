@@ -78,15 +78,18 @@ import_extracts <- function(data_folder, extracts_filenames) {
     scot_new_data <- scot_new_data |> mutate(Location = "Scotland")
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
-    hb_raw_tab <- readWorkbook(extract_file, sheet = hb_sheet_name, colNames = FALSE) 
+    hb_raw_tab <- readWorkbook(extract_file, 
+                               sheet = hb_sheet_name, 
+                               colNames = FALSE,
+                               skipEmptyRows = FALSE)
     hb_table_start_position <- find_table_start(hb_raw_tab)
     hb_new_data  <- readWorkbook(extract_file, 
                                  sheet = hb_sheet_name, 
                                  colNames = TRUE, 
                                  skipEmptyCols = TRUE, 
                                  skipEmptyRows = TRUE,
-                                 startRow = as.integer(hb_table_start_position["start_row"]) + 2
-    ) |> 
+                                 startRow = as.integer(start_position["start_row"])
+    )      |> 
       select (-c(PerPerformance, Target_Label))
     
     
