@@ -153,7 +153,8 @@ if (any_hosp_qpis == 1) {
   
 } else {
   
-  message("TSG has no surgical QPIs")
+  message("Previous dashboard year for this TSG 
+          has no rows where Board_Hospital is Hospital.")
   
   hosp_names <- hb_hosp_old |> 
     filter(Board_Hospital == "Hospital",
