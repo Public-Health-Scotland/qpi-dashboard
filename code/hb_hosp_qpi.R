@@ -211,12 +211,6 @@ new_data <- new_data |>
     direction == "L" ~ paste0("<", current_target, "%")
   ))
 
-# Recode board_hospital
-new_data <- new_data |> 
-  mutate(board_hosp = case_when(
-    board_hosp %in% c("Board","Network") ~ "NHS Board",
-    TRUE ~ board_hosp
-  ))
 
 #### Step 5 : Change names for tableau ----
 
