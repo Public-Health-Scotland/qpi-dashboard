@@ -29,8 +29,8 @@ if (length(new_years) > 1) {
 
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
-# max(hb_hosp_old$Cyear)       # check 1 that condensed hbhosp data is being used
-# unique(hb_hosp_old$Cancer)   # check 2 that condensed hbhosp data is being used
+max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
+unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
