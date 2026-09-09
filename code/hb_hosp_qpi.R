@@ -182,7 +182,7 @@ new_data <- new_data |>
 
 # year_lk (same as cyear?)
 new_data <- new_data |> 
-  mutate(year_lk = cyear)
+  mutate(year_lk = Cyear)
 
 # direction_text
 new_data <- new_data |> 
