@@ -216,12 +216,12 @@ new_data <- new_data |>
 
 new_data <- new_data |> 
   rename(
-    Board_Hospital = board_hosp,
-    Cyear = cyear,
-    SurgDiag = surg_diag,
-    NRforDenominator = nr_denominator,
-    NRforExclusion = nr_exclusions,
-    NRforNumerator = nr_numerator,
+    # Board_Hospital = board_hosp,
+    # Cyear = cyear,
+    # SurgDiag = surg_diag,
+    # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
+    # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
+    # NRforNumerator = nr_numerator,
     PerPerformance = per_performance,
     Cyear_Abr = cyear_abr,
     Year_Lk = year_lk,
@@ -238,8 +238,8 @@ new_data <- new_data |>
     HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
-  ) |> 
-  select(-Year)
+  ) # |> 
+  #select(-Year)
 
 #### Step 6 : Bind together to make full hb_hosp_qpi ----
 
