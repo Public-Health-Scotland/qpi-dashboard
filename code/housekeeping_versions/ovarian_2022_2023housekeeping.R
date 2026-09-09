@@ -27,16 +27,16 @@ tsg <- "Ovarian"
 
 # For the BO input, important to specify JUST ONE Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2023/24")
+new_years <- c("2022/23")
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
-new_years_vals <- c(11)
+new_years_vals <- c(10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2023")
+date_start <- dmy("01-10-2022")
 
 # measurability versions (one for each year, usually "5.x")
-meas_vers <- c("5.x")
+meas_vers <- c("4.x")
 
 # Workaround to avoid error - create hospital vectors. 
 # This is just backwards compatibility with the submission / templates approach.
@@ -48,7 +48,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "ovarian_2023_2024_sept2026_pt2") 
+                      "Data", "new_process", "ovarian_2026") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -59,8 +59,8 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("Rectangular_OK_QPI_Ovarian_-_v5.2_non-surgical.xlsx", 
-                        "Rectangular_OK_QPI_Ovarian_HOSPSURG_v5.2.xlsx")
+extracts_filenames <- c("Tested_OK_Rectangular_2022-2023_QPI_Ovarian_-_v4.xlsx", 
+                        "OK_checked_Rectangular_2022-2023_QPI_Ovarian_HOSPSURG_v4.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
