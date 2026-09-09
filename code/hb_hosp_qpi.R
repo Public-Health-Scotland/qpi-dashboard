@@ -243,6 +243,9 @@ new_data <- new_data |>
 
 #### Step 6 : Bind together to make full hb_hosp_qpi ----
 
+hb_hosp_old <- hb_hosp_old |>
+  mutate(QPI_Subtitle = as.character(QPI_Subtitle))
+
 hb_hosp_no_tsg <- hb_hosp_old |> 
   filter(Cancer != tsg)
 
