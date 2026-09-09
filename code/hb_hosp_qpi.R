@@ -163,8 +163,8 @@ if (nrow(rows_with_missing_values) > 0 ) {
 ## cyear_abr
 new_data <- new_data |>
   mutate(cyear_abr = case_when(
-    str_length(cyear) == 4 ~ str_sub(cyear, 1, 4),
-    str_length(cyear) == 7 ~ str_sub(cyear, 3, 7)
+    str_length(Cyear) == 4 ~ str_sub(Cyear, 1, 4),
+    str_length(Cyear) == 7 ~ str_sub(Cyear, 3, 7)
   ))
 
 # per_performance
