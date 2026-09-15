@@ -1,0 +1,3 @@
+# README - housekeeping versions folder
+
+Just for the sake of convenience, to make it a wee bit quicker and simpler to swap back and forth between different datasets (different years / different cancers) in this folder, we can keep corresponding versions of the housekeeping file. They will of course need to be renamed in such a way as to show which diagnosis-year and cancer they relate to eg bladder_2023_2024_housekeeping.R or sarcoma_2025_housekeeping.R.

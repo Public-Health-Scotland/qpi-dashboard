@@ -1,74 +1,145 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # hb_hosp_qpi.R
 # 
-# Update the hb_hosp_qpi.xlsx file with the new data
+# Update the hb_hosp_qpi.xlsx file with the new data. 
+# Re-written in 2026 to use Business Objects extracts
+# instead of the three regional submissions previously used. 
 # 
-# R version 4.4
+# R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
+# Please edit the housekeeping file to specify the tsg and year of diagnosis. 
+# Calls housekeeping, which also calls functions, which also calls packages. 
+source("code/housekeeping.R") 
 
-source("code/housekeeping.R")
+# Check there is always just one year's worth of data to be read in. 
+if (length(new_years) > 1) {
+  stop("More than one Cyear detected in housekeeping file. 
+          This script is designed to process one year's data at a time.")
+}
 
 #### Step 1 : Import data ----
+# Read in extract(s). 
+# Most TSGs will be two excel files, a hospsurg and non-surg, 
+# whereas ac leuk and lymphoma no hospsurg, 
+# while colorectal qpi 15 liver mets is a special additional report, 
+# ie colorectal has three excel extract files for each year. 
+
 
 # old hb_hosp_qpi
 hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
+max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
+unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
 
-# new data
-sub_path <- paste0(data_folder, "data_submissions/")
+# Check that the lookup rows are for same tumour as set in housekeeping global variable 
+if (any(!str_equal(lookup$cancer, tsg))){
+ stop("Problem in lookup.xlsx: The tsg string value specified in 
+      housekeeping.R (", tsg, ") is NOT matched in at least one of the values 
+      in the Cancer column of lookup.xlsx: ", unique(lookup$cancer)) 
+}
 
-new_data <- map(networks,
-                import_submission,
-                sub_path = sub_path,
-                year_vals = new_years_vals,
-                years = new_years) |>
-  list_rbind() |>
+# new data
+new_data <- import_extracts(data_folder, extracts_filenames) 
+
+# Shorten the QPI name column header to just 'QPI'. 
+# The import functions already identified the first column 
+# by matching search_string "QPI.*dashboard name", so we assume the column index
+# is equal to 1, and do this step first, before any column re-ordering.  
+names(new_data)[1] <- "QPI"
+
+# Handle NAs in numeric columns only - convert to zeroes
+new_data <- new_data |>
   mutate(
-    Year = as.character(Year),
-    Network = as.character(Network),
-    Location = as.character(Location),
-    QPI = as.character(QPI),
-    surg_diag = as.character(surg_diag),
-    board_hosp = as.character(board_hosp),
-    Cancer = as.character(Cancer),
-    Numerator = as.numeric(Numerator),
-    Denominator = as.numeric(Denominator),
-    nr_numerator = as.numeric(nr_numerator),
-    nr_exclusions = as.numeric(nr_exclusions),
-    nr_denominator = as.numeric(nr_denominator),
-    Comments = as.character(Comments)
+    across(
+    where(is.numeric), ~ replace(.x, is.na(.x), 0)
+    )
+  )
+         
+# Get the tsg global variable
+new_data <- new_data |>
+  mutate(Cancer = tsg, 
+         SurgDiag = "Not applicable")
+
+# Add SCRIS-specific columns ie Board_Hospital and Comments
+new_data <- new_data |>
+  mutate(Board_Hospital = "NHS Board") |> 
+  mutate(Comments = NA)
+
+
+# Populate the Network column in Scotland rows
+new_data <- new_data |>
+  mutate(Network = if_else(
+    str_detect(tolower(Location), "scotland"), 
+    "Scotland", 
+    NA_character_)) 
+
+# Add Golden Jubilee (aka national facility) figures to Glasgow, then drop rows
+new_data <- new_data |>
+  mutate(
+    Location = if_else(str_detect(tolower(Location), "national facility"), 
+                       "NHS GREATER GLASGOW & CLYDE",
+                       Location) 
+  ) |>
+  summarise(
+    across(where(is.numeric), sum),
+    .by = !where(is.numeric)
   )
 
 
-#### Step 2 : Create Scotland totals for new data ----
+# Join to allocate rows to regional networks
+new_data <-  new_data |>
+  mutate(Network = replace_values(
+    Location, 
+    from = HB_geo_groups$e_case_hb_name, 
+    to = HB_geo_groups$Network))
+    
+# Swap in the health board abbreviations used in the SCRIS Tableau dashboard
+new_data <- new_data |>
+  mutate(Location = replace_values(Location, 
+                                   from = HB_geo_groups$e_case_hb_name, 
+                                   to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
-scotland_rows <- new_data %>% 
-  filter(Location %in% c("NCA", "SCAN", "WoSCAN")) %>% 
-  group_by(QPI, cyear, Year, surg_diag) %>% 
-  summarise_if(is.numeric,sum) %>%
-  ungroup() %>% 
-  mutate(board_hosp = "NHS Board",
-         Cancer = tsg,
-         Location = "Scotland",
-         Network = "Scotland",
-         Comments = NA)
+
+#### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
+
+regional_rows <- new_data |>
+  # Sum of performance is invalid, so firstly drop this column if it exists
+  select(-any_of("PerPerformance")) |> 
+  filter(!str_detect(tolower(Location), "scotland")) |>
+           group_by(QPI, Network, Cyear) |>
+           summarise(
+             across(
+              where(is.numeric), 
+              ~ sum(.x, na.rm = TRUE)
+              ) |> 
+           ungroup()) |>
+           mutate(Location = Network,
+                  Board_Hospital = "NHS Board",
+                  Cancer = tsg,
+                  Comments = NA
+                  ) 
+  
+new_data <- new_data |> 
+  bind_rows(regional_rows)
+
+#### Step 2b: Build summary table for publications ----
+scotland_rows <- new_data |> 
+  filter(str_detect(tolower(Location), "scotland"))
 
 scotland_minus_comments <- scotland_rows |>
-  select(!Comments)
+  select(-any_of("Comments")) 
 write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
-new_data <- new_data |> 
-  bind_rows(scotland_rows)
 
 #### Step 3 : Join lookup to new data ----
 
 new_data <- new_data |> 
-  left_join(lookup, by = c("cyear" = "cyear",
+  left_join(lookup, by = c("Cyear" = "cyear",
                            "Cancer" = "cancer",
                            "QPI" = "qpi"))
 
@@ -92,8 +163,8 @@ if (nrow(rows_with_missing_values) > 0 ) {
 ## cyear_abr
 new_data <- new_data |>
   mutate(cyear_abr = case_when(
-    str_length(cyear) == 4 ~ str_sub(cyear, 1, 4),
-    str_length(cyear) == 7 ~ str_sub(cyear, 3, 7)
+    str_length(Cyear) == 4 ~ str_sub(Cyear, 1, 4),
+    str_length(Cyear) == 7 ~ str_sub(Cyear, 3, 7)
   ))
 
 # per_performance
@@ -111,7 +182,7 @@ new_data <- new_data |>
 
 # year_lk (same as cyear?)
 new_data <- new_data |> 
-  mutate(year_lk = cyear)
+  mutate(year_lk = Cyear)
 
 # direction_text
 new_data <- new_data |> 
@@ -140,23 +211,17 @@ new_data <- new_data |>
     direction == "L" ~ paste0("<", current_target, "%")
   ))
 
-# Recode board_hospital
-new_data <- new_data |> 
-  mutate(board_hosp = case_when(
-    board_hosp %in% c("Board","Network") ~ "NHS Board",
-    TRUE ~ board_hosp
-  ))
 
 #### Step 5 : Change names for tableau ----
 
 new_data <- new_data |> 
   rename(
-    Board_Hospital = board_hosp,
-    Cyear = cyear,
-    SurgDiag = surg_diag,
-    NRforDenominator = nr_denominator,
-    NRforExclusion = nr_exclusions,
-    NRforNumerator = nr_numerator,
+    # Board_Hospital = board_hosp,
+    # Cyear = cyear,
+    # SurgDiag = surg_diag,
+    # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
+    # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
+    # NRforNumerator = nr_numerator,
     PerPerformance = per_performance,
     Cyear_Abr = cyear_abr,
     Year_Lk = year_lk,
@@ -173,10 +238,13 @@ new_data <- new_data |>
     HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
-  ) |> 
-  select(-Year)
+  ) # |> 
+  #select(-Year)
 
 #### Step 6 : Bind together to make full hb_hosp_qpi ----
+
+hb_hosp_old <- hb_hosp_old |>
+  mutate(QPI_Subtitle = as.character(QPI_Subtitle))
 
 hb_hosp_no_tsg <- hb_hosp_old |> 
   filter(Cancer != tsg)

@@ -1,9 +1,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # functions.R
 # 
-# Define functions used in other scripts
+# Define functions used in other scripts. 
 # 
-# R version 4.4
+# R version 4.5.1
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 source("code/packages.R")
@@ -25,6 +25,127 @@ read_data_year <- function(year_val, cyear, network, sub_path) {
   
   network_year
   
+}
+
+# import_extracts replaces import_submission, below
+import_extracts <- function(data_folder, extracts_filenames) {
+  # Read in extract files. Assume one year's data. 
+  # Usually will find hospsurg file and non-surgical file. 
+  
+  message(c("Path to your input data: ", extract_path))
+  filenm_pattern <- str_c(".*\\.xlsx") 
+  data_folder_files <- list.files(
+    path = extract_path,
+    pattern = filenm_pattern,
+    full.names = TRUE,
+    ignore.case = TRUE
+  )
+  
+  message("Please check that each of the extract files is named in housekeeping.R, 
+  and is also detected in the data folder...")
+  message("Housekeeping.R: ", extracts_filenames)
+  message("Files detected in data folder: ", data_folder_files) 
+  message("WARNING: The script assumes the following:
+          the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
+          the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
+  
+  new_data <- tibble() 
+  for (one_filename in extracts_filenames) {
+    # for testing   #  one_filename <- extracts_filenames[1]
+    extract_file <- here(extract_path, one_filename) 
+    
+    # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
+    tab_names <- getSheetNames(extract_file)
+    scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
+    scot_raw_tab <- readWorkbook(extract_file, 
+                                 sheet = scot_sheet_name, 
+                                 colNames = FALSE, 
+                                 skipEmptyRows = FALSE)
+    
+    scot_table_start_position <- find_table_start(scot_raw_tab)
+    
+    scot_new_data <- readWorkbook(extract_file, 
+                                  sheet = scot_sheet_name, 
+                                  # Use colNames to take column names from row 
+                                  # whose number is the same as startRow
+                                  colNames = TRUE, 
+                                  skipEmptyCols = TRUE, 
+                                  skipEmptyRows = TRUE,
+                                  startRow = as.integer(scot_table_start_position["start_row"])
+    )   |> 
+      select (-c(PerPerformance, Target_Label))
+    
+    scot_new_data <- scot_new_data |> mutate(Location = "Scotland")
+    
+    hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
+    hb_raw_tab <- readWorkbook(extract_file, 
+                               sheet = hb_sheet_name, 
+                               colNames = FALSE,
+                               skipEmptyRows = FALSE)
+    hb_table_start_position <- find_table_start(hb_raw_tab)
+    hb_new_data  <- readWorkbook(extract_file, 
+                                 sheet = hb_sheet_name, 
+                                 colNames = TRUE, 
+                                 skipEmptyCols = TRUE, 
+                                 skipEmptyRows = TRUE,
+                                 startRow = as.integer(hb_table_start_position["start_row"])
+    )      |> 
+      select (-c(PerPerformance, Target_Label))
+    
+    
+    # Rename the column containing health board name 
+    if (any(str_detect(tolower(hb_new_data[ ,2]), "glasgow"))) {
+      # print("found Glasgow, phew.") # Just checking this is the health board column
+      names(hb_new_data)[2] <- "Location"
+    }
+    new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)  
+  }
+  
+  # Data cleaning steps moved here, instead of in hb_hosp script
+  
+  # Remove rows for England and empty rows and non-NHS 
+  new_data <-  new_data |>
+    filter_out(str_detect(tolower(Location), "england")) |>
+    filter_out(str_detect(tolower(Location), "non.*nhs")) |>
+    filter_out(is.na(Location))
+  
+  # Set the Cyear value from housekeeping. 
+  # This code should tolerate where column name is already 'Cyear'. 
+  new_data <- new_data |>
+    rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
+    mutate(Cyear = as.character(new_years[1])) 
+  
+  return(new_data)
+  
+} 
+
+find_table_start <- function(raw_worksheet){
+  
+  search_string <- "QPI.*dashboard name" 
+  
+  # Create named vector, for returning the result 
+  # NB start_row is the number of the row containing the headers
+  start_positions <- c(start_row = 0, start_col = 0)
+  max_cols_to_search <- 7
+  max_rows_to_search <- 12
+  current_row_checking <- 1
+  while (current_row_checking < max_rows_to_search) { 
+    current_col_checking <- 1
+    while (current_col_checking < max_cols_to_search) {
+      if (  str_detect(
+        raw_worksheet[current_row_checking, current_col_checking], 
+        search_string) |>
+        coalesce(FALSE) # treat NA values as false
+      ){
+        start_positions["start_row"] <- current_row_checking
+        start_positions["start_col"] <- current_col_checking 
+      }
+      current_col_checking <- current_col_checking + 1
+    }
+    
+    current_row_checking <- current_row_checking + 1 
+  }
+  return(start_positions) 
 }
 
 # Should be called passing in the following arguments: 
@@ -501,6 +622,21 @@ export_template <- function(df, network, new_years_vals, new_years, meas_vers,
 
 #### hb_hosp_qpi.R ----
 
+set_RAG_status <- function(new_data) {
+  # RAG status
+  new_data <- new_data |> 
+    mutate(rag_status = case_when(
+      direction == "H" & (per_performance >= current_target) ~ "1",
+      direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
+      direction == "H" & per_performance == 0  & Denominator <= 0 ~ "3",
+      direction == "H" & per_performance == 0 & Denominator > 0 ~ "2",
+      direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
+      direction == "L" & per_performance > current_target ~ "2",
+      direction == "L" & per_performance == 0 & Denominator <= 0 ~ "3",
+      direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
+      TRUE ~ "unknown"))
+}
+
 # MIGHT BE DEPRECATING THIS
 read_qpi_data <- function(fpath, network_name, year_names) {
   
@@ -569,6 +705,36 @@ make_summary_table <- function(summary_data_path) {
   return(performance_by_year)
 }
 
+# Identify what HBs belong to what regions, dependent on the TSG
+# since some HBs differ for brain & CNS, lymphoma and ac leuk
+set_up_regions <- function() { 
+  # Read the data from: 
+  # H:\Cancer_QPIs\Data\qpi_lookups\regional_geography
+  # "lookup_health_board_by_cancer_hb_14_hb19_RegionalCancerNetwork.xlsx" 
+  # This reference file should be kept in Excel format to allow
+  # colour highlighting for human readability
+  # NB eCASE raw health board names need parsing to NHS opendata format 
+  # here, because they are upper case with ampersands instead of "and"(!).
+  # Could use new eCASE_name column in the lookup to match. 
+  regions_lookup <- readWorkbook(here(regional_networks_folder, 
+                                      "lookup_health_board_by_cancer_hb_14_hb19_all_regions.xlsx")) |>
+    clean_names()
+  
+  if (str_equal(tsg, "Acute Leukaemia")){
+    tsg_specific_regions_lookup <- regions_lookup |> 
+      mutate(Network = rcn_for_acute_leukaemia)
+  } else if(str_equal(tsg, "Lymphoma")) {
+    tsg_specific_regions_lookup <- regions_lookup |> 
+      mutate(Network = rcn_for_lymphoma)
+  } else if(str_equal(tsg, "Brain and CNS")){
+    tsg_specific_regions_lookup <- regions_lookup |>
+      mutate(Network = rcn_for_brain_and_cns_cancer)
+  } else {
+    tsg_specific_regions_lookup <- regions_lookup |>
+      mutate(Network = default_regional_cancer_network)
+  }
+  return(tsg_specific_regions_lookup)
+}
 
 #### check_submissions.R ----
 

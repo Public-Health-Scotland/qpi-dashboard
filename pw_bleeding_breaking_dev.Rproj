@@ -1,15 +1,15 @@
 Version: 1.0
 
-RestoreWorkspace: No
-SaveWorkspace: No
+RestoreWorkspace: Default
+SaveWorkspace: Default
 AlwaysSaveHistory: Default
 
 EnableCodeIndexing: Yes
-UseSpacesForTab: Yes
+UseSpacesForTab: No
 NumSpacesForTab: 2
 Encoding: UTF-8
 
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
-ProjectName: gen QPI tablodash production
+ProjectName: 1 pw_bleeding breaking_dev
