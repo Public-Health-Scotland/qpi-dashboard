@@ -61,8 +61,8 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
 extracts_filenames <- c("2023-2024 Rectglr_QPI_Bladder_v4_non-surgical_-_Archived_-_diag_before_31_mar_2024_only.xlsx", 
-                        "2023_2024_Rectangular_QPI_Bladder_HOSPTURBT_v4_-_Archived.xlsx", 
-                        "2023_2024_Rectangular QPI_Bladder_HOSPCYST_v4_-_Archived.xlsx")
+                        "2023_2024_Rectangular QPI_Bladder_HOSPTURBT_v4_-LATEST.xlsx", 
+                        "2023_2024_Rectangular QPI_Bladder_HOSPCYST_v4_-LATEST.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
