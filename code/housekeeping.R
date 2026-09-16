@@ -133,42 +133,41 @@ networks <- c("NCA", "SCAN", "WoSCAN")
 # nrow(hb_hosp_old |> filter(Cancer == tsg)) 
 # If nrow is zero, then max(Cyear) in next line will error, cos no arguments.
 
-if ((hb_hosp_old |>
-    filter(Cancer == tsg) |>
-    filter(Cyear == max(Cyear)) |>
-    filter(Board_Hospital == "Hospital") |> 
-    nrow() != 0) |
-    every(hosp_vectors, is.null) == FALSE) {
-  
-  any_hosp_qpis <- 1
-  
-} else {
-  
-  any_hosp_qpis <- 0
-  
-}
-
-
-if (any_hosp_qpis == 1) {
-  
-  hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
-  
-} else {
-  
-  message("Previous dashboard year for this TSG 
-          has no rows where Board_Hospital is Hospital.")
-  
-  hosp_names <- hb_hosp_old |> 
-    filter(Board_Hospital == "Hospital",
-           Cancer == tsg)
-  
-}
+# if ((hb_hosp_old |>
+#     filter(Cancer == tsg) |>
+#     filter(Cyear == max(Cyear)) |>
+#     filter(Board_Hospital == "Hospital") |> 
+#     nrow() != 0) |
+#     every(hosp_vectors, is.null) == FALSE) {
+#   
+#   any_hosp_qpis <- 1
+#   
+# } else {
+#   
+#   any_hosp_qpis <- 0
+#   
+# }
+# 
+# 
+# if (any_hosp_qpis == 1) {
+#   
+#   hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
+#   
+# } else {
+#   
+#   message("Previous dashboard year for this TSG 
+#           has no rows where Board_Hospital is Hospital.")
+#   
+#   hosp_names <- hb_hosp_old |> 
+#     filter(Board_Hospital == "Hospital",
+#            Cancer == tsg)
+#   
+# }
 
 ### board names
 ### Creates a data frame, listing the boards belonging to each network, 
-### for the present tsg, based on the last dataset. 
-### Column names are Location and Network. 
-### Migrate to use the excel regions lookup instead of old data. 
+### for the present tsg. Column names are Location and Network. 
+### Uses the regions lookup excel file. 
 board_names <- set_up_regions() |>
   select(qpi_dashboard_hb_abbreviation, Network) |>
   rename(Location = qpi_dashboard_hb_abbreviation)
