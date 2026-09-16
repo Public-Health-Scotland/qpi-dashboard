@@ -103,10 +103,11 @@ import_extracts <- function(data_folder, extracts_filenames) {
   
   # Data cleaning steps moved here, instead of in hb_hosp script
   
-  # Remove rows for England and empty rows and non-NHS 
+  # Remove empty rows
+  # Temporary code for rest of the UK England etc and non-NHS 
   new_data <-  new_data |>
-    filter_out(str_detect(tolower(Location), "england")) |>
-    filter_out(str_detect(tolower(Location), "non.*nhs")) |>
+    #filter_out(str_detect(tolower(Location), "england")) |>
+    #filter_out(str_detect(tolower(Location), "non.*nhs")) |>
     filter_out(is.na(Location))
   
   # Set the Cyear value from housekeeping. 
