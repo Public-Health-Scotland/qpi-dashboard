@@ -113,6 +113,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
   # Set the Cyear value from housekeeping. 
   # This code should tolerate where column name is already 'Cyear'. 
   new_data <- new_data |>
+    # troubleshooting - try select(-Cyear, -Diag etc)
     rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
     mutate(Cyear = as.character(new_years[1])) 
   
