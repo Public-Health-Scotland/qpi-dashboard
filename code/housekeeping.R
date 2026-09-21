@@ -118,9 +118,6 @@ case_asc_out_fpath <- paste0(data_folder,
                              "Background_Data_Case.xlsx")
 
 
-# Read in the previous data
-hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
-
 ### hospital names
 
 # hosp_vectors OBSOLETE but bug when deleted because of hospsurg processing

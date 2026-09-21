@@ -190,7 +190,8 @@ import_lookup <- function(lookup_fpath) {
                     "qpi_subtitle",
                     "SurgDiag"), as.character)) |> 
     mutate(across(c("qpi_order", "previous_target",
-                    "current_target"), as.numeric))
+                    "current_target"), as.numeric)) |>
+  	suppressWarnings()
   
   lookup
   
