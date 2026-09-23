@@ -41,10 +41,10 @@ import_extracts <- function(data_folder, extracts_filenames) {
     ignore.case = TRUE
   )
   
-  message("Please check that each of the extract files is named in housekeeping.R, 
-  and is also detected in the data folder...")
-  message("Housekeeping.R: ", extracts_filenames)
-  message("Files detected in data folder: ", data_folder_files) 
+  message("Please check that each of the extract files is named in housekeeping.R: ")
+  extracts_filenames
+  message("... and can be detected in the data folder: ")
+  data_folder_files
   message("WARNING: The script assumes the following:
           the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
           the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
