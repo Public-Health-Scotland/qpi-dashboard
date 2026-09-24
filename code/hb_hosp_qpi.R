@@ -141,7 +141,7 @@ regional_rows <- new_data |>
            mutate(Location = Network,
                   Board_Hospital = "NHS Board",
                   Cancer = tsg,
-                  Comments = NA
+                  HB_Comments = NA
                   ) 
 
 # Identify the HBs that should be summed to give Scotland total, 
@@ -150,6 +150,8 @@ regional_rows <- new_data |>
 hbs_to_inc_in_scot_total <- HB_geo_groups |>
   filter(include_in_scot_nhs_total) |>
   pull(qpi_dashboard_hb_abbreviation)
+
+## Workaround - calculate and add the Scotland rows 
 scotland_rows_calcd <- new_data |>
   filter(Location %in% hbs_to_inc_in_scot_total) |>
   group_by(QPI) |>
@@ -158,24 +160,20 @@ scotland_rows_calcd <- new_data |>
       where(is.numeric), 
       ~ sum(.x, na.rm = TRUE)
     ) |> 
-      ungroup())
+      ungroup()) |>
+  mutate(
+   Location = "Scotland", 
+   Network = "Scotland",
+   Cyear = as.character(new_years[1]),
+   Board_Hospital = "NHS Board",
+   Cancer = tsg,
+   HB_Comments = NA
+  )
   
+# Add the regional rows and Scotland rows into the new data as one tibble
 new_data <- new_data |> 
-  bind_rows(regional_rows) 
+  bind_rows(regional_rows, scotland_rows_calcd) 
 
-## Workaround - calculate and add the Scotland rows here 
-
-# put the Scotland calculation here
-
-new_data <- new_data |> 
-  bind_rows(scotland_rows_calcd) 
-
-# Populate the Network column in Scotland rows
-new_data <- new_data |>
-  mutate(Network = if_else(
-    str_detect(tolower(Location), "scotland"), 
-    "Scotland", 
-    NA_character_)) 
 
 
 #### Step 2b: Build summary table for publications ----
