@@ -104,6 +104,10 @@ if (! str_detect(tolower(Jubilee_netwk), "jubilee|woscan")) {
     )
 } 
 
+# Temporary code for rest of the UK England etc and non-NHS 
+new_data <-  new_data |>
+  filter_out(str_detect(tolower(Location), "england")) |>
+  filter_out(str_detect(tolower(Location), "non.*nhs")) 
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
@@ -118,6 +122,8 @@ new_data <- new_data |>
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
+
+  
 
 #### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
 
@@ -137,6 +143,19 @@ regional_rows <- new_data |>
                   Cancer = tsg,
                   Comments = NA
                   ) 
+
+# Identify the HBs that should be summed to give Scotland total, 
+# such as not to include non-NHS and NHS rest of the UK ie England, Wales, NI. 
+# Not elegant, quick workaround. 
+hbs_to_inc_in_scot_total <- HB_geo_groups |>
+  filter(include_in_scot_nhs_total) |>
+  select(qpi_dashboard_hb_abbreviation)
+scotland_rows_calcd <- new_data |>
+  left_join(HB_geo_groups, join_by(Location == qpi_dashboard_hb_abbreviation)) 
+
+
+|>
+  filter(include_in_scot_nhs_total)
   
 new_data <- new_data |> 
   bind_rows(regional_rows) 
