@@ -90,7 +90,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  skipEmptyCols = TRUE, 
                                  skipEmptyRows = TRUE,
                                  startRow = as.integer(hb_table_start_position["start_row"])
-    )      |> 
+    ) #     |> # Separating out the step with the performance, to troubleshoot. 
+      
       select (-c(PerPerformance, Target_Label))
     
     

@@ -60,7 +60,7 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("incomplete hbs 2023_24 Rectglr QPI Bladder v4 - diag.xlsx", 
+extracts_filenames <- c("ok hbs cf scot needs calcd 2023_24 Rectglr QPI Bladder v4 - diag.xlsx", 
                         "QPI_Bladder_HOSPTURBT_v4_-_Archived.xlsx", 
                         "2023_24_QPI_Bladder_HOSPCYST_v4_-_Archived.xlsx")
 
