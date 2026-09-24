@@ -91,7 +91,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  skipEmptyRows = TRUE,
                                  startRow = as.integer(hb_table_start_position["start_row"])
     ) #     |> # Separating out the step with the performance, to troubleshoot. 
-      
+      hb_new_data <- hb_new_data |>
       select (-c(PerPerformance, Target_Label))
     
     
@@ -100,7 +100,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
       # print("found Glasgow, phew.") # Just checking this is the health board column
       names(hb_new_data)[2] <- "Location"
     }
-    new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)  
+    # Altered the step below, as scotland new rows now need to be calcd elsewhere.  
+    #  new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)    
+    new_data <-  bind_rows(new_data, hb_new_data)  
   }
   
   # Data cleaning steps moved here, instead of in hb_hosp script
