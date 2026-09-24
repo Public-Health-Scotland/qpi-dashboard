@@ -149,13 +149,16 @@ regional_rows <- new_data |>
 # Not elegant, quick workaround. 
 hbs_to_inc_in_scot_total <- HB_geo_groups |>
   filter(include_in_scot_nhs_total) |>
-  select(qpi_dashboard_hb_abbreviation)
+  pull(qpi_dashboard_hb_abbreviation)
 scotland_rows_calcd <- new_data |>
-  left_join(HB_geo_groups, join_by(Location == qpi_dashboard_hb_abbreviation)) 
-
-
-|>
-  filter(include_in_scot_nhs_total)
+  filter(Location %in% hbs_to_inc_in_scot_total) |>
+  group_by(QPI) |>
+  summarise(
+    across(
+      where(is.numeric), 
+      ~ sum(.x, na.rm = TRUE)
+    ) |> 
+      ungroup())
   
 new_data <- new_data |> 
   bind_rows(regional_rows) 
