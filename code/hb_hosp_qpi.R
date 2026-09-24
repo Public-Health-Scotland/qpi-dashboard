@@ -71,12 +71,6 @@ new_data <- new_data |>
   mutate(HB_Comments = NA)
 
 
-# Populate the Network column in Scotland rows
-new_data <- new_data |>
-  mutate(Network = if_else(
-    str_detect(tolower(Location), "scotland"), 
-    "Scotland", 
-    NA_character_)) 
 
 # If the network for Golden Jubilee is WoSCAN, then
 # add Golden Jubilee (aka national facility) figures to Glasgow, then combine rows.
@@ -141,7 +135,22 @@ regional_rows <- new_data |>
                   ) 
   
 new_data <- new_data |> 
-  bind_rows(regional_rows)
+  bind_rows(regional_rows) 
+
+## Workaround - calculate and add the Scotland rows here 
+
+# put the Scotland calculation here
+
+new_data <- new_data |> 
+  bind_rows(scotland_rows_calcd) 
+
+# Populate the Network column in Scotland rows
+new_data <- new_data |>
+  mutate(Network = if_else(
+    str_detect(tolower(Location), "scotland"), 
+    "Scotland", 
+    NA_character_)) 
+
 
 #### Step 2b: Build summary table for publications ----
 scotland_rows <- new_data |> 
