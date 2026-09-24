@@ -42,9 +42,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
   )
   
   message("Please check that each of the extract files is named in housekeeping.R: ")
-  extracts_filenames
+  extracts_filenames # Doesn't display when run within the function called from hb_hosp script.
   message("... and can be detected in the data folder: ")
-  data_folder_files
+  data_folder_files # Also doesn't display when run within the function.
   message("WARNING: The script assumes the following:
           the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
           the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
@@ -92,7 +92,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  startRow = as.integer(hb_table_start_position["start_row"])
     ) #     |> # Separating out the step with the performance, to troubleshoot. 
       hb_new_data <- hb_new_data |>
-      select (-c(PerPerformance, Target_Label))
+      select (-c(PerPerformance, Target_Label)) |>
+        select(-contains("Cyear"))
     
     
     # Rename the column containing health board name 
@@ -115,10 +116,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
     filter_out(is.na(Location))
   
   # Set the Cyear value from housekeeping. 
-  # This code should tolerate where column name is already 'Cyear'. 
+  # See above, drop any column containing Cyear 
   new_data <- new_data |>
-    # troubleshooting - try select(-Cyear, -Diag etc)
-    rename(Cyear = Diag.Period.to.convert.to.Cyear) |>
     mutate(Cyear = as.character(new_years[1])) 
   
   return(new_data)
