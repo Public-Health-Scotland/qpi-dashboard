@@ -78,7 +78,19 @@ new_data <- new_data |>
     "Scotland", 
     NA_character_)) 
 
-# Add Golden Jubilee (aka national facility) figures to Glasgow, then drop rows
+# If the network for Golden Jubilee is WoSCAN, then
+# add Golden Jubilee (aka national facility) figures to Glasgow, then combine rows.
+Jubilee_netwk <- HB_geo_groups |>
+  filter(str_detect(e_case_hb_name, "NATIONAL FACILITY")) |>
+  select(Network)      
+if (length(Jubilee_netwk) >1) {
+ stop("Problem: Found more than one row for NATIONAL FACILITY in regional lookup.") 
+}
+Jubilee_netwk <- Jubilee_netwk[[1]] # Just make sure it's just one element
+if (str_detect(tolower(Jubilee_netwk), "jubilee")){
+    # Treat Golden Jubilee as a separate region on its own. Do nothing in code.
+  }  
+else if (str_detect(tolower(Jubilee_netwk), "woscan")){
 new_data <- new_data |>
   mutate(
     Location = if_else(str_detect(tolower(Location), "national facility"), 
@@ -89,7 +101,11 @@ new_data <- new_data |>
     across(where(is.numeric), sum),
     .by = !where(is.numeric)
   )
-
+} else {
+  stop("Problem: Please check regional lookup - not clear how to process 
+       national facility data. Expected string should contain either jubilee or 
+       woscan, but instead found value of: ", Jubilee_netwk)
+  }
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
