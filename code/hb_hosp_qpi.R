@@ -68,7 +68,7 @@ new_data <- new_data |>
 # Add SCRIS-specific columns ie Board_Hospital and Comments
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
-  mutate(Comments = NA)
+  mutate(HB_Comments = NA)
 
 
 # Populate the Network column in Scotland rows
