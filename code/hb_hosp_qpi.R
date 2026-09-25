@@ -229,7 +229,8 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(qpi_subtitle = as.character(qpi_subtitle))
 
-# year_lk (same as cyear?)
+# year_lk (same as cyear, but in tableau we use them each differently, 
+# year_lk is a string in tableau cf cyear is a date field, both needed.)
 new_data <- new_data |> 
   mutate(year_lk = Cyear)
 
