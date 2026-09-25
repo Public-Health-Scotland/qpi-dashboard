@@ -23,17 +23,18 @@ source("code/functions.R")
 # In-development values for tsg:
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Ovarian"
+tsg <- "Bladder"
 
 # For the BO input, important to specify JUST ONE Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2023/24")
+new_years <- c("2024/25")
+
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
 new_years_vals <- c(11)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2023")
+date_start <- dmy("01-04-2024")
 
 # measurability versions (one for each year, usually "5.x")
 meas_vers <- c("5.x")
@@ -48,7 +49,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "ovarian_2023_2024_sept2026_pt2") 
+                      "Data", "new_process", "bladder_2026", "diagyear_24_25") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -59,8 +60,9 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("Rectangular_OK_QPI_Ovarian_-_v5.2_non-surgical.xlsx", 
-                        "Rectangular_OK_QPI_Ovarian_HOSPSURG_v5.2.xlsx")
+extracts_filenames <- c("QPI_Bladder_v5.xlsx", 
+                        "2024_25QPI_Bladder_HOSPTURBT_v5.xlsx", 
+                        "QPI_Bladder_HOSPCYST_v5.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
@@ -131,42 +133,41 @@ networks <- c("NCA", "SCAN", "WoSCAN")
 # nrow(hb_hosp_old |> filter(Cancer == tsg)) 
 # If nrow is zero, then max(Cyear) in next line will error, cos no arguments.
 
-if ((hb_hosp_old |>
-    filter(Cancer == tsg) |>
-    filter(Cyear == max(Cyear)) |>
-    filter(Board_Hospital == "Hospital") |> 
-    nrow() != 0) |
-    every(hosp_vectors, is.null) == FALSE) {
-  
-  any_hosp_qpis <- 1
-  
-} else {
-  
-  any_hosp_qpis <- 0
-  
-}
-
-
-if (any_hosp_qpis == 1) {
-  
-  hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
-  
-} else {
-  
-  message("Previous dashboard year for this TSG 
-          has no rows where Board_Hospital is Hospital.")
-  
-  hosp_names <- hb_hosp_old |> 
-    filter(Board_Hospital == "Hospital",
-           Cancer == tsg)
-  
-}
+# if ((hb_hosp_old |>
+#     filter(Cancer == tsg) |>
+#     filter(Cyear == max(Cyear)) |>
+#     filter(Board_Hospital == "Hospital") |> 
+#     nrow() != 0) |
+#     every(hosp_vectors, is.null) == FALSE) {
+#   
+#   any_hosp_qpis <- 1
+#   
+# } else {
+#   
+#   any_hosp_qpis <- 0
+#   
+# }
+# 
+# 
+# if (any_hosp_qpis == 1) {
+#   
+#   hosp_names <- map2_dfr(hosp_vectors, networks, get_hosp_names, hb_hosp_old)
+#   
+# } else {
+#   
+#   message("Previous dashboard year for this TSG 
+#           has no rows where Board_Hospital is Hospital.")
+#   
+#   hosp_names <- hb_hosp_old |> 
+#     filter(Board_Hospital == "Hospital",
+#            Cancer == tsg)
+#   
+# }
 
 ### board names
 ### Creates a data frame, listing the boards belonging to each network, 
-### for the present tsg, based on the last dataset. 
-### Column names are Location and Network. 
-### Migrate to use the excel regions lookup instead of old data. 
+### for the present tsg. Column names are Location and Network. 
+### Uses the regions lookup excel file. 
 board_names <- set_up_regions() |>
   select(qpi_dashboard_hb_abbreviation, Network) |>
   rename(Location = qpi_dashboard_hb_abbreviation)

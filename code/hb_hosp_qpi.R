@@ -68,28 +68,46 @@ new_data <- new_data |>
 # Add SCRIS-specific columns ie Board_Hospital and Comments
 new_data <- new_data |>
   mutate(Board_Hospital = "NHS Board") |> 
-  mutate(Comments = NA)
+  mutate(HB_Comments = NA)
 
 
-# Populate the Network column in Scotland rows
-new_data <- new_data |>
-  mutate(Network = if_else(
-    str_detect(tolower(Location), "scotland"), 
-    "Scotland", 
-    NA_character_)) 
 
-# Add Golden Jubilee (aka national facility) figures to Glasgow, then drop rows
-new_data <- new_data |>
-  mutate(
-    Location = if_else(str_detect(tolower(Location), "national facility"), 
-                       "NHS GREATER GLASGOW & CLYDE",
-                       Location) 
-  ) |>
-  summarise(
-    across(where(is.numeric), sum),
-    .by = !where(is.numeric)
-  )
+# If the network for Golden Jubilee is WoSCAN, then
+# add Golden Jubilee (aka national facility) figures to Glasgow, then combine rows.
+Jubilee_netwk <- HB_geo_groups |>
+  filter(str_detect(e_case_hb_name, "NATIONAL FACILITY")) |>
+  select(Network)      
+if (length(Jubilee_netwk) >1) {
+  stop("Problem: Found more than one row for NATIONAL FACILITY in regional lookup.") 
+}
+Jubilee_netwk <- Jubilee_netwk[[1]] # Just make sure it's just one element 
+# Just make sure it's either Jubilee or WoSCAN
+if (! str_detect(tolower(Jubilee_netwk), "jubilee|woscan")) {
+  stop("Problem: Please check regional lookup - not clear how to process 
+       national facility data. Expected string should contain either jubilee or 
+       woscan, but instead found value of: ", Jubilee_netwk)
+}
+# Unnecessary
+# if (str_detect(tolower(Jubilee_netwk), "jubilee")){
+#   # Treat Golden Jubilee as a separate region on its own. Do nothing in code.
+# }  else 
+  if (str_detect(tolower(Jubilee_netwk), "woscan")){
+  new_data <- new_data |>
+    mutate(
+      Location = if_else(str_detect(tolower(Location), "national facility"), 
+                         "NHS GREATER GLASGOW & CLYDE",
+                         Location) 
+    ) |>
+    summarise(
+      across(where(is.numeric), sum),
+      .by = !where(is.numeric)
+    )
+} 
 
+# Temporary code for rest of the UK England etc and non-NHS 
+new_data <-  new_data |>
+  filter_out(str_detect(tolower(Location), "england")) |>
+  filter_out(str_detect(tolower(Location), "non.*nhs")) 
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
@@ -104,6 +122,8 @@ new_data <- new_data |>
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
+
+  
 
 #### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
 
@@ -121,11 +141,40 @@ regional_rows <- new_data |>
            mutate(Location = Network,
                   Board_Hospital = "NHS Board",
                   Cancer = tsg,
-                  Comments = NA
+                  HB_Comments = NA
                   ) 
+
+# Identify the HBs that should be summed to give Scotland total, 
+# such as not to include non-NHS and NHS rest of the UK ie England, Wales, NI. 
+# Not elegant, quick workaround. 
+hbs_to_inc_in_scot_total <- HB_geo_groups |>
+  filter(include_in_scot_nhs_total) |>
+  pull(qpi_dashboard_hb_abbreviation)
+
+## Workaround - calculate and add the Scotland rows 
+scotland_rows_calcd <- new_data |>
+  filter(Location %in% hbs_to_inc_in_scot_total) |>
+  group_by(QPI) |>
+  summarise(
+    across(
+      where(is.numeric), 
+      ~ sum(.x, na.rm = TRUE)
+    ) |> 
+      ungroup()) |>
+  mutate(
+   Location = "Scotland", 
+   Network = "Scotland",
+   Cyear = as.character(new_years[1]),
+   Board_Hospital = "NHS Board",
+   Cancer = tsg,
+   HB_Comments = NA
+  )
   
+# Add the regional rows and Scotland rows into the new data as one tibble
 new_data <- new_data |> 
-  bind_rows(regional_rows)
+  bind_rows(regional_rows, scotland_rows_calcd) 
+
+
 
 #### Step 2b: Build summary table for publications ----
 scotland_rows <- new_data |> 
@@ -180,7 +229,8 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(qpi_subtitle = as.character(qpi_subtitle))
 
-# year_lk (same as cyear?)
+# year_lk (same as cyear, but in tableau we use them each differently, 
+# year_lk is a string in tableau cf cyear is a date field, both needed.)
 new_data <- new_data |> 
   mutate(year_lk = Cyear)
 
@@ -235,7 +285,7 @@ new_data <- new_data |>
     QPI_Label_Short = qpi_label_short,
     Direction_Text = direction_text,
     RAG_Status = rag_status,
-    HB_Comments = Comments,
+    #HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
   ) # |> 
