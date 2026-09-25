@@ -285,7 +285,7 @@ new_data <- new_data |>
     QPI_Label_Short = qpi_label_short,
     Direction_Text = direction_text,
     RAG_Status = rag_status,
-    HB_Comments = Comments,
+    #HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
   ) # |> 
