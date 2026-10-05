@@ -186,6 +186,7 @@ write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_
 
 
 #### Step 3 : Join lookup to new data ----
+# Clean up trailing carriage returns before join to lookup!
 
 new_data <- new_data |> 
   left_join(lookup, by = c("Cyear" = "cyear",
