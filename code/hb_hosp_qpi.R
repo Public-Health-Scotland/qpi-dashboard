@@ -60,18 +60,6 @@ new_data <- new_data |>
     )
   )
          
-# Get the tsg global variable
-new_data <- new_data |>
-  mutate(Cancer = tsg, 
-         SurgDiag = "Not applicable")
-
-# Add SCRIS-specific columns ie Board_Hospital and Comments
-new_data <- new_data |>
-  mutate(Board_Hospital = "NHS Board") |> 
-  mutate(HB_Comments = NA)
-
-
-
 # If the network for Golden Jubilee is WoSCAN, then
 # add Golden Jubilee (aka national facility) figures to Glasgow, then combine rows.
 Jubilee_netwk <- HB_geo_groups |>
@@ -175,12 +163,12 @@ new_data <- new_data |>
            HB_Comments = NA)
 
 #### Step 2b: Build summary table for publications ----
-scotland_rows <- new_data |> 
-  filter(str_detect(tolower(Location), "scotland"))
-
-scotland_minus_comments <- scotland_rows |>
-  select(-any_of("Comments")) 
-write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
+# scotland_rows <- new_data |> 
+#   filter(str_detect(tolower(Location), "scotland"))
+# 
+# scotland_minus_comments <- scotland_rows |>
+#   select(-any_of("HB_Comments")) 
+# write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
 
 #### Step 3 : Join lookup to new data ----
