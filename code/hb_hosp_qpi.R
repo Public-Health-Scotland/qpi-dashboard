@@ -138,11 +138,7 @@ regional_rows <- new_data |>
               ~ sum(.x, na.rm = TRUE)
               ) |> 
            ungroup()) |>
-           mutate(Location = Network,
-                  Board_Hospital = "NHS Board",
-                  Cancer = tsg,
-                  HB_Comments = NA
-                  ) 
+           mutate(Location = Network) 
 
 # Identify the HBs that should be summed to give Scotland total, 
 # such as not to include non-NHS and NHS rest of the UK ie England, Wales, NI. 
@@ -164,17 +160,19 @@ scotland_rows_calcd <- new_data |>
   mutate(
    Location = "Scotland", 
    Network = "Scotland",
-   Cyear = as.character(new_years[1]),
-   Board_Hospital = "NHS Board",
-   Cancer = tsg,
-   HB_Comments = NA
   )
   
 # Add the regional rows and Scotland rows into the new data as one tibble
 new_data <- new_data |> 
   bind_rows(regional_rows, scotland_rows_calcd) 
 
-
+# Populate constant fields
+new_data <- new_data |>
+  mutate(  Cancer = tsg, 
+           Cyear = as.character(new_years[1]),
+           SurgDiag = "Not applicable",
+           Board_Hospital = "NHS Board",
+           HB_Comments = NA)
 
 #### Step 2b: Build summary table for publications ----
 scotland_rows <- new_data |> 
