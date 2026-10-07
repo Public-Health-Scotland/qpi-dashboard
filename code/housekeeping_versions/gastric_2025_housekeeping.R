@@ -64,6 +64,7 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
 extracts_filenames <- c("OK_Rectangular_QPI_Gastric_v5_fixedqpis_13_15i.xlsx", 
                         "OK_Rectangular_QPI_Gastric_v5_HOSPSURG.xlsx")
+
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
                             "Data", "new_process", "regional_cancer_networks") 

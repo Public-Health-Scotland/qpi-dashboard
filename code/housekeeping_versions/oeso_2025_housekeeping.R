@@ -23,7 +23,7 @@ source("code/functions.R")
 # In-development values for tsg:
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Upper GI-Gastric"
+tsg <- "Upper GI-Oesophageal"
 
 
 # For the BO input, important to specify JUST ONE Cyear at a time 
@@ -51,7 +51,7 @@ wos_hosps <- c()
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
                     "Data", "new_process", "oesophago-gastric_upper_gi_2026", 
-                    "OG_gastric_2025") 
+                    "OG_oeso_2025") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -62,8 +62,9 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("OK_Rectangular_QPI_Gastric_v5_fixedqpis_13_15i.xlsx", 
-                        "OK_Rectangular_QPI_Gastric_v5_HOSPSURG.xlsx")
+extracts_filenames <- c("OK_Rectangular_QPI_Oesophageal_v5_fixed_qpis13_n_15i.xlsx", 
+                        "OK_Rectangular_QPI_Oesophageal_v5_HOSPSURG.xlsx")
+
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
                             "Data", "new_process", "regional_cancer_networks") 
