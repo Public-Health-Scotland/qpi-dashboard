@@ -32,7 +32,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
   
-  message(c("Path to your input data: ", extract_path))
+  message("Path to your input data: ")
+  message(extract_path)
   filenm_pattern <- str_c(".*\\.xlsx") 
   data_folder_files <- list.files(
     path = extract_path,
@@ -42,12 +43,11 @@ import_extracts <- function(data_folder, extracts_filenames) {
   )
   
   message("Please check that each of the extract files is named in housekeeping.R: ")
-  extracts_filenames # Doesn't display when run within the function called from hb_hosp script.
+  cat(str_c(extracts_filenames, "\n")) 
   message("... and can be detected in the data folder: ")
-  data_folder_files # Also doesn't display when run within the function.
-  message("WARNING: The script assumes the following:
-          the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
-          the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
+  cat(str_c(data_folder_files, "\n")) 
+  message("WARNING: The script assumes the MultiQPI health-board-level 
+          performance data has 'HB' in the worksheet name. ")
   
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
@@ -92,7 +92,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  startRow = as.integer(hb_table_start_position["start_row"])
     ) #     |> # Separating out the step with the performance, to troubleshoot. 
       hb_new_data <- hb_new_data |>
-      select (-c(PerPerformance, Target_Label)) |>
+      select (-contains("Performance")) |>
+        select (-contains("Target_Label")) |>
         select(-contains("Cyear"))
     
     
