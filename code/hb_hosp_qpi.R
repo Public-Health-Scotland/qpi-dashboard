@@ -32,7 +32,7 @@ hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
 max(hb_hosp_old$Cyear)       # check 1 condensed hbhosp data in code writing BUT latest version in final code running
 unique(hb_hosp_old$Cancer)   # check 2 condensed hbhosp data in code writing BUT latest version in final code running
 
-# new lookup
+# import lookup
 lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
 
@@ -42,6 +42,16 @@ if (any(!str_equal(lookup$cancer, tsg))){
       housekeeping.R (", tsg, ") is NOT matched in at least one of the values 
       in the Cancer column of lookup.xlsx: ", unique(lookup$cancer)) 
 }
+
+
+# Do the QPIs need to be split (due to a new report) ?
+glimpse(lookup) # variable of interest is New.report.cf.previous.year
+
+any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
+
+lookup %>%
+	filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) %>%
+	count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
 
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
@@ -62,37 +72,36 @@ new_data <- new_data |>
     )
   )
          
-# If the network for Golden Jubilee is WoSCAN, then
-# add Golden Jubilee (aka national facility) figures to Glasgow, then combine rows.
-Jubilee_netwk <- HB_geo_groups |>
-  filter(str_detect(e_case_hb_name, "NATIONAL FACILITY")) |>
-  select(Network)      
-if (length(Jubilee_netwk) >1) {
-  stop("Problem: Found more than one row for NATIONAL FACILITY in regional lookup.") 
-}
-Jubilee_netwk <- Jubilee_netwk[[1]] # Just make sure it's just one element 
-# Just make sure it's either Jubilee or WoSCAN
-if (! str_detect(tolower(Jubilee_netwk), "jubilee|woscan")) {
-  stop("Problem: Please check regional lookup - not clear how to process 
-       national facility data. Expected string should contain either jubilee or 
-       woscan, but instead found value of: ", Jubilee_netwk)
-}
-# Unnecessary
-# if (str_detect(tolower(Jubilee_netwk), "jubilee")){
-#   # Treat Golden Jubilee as a separate region on its own. Do nothing in code.
-# }  else 
-  if (str_detect(tolower(Jubilee_netwk), "woscan")){
-  new_data <- new_data |>
-    mutate(
-      Location = if_else(str_detect(tolower(Location), "national facility"), 
-                         "NHS GREATER GLASGOW & CLYDE",
-                         Location) 
-    ) |>
-    summarise(
-      across(where(is.numeric), sum),
-      .by = !where(is.numeric)
-    )
-} 
+# Get the tsg global variable
+new_data <- new_data |>
+  mutate(Cancer = tsg, 
+         SurgDiag = "Not applicable")
+
+# Add SCRIS-specific columns ie Board_Hospital and Comments #cft changed to HB_hosp version
+new_data <- new_data |>
+  mutate(Board_Hospital = "NHS Board") |> 
+  mutate(HB_Comments = NA)
+
+
+# Populate the Network column in Scotland rows
+new_data <- new_data |>
+  mutate(Network = if_else(
+    str_detect(tolower(Location), "scotland"), 
+    "Scotland", 
+    NA_character_)) 
+
+# Add Golden Jubilee (aka national facility) figures to Glasgow, then remove duplicate 'GG&C' rows 
+# by adding figures in numerical variables to give 1 row. So number of obs will decrease. 
+new_data <- new_data |>
+  mutate(
+    Location = if_else(str_detect(tolower(Location), "national facility"), 
+                       "NHS GREATER GLASGOW & CLYDE",
+                       Location) 
+  ) |>
+  summarise(
+    across(where(is.numeric), sum),
+    .by = !where(is.numeric)
+  )
 
 
 # Join to allocate rows to regional networks
@@ -125,51 +134,33 @@ regional_rows <- new_data |>
               ~ sum(.x, na.rm = TRUE)
               ) |> 
            ungroup()) |>
-           mutate(Location = Network) 
+           mutate(Location = Network,
+                  Board_Hospital = "NHS Board",
+                  Cancer = tsg,
+                  HB_Comments = NA      #cft change
+                  ) 
 
-# Identify the HBs that should be summed to give Scotland total, 
-# such as not to include non-NHS and NHS rest of the UK ie England, Wales, NI. 
-# Not elegant, quick workaround. 
-hbs_to_inc_in_scot_total <- HB_geo_groups |>
-  filter(include_in_scot_nhs_total) |>
-  pull(qpi_dashboard_hb_abbreviation)
-
-## Workaround - calculate and add the Scotland rows 
-scotland_rows_calcd <- new_data |>
-  filter(Location %in% hbs_to_inc_in_scot_total) |>
-  group_by(QPI) |>
-  summarise(
-    across(
-      where(is.numeric), 
-      ~ sum(.x, na.rm = TRUE)
-    ) |> 
-      ungroup()) |>
-  mutate(
-   Location = "Scotland", 
-   Network = "Scotland",
-  )
+#### cft 3/09 danger & workaround 1
+# I dont know why code to make regional rows dropped "SurgDiag made in line 65, so am adding back in -----
   
 regional_rows <- regional_rows %>%  mutate(SurgDiag = "Not applicable")
 
-# Populate constant fields
-new_data <- new_data |>
-  mutate(  Cancer = tsg, 
-           Cyear = as.character(new_years[1]),
-           SurgDiag = "Not applicable",
-           Board_Hospital = "NHS Board",
-           HB_Comments = NA)
+#### end temp workaround 1
+new_data <- new_data |> 
+  bind_rows(regional_rows)
+
+#  cft there is an issue here due to regional_rows being a "grouped_df" "I know how sort -----
 
 #### Step 2b: Build summary table for publications ----
-# scotland_rows <- new_data |> 
-#   filter(str_detect(tolower(Location), "scotland"))
-# 
-# scotland_minus_comments <- scotland_rows |>
-#   select(-any_of("HB_Comments")) 
-# write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
+scotland_rows <- new_data |> 
+  filter(str_detect(tolower(Location), "scotland"))
+
+scotland_minus_comments <- scotland_rows |>
+  select(-any_of("HB_Comments"))   
+write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
 
 #### Step 3 : Join lookup to new data ----
-# Clean up trailing carriage returns before join to lookup!
 
 compare(names(new_data), names(lookup), max_diffs = Inf) # a check for upper/lowercase differences
 new_data <- new_data |> 
@@ -256,18 +247,13 @@ new_data <- new_data |>
   ))
 
 #### Step 5 : Change names for tableau ----
-#### cft task  do order then compare, then adjust case-----
-####insert start thursday 1/10  ---------- 
-# temp using stored new_data from end section 4 ------
-# new_data_safe_copy <- new_data
-# new_data<-new_data_safe_copy
 
 test_hbhosp_names <- readWorkbook(hb_hosp_in_fpath) %>% names()
 test_new_data_names <- new_data %>% names()
 
 compare(length(test_hbhosp_names),length(test_new_data_names)) # hbhosp has 28, newdata has 27 
 compare(test_hbhosp_names,test_new_data_names, max_diffs = Inf)  # obv case issues etc
-# Q1 what are those in one & not the other? 
+# Q1 what are those variables in one dataset & not the other? 
 
 test_a <-str_to_lower(test_hbhosp_names)    # 28
 test_b <-str_to_lower(test_new_data_names)  # 27
@@ -358,8 +344,6 @@ new_data <- new_data |>
 # final check 
 
 compare(test_hbhosp_names,names(new_data), max_diffs = Inf)		# ✔ No differences	
-
-####insert end  thursday 1/10  ---------- 
 
 #### Step 6 : Bind together to make full hb_hosp_qpi ----
 
