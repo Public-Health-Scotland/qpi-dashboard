@@ -25,25 +25,31 @@ target_not_met_style <- createStyle(
 
 # The make_summary_table function reads in "Scotland_rows_no_comments.xlsx" 
 # from the for_summary_table/ folder
-perf_summary_tbl <- make_summary_table(summary_data_path)
+scotland_rows <- filter_hbhosp_for_summary(
+	"/PHI_conf/CancerGroup2/Cancer_QPIs/Data/HB_Hosp_new/HB_Hosp_current/HB_Hosp_QPI.xlsx"
+	)
+
+perf_summary_tbl <- make_summary_table(scotland_rows)
 
 wb_qpi_summary = createWorkbook()
 addWorksheet(wb_qpi_summary, "Table_1_summary_data")
 
 writeDataTable(wb_qpi_summary, "Table_1_summary_data", perf_summary_tbl, startCol = 1, startRow = 1)
 
+setColWidths(wb_qpi_summary, "Table_1_summary_data", cols = 1:length(names(perf_summary_tbl)), widths = "auto")
+
 conditionalFormatting(wb_qpi_summary,
                       "Table_1_summary_data",
-                      cols = 1:14,
-                      rows = 1:50,
+                      cols = 1:length(names(perf_summary_tbl)),
+                      rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Target met"', 
                       style = success_style
                       )
 
 conditionalFormatting(wb_qpi_summary,
                       "Table_1_summary_data",
-                      cols = 1:14,
-                      rows = 1:50,
+                      cols = 1:length(names(scotland_rows)),
+                      rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Target not met"',
                       style = target_not_met_style
                       )
@@ -52,14 +58,20 @@ conditionalFormatting(wb_qpi_summary,
 # to make a narrower table for pasting into the draft publication. 
 conditionalFormatting(wb_qpi_summary,
                       "Table_1_summary_data",
-                      cols = 1:14,
-                      rows = 1:50,
+                      cols = 1:length(names(scotland_rows)),
+                      rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Not met"',
                       style = target_not_met_style
 )
 
+tsg <- scotland_rows$Cancer[1] |> str_to_lower() |> str_replace_all("\\W", "_")
 
-saveWorkbook(wb_qpi_summary, here(summary_data_path, "cancer_qpi_summary_table1.xlsx"))
+years <- distinct(scotland_rows, Cyear)$Cyear |> str_flatten("_") |> str_replace_all("\\W", "\\.")
 
-# Optional - just write the data to file, for manual formatting
-write.xlsx(perf_summary_tbl, file = here(summary_data_path, "qpi_summary_table_plain.xlsx"))
+saveWorkbook(wb_qpi_summary, here(summary_data_path, 
+																	paste0("qpi_summary_table_", 
+																				 tsg, 
+																				 "_",
+																				 years,
+																				 ".xlsx")),
+						 overwrite = TRUE)

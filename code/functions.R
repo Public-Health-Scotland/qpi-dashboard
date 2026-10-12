@@ -684,30 +684,6 @@ reformat_qpi_number <- function(x) {
   
 }
 
-make_summary_table <- function(summary_data_path) {
-  # Import the summary data 
-  # from the separate file containing rows from HB_hosp where Location is Scotland 
-  scotland_performance_all_qpis <- readWorkbook(here(summary_data_path, "Scotland_rows_no_comments.xlsx"))
-  
-  # Add target status column called Result
-  scotland_performance_all_qpis <- scotland_performance_all_qpis |>
-    mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |> 
-    mutate("Performance (%)" = str_c(format(round_half_up(PerPerformance, digits = 1), nsmall=1), "%")) |> 
-    rename("Target" = Target_Label)
-  
-  # Use pivot_wider to create columns for the years
-  # Needs more work, to appent "%" in the cells so its more obvious they're percentages. 
-  performance_by_year <- scotland_performance_all_qpis |>
-    pivot_wider(names_from = Cyear, 
-                values_from = c("Performance (%)", Result),
-                id_cols = c(QPI,Target), 
-                names_sep = " ",
-                names_vary = "slowest"
-    ) 
-  
-  return(performance_by_year)
-}
-
 # Identify what HBs belong to what regions, dependent on the TSG
 # since some HBs differ for brain & CNS, lymphoma and ac leuk
 set_up_regions <- function() { 
@@ -915,6 +891,125 @@ import_age_gender <- function(network, sub_path, year_vals, years) {
   network_sub
   
 }
+
+
+
+
+
+#### generate_summary_in_excl.R----
+
+
+
+filter_hbhosp_for_summary <- \(filepath){
+
+	if(!str_detect(filepath, ".xlsx$")){return("Filepath must end \".xlsx\"")}
+	
+	
+	hb_hosp = read.xlsx(filepath)
+	
+	
+	
+
+	tumour_groups = distinct(hb_hosp, Cancer)$Cancer
+	
+	cat("The tumor groups in the file provided are: \n")
+	for(i in 1:length(tumour_groups)){
+		cat(paste0(i, ": ", tumour_groups[[i]], "\n"))
+	}
+	cat("\n")
+	
+	
+	tsg = NA
+	
+	while(is.na(tsg) | !(tsg %in% 0:length(tumour_groups))){
+		cat(paste0("Please select a tumour group by entering a number from 1 to ", length(tumour_groups), ", or 0 to cancel: "))
+		tsg = readline("") |>
+			as.numeric() |>
+			suppressWarnings()
+	}
+	
+	if(tsg == 0){return()}
+	
+	
+	
+	hb_hosp = hb_hosp |>
+		filter(Cancer == tumour_groups[tsg])
+	
+	
+
+	years = distinct(filter(hb_hosp, Cancer == tumour_groups[tsg]), Cyear)$Cyear
+	
+	cat(paste0("The years associated with the tumour group ", tumour_groups[tsg], " in the file provided are: \n"))
+	for(i in 1:length(years)){
+		cat(paste0(i, ": ", years[[i]], "\n"))
+	}
+	cat("\n")
+	
+	years_selected = c(NA, 1)
+	
+	while(any(is.na(years_selected)) | any(!(years_selected %in% 0:length(years)))){
+		cat(paste0("Please select any number of years by entering the associated number for each year (from 1 to ", 
+							 length(years), "), \nwith each number separated by a comma; or enter 0 to cancel: "))
+		years_selected = readline("") |>
+			str_split_1(", ?") |>
+			as.numeric() |>
+			suppressWarnings()
+	}
+	
+	if(0 %in% years_selected){return()}
+	
+	
+	
+	hb_hosp_filtered = hb_hosp |>
+		filter(Cancer == tumour_groups[tsg] 
+					 & Cyear %in% years[years_selected]
+					 & Location == "Scotland")
+	
+	# file_title_1 = paste0("scotland_rows_", 
+	# 											str_replace(str_to_lower(tumour_groups[tsg]), "\\W", "_"),
+	# 											"_",
+	# 											str_replace_all(today(), "-", "_"), 
+	# 											".xlsx")
+	# 
+	# file_title_2 = paste0("scotland_rows_", 
+	# 											str_replace(str_to_lower(tumour_groups[tsg]), "\\W", "_"),
+	# 											"_",
+	# 											str_flatten(str_replace(years[years_selected], "\\/","_"), "_"), 
+	# 											".xlsx")
+	# 
+	# write.xlsx(x = hb_hosp_filtered,
+	# 					 file = here("code", "for_summary_table", file_title_2),
+	# 					 asTable = TRUE)
+	
+	return(hb_hosp_filtered)
+}
+
+
+
+
+make_summary_table <- function(scotland_performance_all_qpis) {
+	# Add target status column called Result
+	scotland_performance_all_qpis <- scotland_performance_all_qpis |>
+		mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |> 
+		mutate("Performance (%)" = str_c(format(round_half_up(PerPerformance, digits = 1), nsmall=1), "%")) |> 
+		rename("Target" = Target_Label)
+	
+	# Use pivot_wider to create columns for the years
+	# Needs more work, to appent "%" in the cells so its more obvious they're percentages. 
+	performance_by_year <- scotland_performance_all_qpis |>
+		pivot_wider(names_from = Cyear, 
+								values_from = c("Performance (%)", Result),
+								id_cols = c(QPI,Target), 
+								names_sep = " ",
+								names_vary = "slowest"
+		) 
+	
+	return(performance_by_year)
+}
+
+
+
+
 
 ## Potential checks
 # Check totals match

@@ -263,7 +263,7 @@ new_data <- new_data |>
   ))
 
 
-#### Step 5a : Change names for tableau ----
+#### Step 5 : Change names for tableau ----
 
 new_data <- new_data |> 
   rename(
@@ -291,15 +291,6 @@ new_data <- new_data |>
     QPI_Subtitle = qpi_subtitle
   ) # |> 
   #select(-Year)
-
-
-#### Step 5b: Build summary table for publications ----
-scotland_rows <- new_data |> 
-	filter(str_detect(tolower(Location), "scotland"))
-
-scotland_minus_comments <- scotland_rows |>
-	select(-any_of("Comments")) 
-write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
 
 
