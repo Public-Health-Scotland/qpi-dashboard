@@ -29,9 +29,10 @@ tsg <- "Lymphoma"
 # (eg "2023" or "2023/24")
 new_years <- c("2023/24")
 
+
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
-new_years_vals <- c(11)
+new_years_vals <- c(13)
 
 # Date of the start of the first new reporting year
 date_start <- dmy("01-10-2024")
