@@ -163,6 +163,13 @@ scotland_rows_calcd <- new_data |>
 new_data <- new_data |> 
   bind_rows(regional_rows, scotland_rows_calcd) 
 
+
+
+# Add the regional rows and Scotland rows into the new data as one tibble
+new_data <- new_data |> 
+	bind_rows(regional_rows, scotland_rows_calcd) 
+
+
 # Populate constant fields
 new_data <- new_data |>
   mutate(  Cancer = tsg, 
@@ -260,6 +267,66 @@ new_data <- new_data |>
 
 #### Step 5 : Change names for tableau ----
 
+test_a[!test_a %in% test_b]  # in a(hosp) but not new_data: nrfordenominator" "nrforexclusion"   "perperformance"  
+# hence to do :add 2 & find out why perperformance not there (it was prior section 4)
+
+test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous.year" "per_performance"
+# hence remove 1st & rename 2nd
+
+# check that 0 a reasonable value for new vars in new_data
+
+head(hb_hosp_old %>% count(NRforDenominator)) # 0 is 56k
+head(hb_hosp_old %>% count(NRforExclusion)) # 0 is 62k
+
+# 5.1 removal unwanted variables, addition new variables and adjust name of 1 varin  new_data ----
+# from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
+# add 2 new variables fake data as value 0 
+
+new_data <-new_data %>% select(-any_of("New.report.cf.previous.year")) %>% 
+	rename(PerPerformance = per_performance) %>% 
+	mutate(NRforDenominator =0,
+				 NRforExclusion =0 ) 
+
+# include NR4D, NR4E here pro tem but should be at import rather than above-----
+
+new_data %>% count(NRforDenominator,NRforExclusion ) %>% slice_head()
+
+# check
+
+test_new_data_names2 <- new_data %>% names()
+compare(test_new_data_names,test_new_data_names2)
+
+test_c <-str_to_lower(test_new_data_names2)  # 28
+
+# check
+test_c %in% test_b  # 3 false
+test_c[c(23, 27:28)]  # as expected
+
+sum(!test_a[!test_c %in% test_a])  # 0
+
+# 5.2 piecemeal reordering of new_data, make iterative -----
+
+new_data <- new_data %>% select(test_hbhosp_names[1:10], everything())
+
+new_data <- new_data %>% select(
+	test_hbhosp_names[1:11],
+	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
+	everything()
+)
+# investigate 
+compare(test_hbhosp_names, names(new_data), max_diffs = Inf)
+
+new_data <- new_data %>% select(
+	Board_Hospital:target_label,
+	direction, qpi_label_short, Network,
+	direction_text, rag_status, HB_Comments,
+	previous_target, qpi_subtitle
+)
+
+# investigate 
+compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
+
+# 5.3 final case change etc so new_data like hb_hosp -----
 new_data <- new_data |> 
   rename(
     # Board_Hospital = board_hosp,
