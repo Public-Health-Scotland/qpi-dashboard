@@ -28,9 +28,9 @@ if (length(new_years) > 1) {
 
 
 # old hb_hosp_qpi
-hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
-max(hb_hosp_old$Cyear)       # check 1 condensed hbhosp data in code writing BUT latest version in final code running
-unique(hb_hosp_old$Cancer)   # check 2 condensed hbhosp data in code writing BUT latest version in final code running
+# hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
+# max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
+# unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
@@ -43,10 +43,17 @@ if (any(!str_equal(lookup$cancer, tsg))){
       in the Cancer column of lookup.xlsx: ", unique(lookup$cancer)) 
 }
 
+# Do the QPIs need to be split (due to a new report) ?
+glimpse(lookup) # variable of interest is New.report.cf.previous.year
+
+any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
+
+lookup %>%
+  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) %>%
+  count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
+
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
-glimpse(new_data)
-new_data %>% select_if(is.numeric) %>% summary()
 
 # Shorten the QPI name column header to just 'QPI'. 
 # The import functions already identified the first column 
@@ -94,28 +101,31 @@ if (! str_detect(tolower(Jubilee_netwk), "jubilee|woscan")) {
     )
 } 
 
+# Temporary code for rest of the UK England etc and non-NHS 
+new_data <-  new_data |>
+  filter_out(str_detect(tolower(Location), "england")) |>
+  filter_out(str_detect(tolower(Location), "non.*nhs")) 
 
 # Join to allocate rows to regional networks
-table(HB_geo_groups$e_case_hb_name)
 new_data <-  new_data |>
   mutate(Network = replace_values(
     Location, 
     from = HB_geo_groups$e_case_hb_name, 
     to = HB_geo_groups$Network))
-
-table(new_data$Location,new_data$Network)
-
+    
 # Swap in the health board abbreviations used in the SCRIS Tableau dashboard
 new_data <- new_data |>
   mutate(Location = replace_values(Location, 
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
-table(new_data$Location,new_data$Network)
+
+  
+
 #### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
-# create subtotals & store into separate tibble
+
 regional_rows <- new_data |>
-  # Sum of performance is invalid, so firstly drop PerPerformance if it exists
+  # Sum of performance is invalid, so firstly drop this column if it exists
   select(-any_of("PerPerformance")) |> 
   filter(!str_detect(tolower(Location), "scotland")) |>
            group_by(QPI, Network, Cyear) |>
@@ -149,7 +159,9 @@ scotland_rows_calcd <- new_data |>
    Network = "Scotland",
   )
   
-regional_rows <- regional_rows %>%  mutate(SurgDiag = "Not applicable")
+# Add the regional rows and Scotland rows into the new data as one tibble
+new_data <- new_data |> 
+  bind_rows(regional_rows, scotland_rows_calcd) 
 
 
 
@@ -178,13 +190,11 @@ new_data <- new_data |>
 #### Step 3 : Join lookup to new data ----
 # Clean up trailing carriage returns before join to lookup!
 
-compare(names(new_data), names(lookup), max_diffs = Inf) # a check for upper/lowercase differences
 new_data <- new_data |> 
   left_join(lookup, by = c("Cyear" = "cyear",
                            "Cancer" = "cancer",
                            "QPI" = "qpi"))
 
-table(new_data$exclusions1)
 # Identify rows where the QPI name in new_data was not matched with any in lookup. 
 # Sometimes happens because of a typo in the QPI name. 
 # Checking Numerator1 column as a proxy for the whole row in lookup
@@ -198,8 +208,6 @@ if (nrow(rows_with_missing_values) > 0 ) {
 }
 
 #### Step 4 : create derived variables ----
-
-
 ## There are a series of variables which Tableau requires which are 
 ## derived from the data submissions and the lookups.
 ## Some of them aren't used anymore but for now they are all required
@@ -211,7 +219,7 @@ new_data <- new_data |>
     str_length(Cyear) == 7 ~ str_sub(Cyear, 3, 7)
   ))
 
-# per_performance  # cft this should be PerPerformance
+# per_performance
 new_data <- new_data |> 
   mutate(per_performance = (Numerator/Denominator)*100) |> 
   mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
@@ -224,7 +232,8 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(qpi_subtitle = as.character(qpi_subtitle))
 
-# year_lk (same as cyear?)
+# year_lk (same as cyear, but in tableau we use them each differently, 
+# year_lk is a string in tableau cf cyear is a date field, both needed.)
 new_data <- new_data |> 
   mutate(year_lk = Cyear)
 
@@ -255,35 +264,8 @@ new_data <- new_data |>
     direction == "L" ~ paste0("<", current_target, "%")
   ))
 
-# Recode board_hospital
-new_data <- new_data |> 
-  mutate(Board_Hospital = case_when(
-  	Board_Hospital %in% c("Board","Network") ~ "NHS Board",
-    TRUE ~ Board_Hospital
-  ))
 
 #### Step 5 : Change names for tableau ----
-#### cft task  do order then compare, then adjust case-----
-####insert start thursday 1/10  ---------- 
-# temp using stored new_data from end section 4 ------
-# new_data_safe_copy <- new_data
-# new_data<-new_data_safe_copy
-
-test_hbhosp_names <- readWorkbook(hb_hosp_in_fpath) %>% names()
-test_new_data_names <- new_data %>% names()
-
-compare(length(test_hbhosp_names),length(test_new_data_names)) # hbhosp has 28, newdata has 27 
-compare(test_hbhosp_names,test_new_data_names, max_diffs = Inf)  # obv case issues etc
-# Q1 what are those in one & not the other? 
-
-test_a <-str_to_lower(test_hbhosp_names)    # 28
-test_b <-str_to_lower(test_new_data_names)  # 27
-
-test_a %in% test_b # 3 false ie in hosp-qpi but not new_data
-sum(!test_a %in% test_b) # 3
-
-test_b %in% test_a  # 2 false
-sum(!test_b %in% test_a )  #2
 
 test_a[!test_a %in% test_b]  # in a(hosp) but not new_data: nrfordenominator" "nrforexclusion"   "perperformance"  
 # hence to do :add 2 & find out why perperformance not there (it was prior section 4)
@@ -346,29 +328,36 @@ compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now
 
 # 5.3 final case change etc so new_data like hb_hosp -----
 new_data <- new_data |> 
-	rename( 
-		Cyear_Abr = cyear_abr  ,
-		Year_Lk  = year_lk ,
-		QPI_Order = qpi_order      ,
-		Numerator1  =numerator1   ,
-		Denominator1 = denominator1   ,
-		Exclusions1 = exclusions1   ,
-		Current_Target = current_target  ,
-		Target_Label = target_label   ,
-		Direction = direction    ,
-		QPI_Label_Short = qpi_label_short ,
-		Direction_Text = direction_text ,
-		RAG_Status = rag_status     ,
-		Previous_Target = previous_target ,
-		QPI_Subtitle = qpi_subtitle  )
-
-# final check 
-
-compare(test_hbhosp_names,names(new_data), max_diffs = Inf)		# ✔ No differences	
-
-####insert end  thursday 1/10  ---------- 
+  rename(
+    # Board_Hospital = board_hosp,
+    # Cyear = cyear,
+    # SurgDiag = surg_diag,
+    # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
+    # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
+    # NRforNumerator = nr_numerator,
+    PerPerformance = per_performance,
+    Cyear_Abr = cyear_abr,
+    Year_Lk = year_lk,
+    QPI_Order = qpi_order,
+    Numerator1 = numerator1,
+    Denominator1 = denominator1,
+    Exclusions1 = exclusions1,
+    Current_Target = current_target,
+    Target_Label = target_label,
+    Direction = direction,
+    QPI_Label_Short = qpi_label_short,
+    Direction_Text = direction_text,
+    RAG_Status = rag_status,
+    #HB_Comments = Comments,
+    Previous_Target = previous_target,
+    QPI_Subtitle = qpi_subtitle
+  ) # |> 
+  #select(-Year)
 
 #### Step 6 : Bind together to make full hb_hosp_qpi ----
+
+hb_hosp_old <- hb_hosp_old |>
+  mutate(QPI_Subtitle = as.character(QPI_Subtitle))
 
 hb_hosp_no_tsg <- hb_hosp_old |> 
   filter(Cancer != tsg)
