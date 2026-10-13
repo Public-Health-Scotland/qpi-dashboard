@@ -151,6 +151,13 @@ scotland_rows_calcd <- new_data |>
   
 regional_rows <- regional_rows %>%  mutate(SurgDiag = "Not applicable")
 
+
+
+# Add the regional rows and Scotland rows into the new data as one tibble
+new_data <- new_data |> 
+	bind_rows(regional_rows, scotland_rows_calcd) 
+
+
 # Populate constant fields
 new_data <- new_data |>
   mutate(  Cancer = tsg, 
@@ -293,7 +300,7 @@ head(hb_hosp_old %>% count(NRforExclusion)) # 0 is 62k
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
 # add 2 new variables fake data as value 0 
 
-new_data <-new_data %>% select(-New.report.cf.previous.year) %>% 
+new_data <-new_data %>% select(-any_of("New.report.cf.previous.year")) %>% 
 	rename(PerPerformance = per_performance) %>% 
 	mutate(NRforDenominator =0,
 				 NRforExclusion =0 ) 
