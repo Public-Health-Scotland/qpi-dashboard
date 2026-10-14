@@ -276,7 +276,7 @@ new_data <- new_data |>
 		mutate(NRforDenominator =0,
 				 NRforExclusion =0 )
 
-#### Step 5 : Change names for tableau ----
+#### Step 5 : Comparisons for Quality Assurance ----
 
 test_a[!test_a %in% test_b]  # in a(hosp) but not new_data: nrfordenominator" "nrforexclusion"   "perperformance"  
 # hence to do :add 2 & find out why perperformance not there (it was prior section 4)
@@ -336,8 +336,7 @@ new_data <- new_data %>% select(
 # investigate 
 compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
 
-# 5.3 final case change etc so new_data like hb_hosp -----
-new_data <- new_data |> 
+#### Step 6 : Change names for tableau ----new_data <- new_data |> 
   rename(
     # Board_Hospital = board_hosp,
     # Cyear = cyear,
@@ -364,7 +363,7 @@ new_data <- new_data |>
   ) # |> 
   #select(-Year)
 
-#### Step 6 : Bind together to make full hb_hosp_qpi ----
+#### Step 7 : Bind together to make full hb_hosp_qpi ----
 
 hb_hosp_old <- hb_hosp_old |>
   mutate(QPI_Subtitle = as.character(QPI_Subtitle))
@@ -372,7 +371,7 @@ hb_hosp_old <- hb_hosp_old |>
 hb_hosp_new <- bind_rows(hb_hosp_old, new_data) |> 
   arrange()
 
-#### Step 7 : Write to excel ----
+#### Step 8 : Write to excel ----
 
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath, sheetName = "HB_Hosp_QPI")
 
