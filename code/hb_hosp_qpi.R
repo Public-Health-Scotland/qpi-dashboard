@@ -10,7 +10,8 @@
 
 #### Step 0 : Housekeeping ----
 # Please edit the housekeeping file to specify the tsg and year of diagnosis. 
-# Calls housekeeping, which also calls functions, which also calls packages. 
+# Calls housekeeping, which also calls functions, which also calls packages.
+# And imports hb_hosp_old
 source("code/housekeeping.R") 
 
 # Check there is always just one year's worth of data to be read in. 
@@ -19,18 +20,19 @@ if (length(new_years) > 1) {
           This script is designed to process one year's data at a time.")
 }
 
+# Check whether hb_hosp_old contains the expected range of years and tsg's. 
+# These tests will make it obvious if the condensed hbhosp test file is being used.
+max(hb_hosp_old$Cyear)      
+unique(hb_hosp_old$Cancer)  
+
+
 #### Step 1 : Import data ----
-# Read in extract(s). 
-# Most TSGs will be two excel files, a hospsurg and non-surg, 
-# whereas ac leuk and lymphoma no hospsurg, 
+# Read in lookup file, and then extract(s). 
+# Most TSGs will be two excel files, a hospsurg and diag, 
+# whereas ac leuk and lymphoma have no hospsurg, so just one excel per year,
 # while colorectal qpi 15 liver mets is a special additional report, 
 # ie colorectal has three excel extract files for each year. 
 
-
-# old hb_hosp_qpi
-# hb_hosp_old <- readWorkbook(hb_hosp_in_fpath)
-# max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
-# unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
@@ -48,9 +50,12 @@ glimpse(lookup) # variable of interest is New.report.cf.previous.year
 
 any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
 
+if (any(lookup$New.report.cf.previous.year == TRUE)){
 lookup %>%
   filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) %>%
   count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
+}
+
 
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
@@ -264,6 +269,12 @@ new_data <- new_data |>
     direction == "L" ~ paste0("<", current_target, "%")
   ))
 
+# Populate the two numeric columns we no longer use with zeroes,  
+# Not Recorded for denominator, and Not recorded for exclusion 
+# This is just for Tableau ie fake data. Columns in eCASE will have some non-zeroes.
+new_data <- new_data |>
+		mutate(NRforDenominator =0,
+				 NRforExclusion =0 )
 
 #### Step 5 : Change names for tableau ----
 
@@ -283,9 +294,8 @@ head(hb_hosp_old %>% count(NRforExclusion)) # 0 is 62k
 # add 2 new variables fake data as value 0 
 
 new_data <-new_data %>% select(-any_of("New.report.cf.previous.year")) %>% 
-	rename(PerPerformance = per_performance) %>% 
-	mutate(NRforDenominator =0,
-				 NRforExclusion =0 ) 
+	rename(PerPerformance = per_performance) 
+ 
 
 # include NR4D, NR4E here pro tem but should be at import rather than above-----
 
