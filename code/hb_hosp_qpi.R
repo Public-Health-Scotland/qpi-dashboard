@@ -369,20 +369,7 @@ new_data <- new_data |>
 hb_hosp_old <- hb_hosp_old |>
   mutate(QPI_Subtitle = as.character(QPI_Subtitle))
 
-hb_hosp_no_tsg <- hb_hosp_old |> 
-  filter(Cancer != tsg)
-
-old_tsg_data <- hb_hosp_old |> 
-  filter(Cancer == tsg)
-
-# Replace " - " and " – " in old QPI names with ": "
-# This step can be removed once all updates are done or another solution made
-old_tsg_data <- old_tsg_data |> 
-  mutate(QPI = str_replace(QPI, " – ", ": "),
-         QPI = str_replace(QPI, " - ", ": "),
-         QPI = str_replace(QPI, "QPI \\d+ ", reformat_qpi_number))
-
-hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |> 
+hb_hosp_new <- bind_rows(hb_hosp_old, new_data) |> 
   arrange()
 
 #### Step 7 : Write to excel ----
