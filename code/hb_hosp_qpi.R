@@ -20,7 +20,7 @@ source("code/housekeeping.R")
 # These tests will make it obvious if the condensed hbhosp test file is being used.
 max(hb_hosp_old$Cyear)      
 unique(hb_hosp_old$Cancer)  
-
+length(unique(hb_hosp_old$Cancer))
 
 #### Step 1 : Import data ----
 # Read in lookup file, and then extract(s). 
