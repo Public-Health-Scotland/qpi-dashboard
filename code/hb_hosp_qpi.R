@@ -9,16 +9,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
+warning("BEFORE RUNNING hb_hosp_qpi.R, MAKE SURE YOU HAVE RUN check_extracts.R 
+	ON THIS DATA, AND LOOKED CAREFULLY AT ALL THE OUTPUT!")
 # Please edit the housekeeping file to specify the tsg and year of diagnosis. 
 # Calls housekeeping, which also calls functions, which also calls packages.
 # And imports hb_hosp_old
 source("code/housekeeping.R") 
-
-# Check there is always just one year's worth of data to be read in. 
-if (length(new_years) > 1) {
-  stop("More than one Cyear detected in housekeeping file. 
-          This script is designed to process one year's data at a time.")
-}
 
 # Check whether hb_hosp_old contains the expected range of years and tsg's. 
 # These tests will make it obvious if the condensed hbhosp test file is being used.
