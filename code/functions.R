@@ -57,26 +57,6 @@ import_extracts <- function(data_folder, extracts_filenames) {
     
     # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
-    # scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
-    # scot_raw_tab <- readWorkbook(extract_file, 
-    #                              sheet = scot_sheet_name, 
-    #                              colNames = FALSE, 
-    #                              skipEmptyRows = FALSE)
-    # 
-    # scot_table_start_position <- find_table_start(scot_raw_tab)
-    # 
-    # scot_new_data <- readWorkbook(extract_file, 
-    #                               sheet = scot_sheet_name, 
-    #                               # Use colNames to take column names from row 
-    #                               # whose number is the same as startRow
-    #                               colNames = TRUE, 
-    #                               skipEmptyCols = TRUE, 
-    #                               skipEmptyRows = TRUE,
-    #                               startRow = as.integer(scot_table_start_position["start_row"])
-    # )   |> 
-    #   select (-c(PerPerformance, Target_Label))
-    # 
-    # scot_new_data <- scot_new_data |> mutate(Location = "Scotland")
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, 

@@ -29,7 +29,7 @@ if (length(new_years) > 1) {
           This script is designed to process one year's data at a time.")
 }
 
-# new lookup
+# new real lookup
 lookup <- import_lookup(lookup_fpath) |> 
 	select(-SurgDiag) 
 
