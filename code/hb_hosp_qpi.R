@@ -332,7 +332,8 @@ new_data <- new_data %>% select(
 # investigate 
 compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
 
-#### Step 6 : Change names for tableau ----new_data <- new_data |> 
+#### Step 6 : Change names for Tableau ---- 
+new_data <- new_data |> 
   rename(
     # Board_Hospital = board_hosp,
     # Cyear = cyear,
