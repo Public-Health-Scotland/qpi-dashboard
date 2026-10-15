@@ -6,8 +6,12 @@
 # get test : fake xlsx with pos & neg controls : lookup_cft_test.xlsx
 # in lookup_test_cft edited "QPI 9: First-line Chemotherapy" to read "QPI 99: test qpi not in boxi"
 
-test_lookup_fpath <- here(data_folder,
-													"lookup", "lookup_cft_test.xlsx") # original from housekeeping.R line 122 
+test_data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", "Data", 
+												 "new_process", "testing", "TEST_updates", 
+													"TEST_tsg_2026")
+
+test_lookup_fpath <- here(test_data_folder, 
+													"lookup", "lookup_cft_test.xlsx") 
 
 # get test lookup
 test_false_lookup <- import_lookup(test_lookup_fpath) |> 
