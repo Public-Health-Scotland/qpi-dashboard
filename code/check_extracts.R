@@ -1,4 +1,8 @@
-# check_extracts.R
+# check_extracts.R 
+# Looks for issues in the Boxi input for SCRIS QPI dashboard updates
+# Clare Taylor, October 2026
+
+source("code/housekeeping.R") 
 
 # are all lookup qpis in new_data for a particular year (& vice versa)? -------
 # code in line 144 hb_hosp_qpi.R now redundant ("Identify rows where the QPI name in new_data was not matched with any in lookup"
@@ -18,7 +22,7 @@ test_false_lookup <- import_lookup(test_lookup_fpath) |>
 	select(-SurgDiag)  # edited original from hb_hosp_qpi.R has 35 to 44
 
 # get new_data by equivalent of running hb_hosp_qpi to line 83 170x10
-source("code/housekeeping.R") 
+
 
 # Check there is always just one year's worth of data to be read in. 
 if (length(new_years) > 1) {
@@ -26,7 +30,7 @@ if (length(new_years) > 1) {
           This script is designed to process one year's data at a time.")
 }
 
-# new lookup
+# Real new lookup file, listing the actual QPIs 
 lookup <- import_lookup(lookup_fpath) |> 
 	select(-SurgDiag) 
 
