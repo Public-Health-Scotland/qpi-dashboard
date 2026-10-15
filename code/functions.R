@@ -109,8 +109,8 @@ find_table_start <- function(raw_worksheet){
   # Create named vector, for returning the result 
   # NB start_row is the number of the row containing the headers
   start_positions <- c(start_row = 0, start_col = 0)
-  max_cols_to_search <- 7
-  max_rows_to_search <- 12
+  max_cols_to_search <- 20
+  max_rows_to_search <- 50
   current_row_checking <- 1
   while (current_row_checking < max_rows_to_search) { 
     current_col_checking <- 1
