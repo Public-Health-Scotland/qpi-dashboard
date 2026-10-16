@@ -315,6 +315,8 @@ sum(!test_a[!test_c %in% test_a])  # 0
 
 # 5.2 piecemeal reordering of new_data, make iterative -----
 # Needs an explanatory comment at least
+# Cannot find the test_hbhosp_names vector anywhere, 
+# when is it populated?!
 new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
 
 new_data <- new_data |> select(
