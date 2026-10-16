@@ -9,16 +9,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
+warning("BEFORE RUNNING hb_hosp_qpi.R, MAKE SURE YOU HAVE RUN check_extracts.R 
+	ON THIS DATA, AND LOOKED CAREFULLY AT ALL THE OUTPUT!")
 # Please edit the housekeeping file to specify the tsg and year of diagnosis. 
 # Calls housekeeping, which also calls functions, which also calls packages.
 # And imports hb_hosp_old
 source("code/housekeeping.R") 
-
-# Check there is always just one year's worth of data to be read in. 
-if (length(new_years) > 1) {
-  stop("More than one Cyear detected in housekeeping file. 
-          This script is designed to process one year's data at a time.")
-}
 
 # Check whether hb_hosp_old contains the expected range of years and tsg's. 
 # These tests will make it obvious if the condensed hbhosp test file is being used.
@@ -51,8 +47,8 @@ glimpse(lookup) # variable of interest is New.report.cf.previous.year
 any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
 
 if (any(lookup$New.report.cf.previous.year == TRUE)){
-lookup %>%
-  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) %>%
+lookup |>
+  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) |>
   count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
 }
 
@@ -149,7 +145,7 @@ hbs_to_inc_in_scot_total <- HB_geo_groups |>
   filter(include_in_scot_nhs_total) |>
   pull(qpi_dashboard_hb_abbreviation)
 
-## Workaround - calculate and add the Scotland rows 
+## Calculate the Scotland rows 
 scotland_rows_calcd <- new_data |>
   filter(Location %in% hbs_to_inc_in_scot_total) |>
   group_by(QPI) |>
@@ -161,18 +157,12 @@ scotland_rows_calcd <- new_data |>
       ungroup()) |>
   mutate(
    Location = "Scotland", 
-   Network = "Scotland",
+   Network = "Scotland"
   )
   
-# Add the regional rows and Scotland rows into the new data as one tibble
+# Bind the regional rows and Scotland rows onto new_data (already contains HB data)
 new_data <- new_data |> 
   bind_rows(regional_rows, scotland_rows_calcd) 
-
-
-
-# Add the regional rows and Scotland rows into the new data as one tibble
-new_data <- new_data |> 
-	bind_rows(regional_rows, scotland_rows_calcd) 
 
 
 # Populate constant fields
@@ -228,6 +218,16 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(per_performance = (Numerator/Denominator)*100) |> 
   mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
+
+if (any(new_data$per_performance > 100)){ 
+	bad_performance <- new_data |>
+		select(QPI, Location, Network, 
+					 Numerator, NRforNumerator, Denominator, per_performance) |>
+		filter(per_performance > 100)
+	print(bad_performance)
+	stop("BAD DATA: Detected at least one performance value of over 100%, 
+	suggesting numerator was greater than denominator. Check rows listed above!")
+}
 
 # QPI_order (does nothing. Leave for now?)
 new_data <- new_data |> 
@@ -286,24 +286,23 @@ test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous
 
 # check that 0 a reasonable value for new vars in new_data
 
-head(hb_hosp_old %>% count(NRforDenominator)) # 0 is 56k
-head(hb_hosp_old %>% count(NRforExclusion)) # 0 is 62k
+head(hb_hosp_old |> count(NRforDenominator)) # 0 is 56k
+head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
 
-# 5.1 removal unwanted variables, addition new variables and adjust name of 1 varin  new_data ----
+## Step 5.1 remove unwanted variables, add new one and adjust name of another ----
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
 # add 2 new variables fake data as value 0 
 
-new_data <-new_data %>% select(-any_of("New.report.cf.previous.year")) %>% 
+new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) |> 
 	rename(PerPerformance = per_performance) 
  
 
-# include NR4D, NR4E here pro tem but should be at import rather than above-----
-
-new_data %>% count(NRforDenominator,NRforExclusion ) %>% slice_head()
+# Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
+new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()
 
 # check
-
-test_new_data_names2 <- new_data %>% names()
+# Below does not make sense
+test_new_data_names2 <- new_data |> names()
 compare(test_new_data_names,test_new_data_names2)
 
 test_c <-str_to_lower(test_new_data_names2)  # 28
@@ -315,10 +314,12 @@ test_c[c(23, 27:28)]  # as expected
 sum(!test_a[!test_c %in% test_a])  # 0
 
 # 5.2 piecemeal reordering of new_data, make iterative -----
+# Needs an explanatory comment at least
+# Cannot find the test_hbhosp_names vector anywhere, 
+# when is it populated?!
+new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
 
-new_data <- new_data %>% select(test_hbhosp_names[1:10], everything())
-
-new_data <- new_data %>% select(
+new_data <- new_data |> select(
 	test_hbhosp_names[1:11],
 	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
 	everything()
@@ -326,7 +327,7 @@ new_data <- new_data %>% select(
 # investigate 
 compare(test_hbhosp_names, names(new_data), max_diffs = Inf)
 
-new_data <- new_data %>% select(
+new_data <- new_data |> select(
 	Board_Hospital:target_label,
 	direction, qpi_label_short, Network,
 	direction_text, rag_status, HB_Comments,
@@ -336,7 +337,8 @@ new_data <- new_data %>% select(
 # investigate 
 compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
 
-#### Step 6 : Change names for tableau ----new_data <- new_data |> 
+#### Step 6 : Change names for tableau ----
+new_data <- new_data |> 
   rename(
     # Board_Hospital = board_hosp,
     # Cyear = cyear,
@@ -374,5 +376,3 @@ hb_hosp_new <- bind_rows(hb_hosp_old, new_data) |>
 #### Step 8 : Write to excel ----
 
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath, sheetName = "HB_Hosp_QPI")
-
-

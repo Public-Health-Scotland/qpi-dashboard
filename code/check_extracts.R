@@ -1,19 +1,40 @@
-# check_extracts.R
+# check_extracts.R 
+# Tests data extracts for new SCRIS QPIs dashboard updates. 
+# Clare Taylor, October 2026
 
-# are all lookup qpis in new_data for a particular year (& vice versa)? -------
-# code in line 144 hb_hosp_qpi.R now redundant ("Identify rows where the QPI name in new_data was not matched with any in lookup"
+# Are all lookup qpis in new_data for a particular year (& vice versa)? -------
+# Code in line 144 hb_hosp_qpi.R now redundant ("Identify rows where the QPI name in new_data was not matched with any in lookup"
+
+source("code/housekeeping.R")
 
 # get test : fake xlsx with pos & neg controls : lookup_cft_test.xlsx
 # in lookup_test_cft edited "QPI 9: First-line Chemotherapy" to read "QPI 99: test qpi not in boxi"
 
-test_lookup_fpath <- here(data_folder,
-													"lookup", "lookup_cft_test.xlsx") # original from housekeeping.R line 122 
+test_data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", "Data", 
+												 "new_process", "testing", "TEST_updates", 
+													"TEST_tsg_2026")
+
+test_lookup_fpath <- here(test_data_folder, 
+													"lookup", "lookup_cft_test.xlsx") 
 
 # get test lookup
 test_false_lookup <- import_lookup(test_lookup_fpath) |> 
 	select(-SurgDiag)  # edited original from hb_hosp_qpi.R has 35 to 44
 
-# get new_data by run hb_hosp_qpi to line 83 170x10
+# get new_data by equivalent of running hb_hosp_qpi to line 83 170x10
+
+# Check there is always just one year's worth of data to be read in. 
+if (length(new_years) > 1) {
+	stop("More than one Cyear detected in housekeeping file. 
+          This script is designed to process one year's data at a time.")
+}
+
+# new real lookup
+lookup <- import_lookup(lookup_fpath) |> 
+	select(-SurgDiag) 
+
+# new data
+new_data <- import_extracts(data_folder, extracts_filenames) 
 
 # exploration 
 names(new_data)  #"QPI""Cyear" "Numerator""NRforNumerator" "Denominator" "Location" "Cancer"  "SurgDiag" "Board_Hospital" "HB_Comments"        
@@ -21,7 +42,7 @@ sort(unique(new_data$QPI))
 
 # test 1 are all QPIs in lookup for a specific year in the new_data?
 
-test_abbrev_lookup <-lookup %>% filter(cyear %in% new_years) #11 x 14
+test_abbrev_lookup <-lookup %>% filter(cyear %in% new_years) 
 sort(unique(test_abbrev_lookup$qpi))
 
 names(lookup)  # cyear, qpi are lowercase
