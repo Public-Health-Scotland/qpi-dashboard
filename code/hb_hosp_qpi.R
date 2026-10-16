@@ -145,7 +145,7 @@ hbs_to_inc_in_scot_total <- HB_geo_groups |>
   filter(include_in_scot_nhs_total) |>
   pull(qpi_dashboard_hb_abbreviation)
 
-## Workaround - calculate and add the Scotland rows 
+## Calculate and add the Scotland rows 
 scotland_rows_calcd <- new_data |>
   filter(Location %in% hbs_to_inc_in_scot_total) |>
   group_by(QPI) |>
@@ -218,6 +218,16 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(per_performance = (Numerator/Denominator)*100) |> 
   mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
+
+if (any(new_data$per_performance > 100)){ 
+	bad_performance <- new_data |>
+		select(QPI, Location, Network, 
+					 Numerator, NRforNumerator, Denominator, per_performance) |>
+		filter(per_performance > 100)
+	print(bad_performance)
+	stop("BAD DATA: Detected at least one performance value of over 100%, 
+	suggesting numerator was greater than denominator. Check rows listed above!")
+}
 
 # QPI_order (does nothing. Leave for now?)
 new_data <- new_data |> 
