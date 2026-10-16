@@ -64,6 +64,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                colNames = FALSE,
                                skipEmptyRows = FALSE)
     hb_table_start_position <- find_table_start(hb_raw_tab)
+    # Workaround for erroring input file
+    # start_positions <- c(start_row = 7, start_col = 1)
+    # hb_table_start_position <- start_positions 
     hb_new_data  <- readWorkbook(extract_file, 
                                  sheet = hb_sheet_name, 
                                  colNames = TRUE, 
