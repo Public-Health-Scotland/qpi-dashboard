@@ -145,7 +145,7 @@ hbs_to_inc_in_scot_total <- HB_geo_groups |>
   filter(include_in_scot_nhs_total) |>
   pull(qpi_dashboard_hb_abbreviation)
 
-## Calculate and add the Scotland rows 
+## Calculate the Scotland rows 
 scotland_rows_calcd <- new_data |>
   filter(Location %in% hbs_to_inc_in_scot_total) |>
   group_by(QPI) |>
@@ -160,7 +160,7 @@ scotland_rows_calcd <- new_data |>
    Network = "Scotland",
   )
   
-# Add the regional rows and Scotland rows into the new data as one tibble
+# Bind the regional rows and Scotland rows onto new_data (already contains HB data)
 new_data <- new_data |> 
   bind_rows(regional_rows, scotland_rows_calcd) 
 
