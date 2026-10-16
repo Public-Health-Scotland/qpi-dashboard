@@ -42,7 +42,7 @@ sort(unique(new_data$QPI))
 
 # test 1 are all QPIs in lookup for a specific year in the new_data?
 
-test_abbrev_lookup <-lookup %>% filter(cyear %in% new_years) #11 x 14
+test_abbrev_lookup <-lookup %>% filter(cyear %in% new_years) 
 sort(unique(test_abbrev_lookup$qpi))
 
 names(lookup)  # cyear, qpi are lowercase

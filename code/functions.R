@@ -111,6 +111,7 @@ find_table_start <- function(raw_worksheet){
   start_positions <- c(start_row = 0, start_col = 0)
   max_cols_to_search <- 20
   max_rows_to_search <- 50
+  found_data <- FALSE
   current_row_checking <- 1
   while (current_row_checking < max_rows_to_search) { 
     current_col_checking <- 1
@@ -122,11 +123,19 @@ find_table_start <- function(raw_worksheet){
       ){
         start_positions["start_row"] <- current_row_checking
         start_positions["start_col"] <- current_col_checking 
+        found_data <- TRUE
+        break
       }
       current_col_checking <- current_col_checking + 1
     }
-    
+    if (found_data) {
+      break
+    } else {
     current_row_checking <- current_row_checking + 1 
+    }
+  }
+  if (!found_data){
+    stop("PROBLEM: Cannot find data table in the HB tab.")
   }
   return(start_positions) 
 }

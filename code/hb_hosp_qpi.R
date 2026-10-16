@@ -165,12 +165,6 @@ new_data <- new_data |>
   bind_rows(regional_rows, scotland_rows_calcd) 
 
 
-
-# Add the regional rows and Scotland rows into the new data as one tibble
-new_data <- new_data |> 
-	bind_rows(regional_rows, scotland_rows_calcd) 
-
-
 # Populate constant fields
 new_data <- new_data |>
   mutate(  Cancer = tsg, 
