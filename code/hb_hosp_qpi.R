@@ -47,8 +47,8 @@ glimpse(lookup) # variable of interest is New.report.cf.previous.year
 any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
 
 if (any(lookup$New.report.cf.previous.year == TRUE)){
-lookup %>%
-  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) %>%
+lookup |>
+  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) |>
   count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
 }
 
@@ -286,23 +286,23 @@ test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous
 
 # check that 0 a reasonable value for new vars in new_data
 
-head(hb_hosp_old %>% count(NRforDenominator)) # 0 is 56k
-head(hb_hosp_old %>% count(NRforExclusion)) # 0 is 62k
+head(hb_hosp_old |> count(NRforDenominator)) # 0 is 56k
+head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
 
 ## Step 5.1 remove unwanted variables, add new one and adjust name of another ----
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
 # add 2 new variables fake data as value 0 
 
-new_data <-new_data %>% select(-any_of("New.report.cf.previous.year")) %>% 
+new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) |> 
 	rename(PerPerformance = per_performance) 
  
 
 # Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
-new_data %>% count(NRforDenominator,NRforExclusion ) %>% slice_head()
+new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()
 
 # check
 # Below does not make sense
-test_new_data_names2 <- new_data %>% names()
+test_new_data_names2 <- new_data |> names()
 compare(test_new_data_names,test_new_data_names2)
 
 test_c <-str_to_lower(test_new_data_names2)  # 28
@@ -315,9 +315,9 @@ sum(!test_a[!test_c %in% test_a])  # 0
 
 # 5.2 piecemeal reordering of new_data, make iterative -----
 # Needs an explanatory comment at least
-new_data <- new_data %>% select(test_hbhosp_names[1:10], everything())
+new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
 
-new_data <- new_data %>% select(
+new_data <- new_data |> select(
 	test_hbhosp_names[1:11],
 	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
 	everything()
@@ -325,7 +325,7 @@ new_data <- new_data %>% select(
 # investigate 
 compare(test_hbhosp_names, names(new_data), max_diffs = Inf)
 
-new_data <- new_data %>% select(
+new_data <- new_data |> select(
 	Board_Hospital:target_label,
 	direction, qpi_label_short, Network,
 	direction_text, rag_status, HB_Comments,
@@ -335,7 +335,8 @@ new_data <- new_data %>% select(
 # investigate 
 compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
 
-#### Step 6 : Change names for tableau ----new_data <- new_data |> 
+#### Step 6 : Change names for tableau ----
+new_data <- new_data |> 
   rename(
     # Board_Hospital = board_hosp,
     # Cyear = cyear,
@@ -373,5 +374,3 @@ hb_hosp_new <- bind_rows(hb_hosp_old, new_data) |>
 #### Step 8 : Write to excel ----
 
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath, sheetName = "HB_Hosp_QPI")
-
-
