@@ -314,7 +314,7 @@ test_c[c(23, 27:28)]  # as expected
 sum(!test_a[!test_c %in% test_a])  # 0
 
 # 5.2 piecemeal reordering of new_data, make iterative -----
-
+# Needs an explanatory comment at least
 new_data <- new_data %>% select(test_hbhosp_names[1:10], everything())
 
 new_data <- new_data %>% select(
