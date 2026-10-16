@@ -157,7 +157,7 @@ scotland_rows_calcd <- new_data |>
       ungroup()) |>
   mutate(
    Location = "Scotland", 
-   Network = "Scotland",
+   Network = "Scotland"
   )
   
 # Bind the regional rows and Scotland rows onto new_data (already contains HB data)
@@ -289,7 +289,7 @@ test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous
 head(hb_hosp_old %>% count(NRforDenominator)) # 0 is 56k
 head(hb_hosp_old %>% count(NRforExclusion)) # 0 is 62k
 
-# 5.1 removal unwanted variables, addition new variables and adjust name of 1 varin  new_data ----
+## Step 5.1 remove unwanted variables, add new one and adjust name of another ----
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
 # add 2 new variables fake data as value 0 
 
@@ -297,12 +297,11 @@ new_data <-new_data %>% select(-any_of("New.report.cf.previous.year")) %>%
 	rename(PerPerformance = per_performance) 
  
 
-# include NR4D, NR4E here pro tem but should be at import rather than above-----
-
+# Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
 new_data %>% count(NRforDenominator,NRforExclusion ) %>% slice_head()
 
 # check
-
+# Below does not make sense
 test_new_data_names2 <- new_data %>% names()
 compare(test_new_data_names,test_new_data_names2)
 
