@@ -278,11 +278,6 @@ new_data <- new_data |>
 
 #### Step 5 : Comparisons for Quality Assurance ----
 
-test_a[!test_a %in% test_b]  # in a(hosp) but not new_data: nrfordenominator" "nrforexclusion"   "perperformance"  
-# hence to do :add 2 & find out why perperformance not there (it was prior section 4)
-
-test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous.year" "per_performance"
-# hence remove 1st & rename 2nd
 
 # check that 0 a reasonable value for new vars in new_data
 
@@ -300,42 +295,29 @@ new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) |>
 # Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
 new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()
 
-# check
-# Below does not make sense
-test_new_data_names2 <- new_data |> names()
-compare(test_new_data_names,test_new_data_names2)
 
-test_c <-str_to_lower(test_new_data_names2)  # 28
-
-# check
-test_c %in% test_b  # 3 false
-test_c[c(23, 27:28)]  # as expected
-
-sum(!test_a[!test_c %in% test_a])  # 0
 
 # 5.2 piecemeal reordering of new_data, make iterative -----
 # Needs an explanatory comment at least
 # Cannot find the test_hbhosp_names vector anywhere, 
-# when is it populated?!
-new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
+# when is it populated?! 
+# Commenting out the column re-ordering, since bind_rows does it for us.
+# new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
+# 
+# new_data <- new_data |> select(
+# 	test_hbhosp_names[1:11],
+# 	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
+# 	everything()
+# )
 
-new_data <- new_data |> select(
-	test_hbhosp_names[1:11],
-	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
-	everything()
-)
-# investigate 
-compare(test_hbhosp_names, names(new_data), max_diffs = Inf)
+# new_data <- new_data |> select(
+# 	Board_Hospital:target_label,
+# 	direction, qpi_label_short, Network,
+# 	direction_text, rag_status, HB_Comments,
+# 	previous_target, qpi_subtitle
+# )
 
-new_data <- new_data |> select(
-	Board_Hospital:target_label,
-	direction, qpi_label_short, Network,
-	direction_text, rag_status, HB_Comments,
-	previous_target, qpi_subtitle
-)
 
-# investigate 
-compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
 
 #### Step 6 : Change names for tableau ----
 new_data <- new_data |> 
@@ -370,8 +352,7 @@ new_data <- new_data |>
 hb_hosp_old <- hb_hosp_old |>
   mutate(QPI_Subtitle = as.character(QPI_Subtitle))
 
-hb_hosp_new <- bind_rows(hb_hosp_old, new_data) |> 
-  arrange()
+hb_hosp_new <- bind_rows(hb_hosp_old, new_data)
 
 #### Step 8 : Write to excel ----
 
