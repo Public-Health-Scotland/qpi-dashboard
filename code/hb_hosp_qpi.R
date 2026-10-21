@@ -288,8 +288,7 @@ head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
 # add 2 new variables fake data as value 0 
 
-new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) |> 
-	rename(PerPerformance = per_performance) 
+new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) 
  
 
 # Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
