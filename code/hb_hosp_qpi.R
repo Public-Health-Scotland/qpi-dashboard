@@ -129,7 +129,7 @@ regional_rows <- new_data |>
   # Sum of performance is invalid, so firstly drop this column if it exists
   select(-any_of("PerPerformance")) |> 
   filter(!str_detect(tolower(Location), "scotland")) |>
-           group_by(QPI, Network, Cyear) |>
+           group_by(QPI, Network) |>
            summarise(
              across(
               where(is.numeric), 
