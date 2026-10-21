@@ -344,8 +344,7 @@ new_data <- new_data |>
     #HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
-  ) # |> 
-  #select(-Year)
+  ) 
 
 #### Step 7 : Bind together to make full hb_hosp_qpi ----
 
