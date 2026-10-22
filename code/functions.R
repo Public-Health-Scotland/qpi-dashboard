@@ -910,7 +910,7 @@ filter_hbhosp_for_summary <- \(filepath){
 	
 	
 
-	tumour_groups = distinct(hb_hosp, Cancer)$Cancer
+	tumour_groups = distinct(arrange(hb_hosp, Cancer), Cancer)$Cancer
 	
 	cat("The tumor groups in the file provided are: \n")
 	for(i in 1:length(tumour_groups)){
@@ -937,7 +937,7 @@ filter_hbhosp_for_summary <- \(filepath){
 	
 	
 
-	years = distinct(filter(hb_hosp, Cancer == tumour_groups[tsg]), Cyear)$Cyear
+	years = distinct(arrange(filter(hb_hosp, Cancer == tumour_groups[tsg]), Cyear), Cyear)$Cyear
 	
 	cat(paste0("The years associated with the tumour group ", tumour_groups[tsg], " in the file provided are: \n"))
 	for(i in 1:length(years)){
@@ -963,23 +963,9 @@ filter_hbhosp_for_summary <- \(filepath){
 	hb_hosp_filtered = hb_hosp |>
 		filter(Cancer == tumour_groups[tsg] 
 					 & Cyear %in% years[years_selected]
-					 & Location == "Scotland")
+					 & Location == "Scotland") |>
+		arrange(Cyear)
 	
-	# file_title_1 = paste0("scotland_rows_", 
-	# 											str_replace(str_to_lower(tumour_groups[tsg]), "\\W", "_"),
-	# 											"_",
-	# 											str_replace_all(today(), "-", "_"), 
-	# 											".xlsx")
-	# 
-	# file_title_2 = paste0("scotland_rows_", 
-	# 											str_replace(str_to_lower(tumour_groups[tsg]), "\\W", "_"),
-	# 											"_",
-	# 											str_flatten(str_replace(years[years_selected], "\\/","_"), "_"), 
-	# 											".xlsx")
-	# 
-	# write.xlsx(x = hb_hosp_filtered,
-	# 					 file = here("code", "for_summary_table", file_title_2),
-	# 					 asTable = TRUE)
 	
 	return(hb_hosp_filtered)
 }
@@ -990,9 +976,10 @@ filter_hbhosp_for_summary <- \(filepath){
 make_summary_table <- function(scotland_performance_all_qpis) {
 	# Add target status column called Result
 	scotland_performance_all_qpis <- scotland_performance_all_qpis |>
-		mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |> 
-		mutate("Performance (%)" = str_c(format(round_half_up(PerPerformance, digits = 1), nsmall=1), "%")) |> 
-		rename("Target" = Target_Label)
+		mutate(Result = ifelse(RAG_Status == 1, "Target met", "Not met")) |> 
+		mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1) / 100) |> 
+		mutate("Target" = case_when(str_detect(Target_Label, "^\\d") ~ paste0(">", Target_Label),
+																str_detect(Target_Label, "^<") ~ Target_Label))
 	
 	# Use pivot_wider to create columns for the years
 	# Needs more work, to appent "%" in the cells so its more obvious they're percentages. 
