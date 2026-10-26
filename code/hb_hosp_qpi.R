@@ -9,20 +9,23 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### Step 0 : Housekeeping ----
+warning("BEFORE RUNNING hb_hosp_qpi.R, MAKE SURE YOU HAVE RUN check_extracts.R 
+	ON THIS DATA, AND LOOKED CAREFULLY AT ALL THE OUTPUT!")
 # Please edit the housekeeping file to specify the tsg and year of diagnosis. 
-# Calls housekeeping, which also calls functions, which also calls packages. 
+# Calls housekeeping, which also calls functions, which also calls packages.
+# And imports hb_hosp_old
 source("code/housekeeping.R") 
 
-# Check there is always just one year's worth of data to be read in. 
-if (length(new_years) > 1) {
-  stop("More than one Cyear detected in housekeeping file. 
-          This script is designed to process one year's data at a time.")
-}
+# Check whether hb_hosp_old contains the expected range of years and tsg's. 
+# These tests will make it obvious if the condensed hbhosp test file is being used.
+max(hb_hosp_old$Cyear)      
+unique(hb_hosp_old$Cancer)  
+
 
 #### Step 1 : Import data ----
-# Read in extract(s). 
-# Most TSGs will be two excel files, a hospsurg and non-surg, 
-# whereas ac leuk and lymphoma no hospsurg, 
+# Read in lookup file, and then extract(s). 
+# Most TSGs will be two excel files, a hospsurg and diag, 
+# whereas ac leuk and lymphoma have no hospsurg, so just one excel per year,
 # while colorectal qpi 15 liver mets is a special additional report, 
 # ie colorectal has three excel extract files for each year. 
 
@@ -41,6 +44,18 @@ if (any(!str_equal(lookup$cancer, tsg))){
       housekeeping.R (", tsg, ") is NOT matched in at least one of the values 
       in the Cancer column of lookup.xlsx: ", unique(lookup$cancer)) 
 }
+
+# Do the QPIs need to be split (due to a new report) ?
+glimpse(lookup) # variable of interest is New.report.cf.previous.year
+
+any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
+
+if (any(lookup$New.report.cf.previous.year == TRUE)){
+lookup |>
+  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) |>
+  count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
+}
+
 
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
@@ -67,18 +82,6 @@ new_data <- new_data |>
     )
   )
          
-# Get the tsg global variable
-new_data <- new_data |>
-  mutate(Cancer = tsg, 
-         SurgDiag = "Not applicable")
-
-# Add SCRIS-specific columns ie Board_Hospital and Comments
-new_data <- new_data |>
-  mutate(Board_Hospital = "NHS Board") |> 
-  mutate(HB_Comments = NA)
-
-
-
 # If the network for Golden Jubilee is WoSCAN, then
 # add Golden Jubilee (aka national facility) figures to Glasgow, then combine rows.
 Jubilee_netwk <- HB_geo_groups |>
@@ -138,18 +141,14 @@ regional_rows <- new_data |>
   # Sum of performance is invalid, so firstly drop this column if it exists
   select(-any_of("PerPerformance")) |> 
   filter(!str_detect(tolower(Location), "scotland")) |>
-           group_by(QPI, Network, Cyear) |>
+           group_by(QPI, Network) |>
            summarise(
              across(
               where(is.numeric), 
               ~ sum(.x, na.rm = TRUE)
               ) |> 
            ungroup()) |>
-           mutate(Location = Network,
-                  Board_Hospital = "NHS Board",
-                  Cancer = tsg,
-                  HB_Comments = NA
-                  ) 
+           mutate(Location = Network) 
 
 # Identify the HBs that should be summed to give Scotland total, 
 # such as not to include non-NHS and NHS rest of the UK ie England, Wales, NI. 
@@ -158,7 +157,7 @@ hbs_to_inc_in_scot_total <- HB_geo_groups |>
   filter(include_in_scot_nhs_total) |>
   pull(qpi_dashboard_hb_abbreviation)
 
-## Workaround - calculate and add the Scotland rows 
+## Calculate the Scotland rows 
 scotland_rows_calcd <- new_data |>
   filter(Location %in% hbs_to_inc_in_scot_total) |>
   group_by(QPI) |>
@@ -170,23 +169,33 @@ scotland_rows_calcd <- new_data |>
       ungroup()) |>
   mutate(
    Location = "Scotland", 
-   Network = "Scotland",
-   Cyear = as.character(new_years[1]),
-   Board_Hospital = "NHS Board",
-   Cancer = tsg,
-   HB_Comments = NA
+   Network = "Scotland"
   )
   
-# Add the regional rows and Scotland rows into the new data as one tibble
+# Bind the regional rows and Scotland rows onto new_data (already contains HB data)
 new_data <- new_data |> 
   bind_rows(regional_rows, scotland_rows_calcd) 
 
 
+# Populate constant fields
+new_data <- new_data |>
+  mutate(  Cancer = tsg, 
+           Cyear = as.character(new_years[1]),
+           SurgDiag = "Not applicable",
+           Board_Hospital = "NHS Board",
+           HB_Comments = NA)
 
-
+#### Step 2b: Build summary table for publications ----
+# scotland_rows <- new_data |> 
+#   filter(str_detect(tolower(Location), "scotland"))
+# 
+# scotland_minus_comments <- scotland_rows |>
+#   select(-any_of("HB_Comments")) 
+# write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
 
 
 #### Step 3 : Join lookup to new data ----
+# Clean up trailing carriage returns before join to lookup!
 
 new_data <- new_data |> 
   left_join(lookup, by = c("Cyear" = "cyear",
@@ -221,6 +230,16 @@ new_data <- new_data |>
 new_data <- new_data |> 
   mutate(per_performance = (Numerator/Denominator)*100) |> 
   mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
+
+if (any(new_data$per_performance > 100)){ 
+	bad_performance <- new_data |>
+		select(QPI, Location, Network, 
+					 Numerator, NRforNumerator, Denominator, per_performance) |>
+		filter(per_performance > 100)
+	print(bad_performance)
+	stop("BAD DATA: Detected at least one performance value of over 100%, 
+	suggesting numerator was greater than denominator. Check rows listed above!")
+}
 
 # QPI_order (does nothing. Leave for now?)
 new_data <- new_data |> 
@@ -262,9 +281,56 @@ new_data <- new_data |>
     direction == "L" ~ paste0("<", current_target, "%")
   ))
 
+# Populate the two numeric columns we no longer use with zeroes,  
+# Not Recorded for denominator, and Not recorded for exclusion 
+# This is just for Tableau ie fake data. Columns in eCASE will have some non-zeroes.
+new_data <- new_data |>
+		mutate(NRforDenominator =0,
+				 NRforExclusion =0 )
 
-#### Step 5 : Change names for tableau ----
+#### Step 5 : Comparisons for Quality Assurance ----
 
+
+# check that 0 a reasonable value for new vars in new_data
+
+head(hb_hosp_old |> count(NRforDenominator)) # 0 is 56k
+head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
+
+## Step 5.1 remove unwanted variables, add new one and adjust name of another ----
+# from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
+# add 2 new variables fake data as value 0 
+
+new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) 
+ 
+
+# Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
+new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()
+
+
+
+# 5.2 piecemeal reordering of new_data, make iterative -----
+# Needs an explanatory comment at least
+# Cannot find the test_hbhosp_names vector anywhere, 
+# when is it populated?! 
+# Commenting out the column re-ordering, since bind_rows does it for us.
+# new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
+# 
+# new_data <- new_data |> select(
+# 	test_hbhosp_names[1:11],
+# 	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
+# 	everything()
+# )
+
+# new_data <- new_data |> select(
+# 	Board_Hospital:target_label,
+# 	direction, qpi_label_short, Network,
+# 	direction_text, rag_status, HB_Comments,
+# 	previous_target, qpi_subtitle
+# )
+
+
+
+#### Step 6 : Change names for tableau ----
 new_data <- new_data |> 
   rename(
     # Board_Hospital = board_hosp,
@@ -289,34 +355,15 @@ new_data <- new_data |>
     #HB_Comments = Comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle
-  ) # |> 
-  #select(-Year)
+  ) 
 
-
-
-#### Step 6 : Bind together to make full hb_hosp_qpi ----
+#### Step 7 : Bind together to make full hb_hosp_qpi ----
 
 hb_hosp_old <- hb_hosp_old |>
   mutate(QPI_Subtitle = as.character(QPI_Subtitle))
 
-hb_hosp_no_tsg <- hb_hosp_old |> 
-  filter(Cancer != tsg)
+hb_hosp_new <- bind_rows(hb_hosp_old, new_data)
 
-old_tsg_data <- hb_hosp_old |> 
-  filter(Cancer == tsg)
-
-# Replace " - " and " – " in old QPI names with ": "
-# This step can be removed once all updates are done or another solution made
-old_tsg_data <- old_tsg_data |> 
-  mutate(QPI = str_replace(QPI, " – ", ": "),
-         QPI = str_replace(QPI, " - ", ": "),
-         QPI = str_replace(QPI, "QPI \\d+ ", reformat_qpi_number))
-
-hb_hosp_new <- bind_rows(hb_hosp_no_tsg, old_tsg_data, new_data) |> 
-  arrange()
-
-#### Step 7 : Write to excel ----
+#### Step 8 : Write to excel ----
 
 write.xlsx(hb_hosp_new, hb_hosp_out_fpath, sheetName = "HB_Hosp_QPI")
-
-

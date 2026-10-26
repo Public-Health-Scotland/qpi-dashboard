@@ -32,7 +32,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
   # Read in extract files. Assume one year's data. 
   # Usually will find hospsurg file and non-surgical file. 
   
-  message(c("Path to your input data: ", extract_path))
+  message("Path to your input data: ")
+  message(extract_path)
   filenm_pattern <- str_c(".*\\.xlsx") 
   data_folder_files <- list.files(
     path = extract_path,
@@ -42,12 +43,11 @@ import_extracts <- function(data_folder, extracts_filenames) {
   )
   
   message("Please check that each of the extract files is named in housekeeping.R: ")
-  extracts_filenames # Doesn't display when run within the function called from hb_hosp script.
+  cat(str_c(extracts_filenames, "\n")) 
   message("... and can be detected in the data folder: ")
-  data_folder_files # Also doesn't display when run within the function.
-  message("WARNING: The script assumes the following:
-          the Multi-QPI Scotland performance data has 'Scot' in the worksheet name, and 
-          the MultiQPI health board level performance data has 'HB' in the worksheet name. ")
+  cat(str_c(data_folder_files, "\n")) 
+  message("WARNING: The script assumes the MultiQPI health-board-level 
+          performance data has 'HB' in the worksheet name. ")
   
   new_data <- tibble() 
   for (one_filename in extracts_filenames) {
@@ -57,26 +57,6 @@ import_extracts <- function(data_folder, extracts_filenames) {
     
     # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
-    # scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
-    # scot_raw_tab <- readWorkbook(extract_file, 
-    #                              sheet = scot_sheet_name, 
-    #                              colNames = FALSE, 
-    #                              skipEmptyRows = FALSE)
-    # 
-    # scot_table_start_position <- find_table_start(scot_raw_tab)
-    # 
-    # scot_new_data <- readWorkbook(extract_file, 
-    #                               sheet = scot_sheet_name, 
-    #                               # Use colNames to take column names from row 
-    #                               # whose number is the same as startRow
-    #                               colNames = TRUE, 
-    #                               skipEmptyCols = TRUE, 
-    #                               skipEmptyRows = TRUE,
-    #                               startRow = as.integer(scot_table_start_position["start_row"])
-    # )   |> 
-    #   select (-c(PerPerformance, Target_Label))
-    # 
-    # scot_new_data <- scot_new_data |> mutate(Location = "Scotland")
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, 
@@ -84,6 +64,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                colNames = FALSE,
                                skipEmptyRows = FALSE)
     hb_table_start_position <- find_table_start(hb_raw_tab)
+    # Workaround for erroring input file
+    # start_positions <- c(start_row = 7, start_col = 1)
+    # hb_table_start_position <- start_positions 
     hb_new_data  <- readWorkbook(extract_file, 
                                  sheet = hb_sheet_name, 
                                  colNames = TRUE, 
@@ -92,7 +75,8 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  startRow = as.integer(hb_table_start_position["start_row"])
     ) #     |> # Separating out the step with the performance, to troubleshoot. 
       hb_new_data <- hb_new_data |>
-      select (-c(PerPerformance, Target_Label)) |>
+      select (-contains("Performance")) |>
+        select (-contains("Target_Label")) |>
         select(-contains("Cyear"))
     
     
@@ -101,9 +85,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
       # print("found Glasgow, phew.") # Just checking this is the health board column
       names(hb_new_data)[2] <- "Location"
     }
-    # Altered the step below, as scotland new rows now need to be calcd elsewhere.  
-    #  new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)    
-    new_data <-  bind_rows(new_data, hb_new_data)  
+    # Add the health board rows to the (empty) new_data tibble  
+    new_data <- new_data |>
+      bind_rows(hb_new_data)  
   }
   
   # Data cleaning steps moved here, instead of in hb_hosp script
@@ -128,8 +112,9 @@ find_table_start <- function(raw_worksheet){
   # Create named vector, for returning the result 
   # NB start_row is the number of the row containing the headers
   start_positions <- c(start_row = 0, start_col = 0)
-  max_cols_to_search <- 7
-  max_rows_to_search <- 12
+  max_cols_to_search <- 20
+  max_rows_to_search <- 50
+  found_data <- FALSE
   current_row_checking <- 1
   while (current_row_checking < max_rows_to_search) { 
     current_col_checking <- 1
@@ -141,11 +126,19 @@ find_table_start <- function(raw_worksheet){
       ){
         start_positions["start_row"] <- current_row_checking
         start_positions["start_col"] <- current_col_checking 
+        found_data <- TRUE
+        break
       }
       current_col_checking <- current_col_checking + 1
     }
-    
+    if (found_data) {
+      break
+    } else {
     current_row_checking <- current_row_checking + 1 
+    }
+  }
+  if (!found_data){
+    stop("PROBLEM: Cannot find data table in the HB tab.")
   }
   return(start_positions) 
 }
