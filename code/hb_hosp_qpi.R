@@ -30,6 +30,10 @@ unique(hb_hosp_old$Cancer)
 # ie colorectal has three excel extract files for each year. 
 
 
+# old hb_hosp_qpi
+max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
+unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
+
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
@@ -55,6 +59,14 @@ lookup |>
 
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
+
+
+#fix up common issues with names in new_data 
+new_data <- new_data |>
+	mutate(`QPI.(dashboard.name)` = `QPI.(dashboard.name)`|>
+				 	                          str_remove_all("(\\r)|(\\n)") |> #new line characters
+				 	                          str_remove_all(" $")) #spaces at end of string
+
 
 # Shorten the QPI name column header to just 'QPI'. 
 # The import functions already identified the first column 
@@ -123,7 +135,7 @@ new_data <- new_data |>
 
   
 
-#### Step 2a: Create regional totals for new data's numerator, NR and denominator ----
+#### Step 2: Create regional totals for new data's numerator, NR and denominator ----
 
 regional_rows <- new_data |>
   # Sum of performance is invalid, so firstly drop this column if it exists

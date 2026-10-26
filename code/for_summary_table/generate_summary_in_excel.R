@@ -7,6 +7,7 @@
 #  suitable for inclusion as a download file with a publication. 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#setup ----
 source("code/packages.R") 
 source("code/functions.R")
 
@@ -23,43 +24,126 @@ target_not_met_style <- createStyle(
 )
 
 
-# The make_summary_table function reads in "Scotland_rows_no_comments.xlsx" 
-# from the for_summary_table/ folder
-perf_summary_tbl <- make_summary_table(summary_data_path)
 
+# Make the summary table ----
+scotland_rows <- filter_hbhosp_for_summary(
+	"/PHI_conf/CancerGroup2/Cancer_QPIs/Data/new_process/lymphoma_2026/2022-23/HB_Hosp_updated/HB_Hosp_QPI.xlsx"
+	)
+
+perf_summary_tbl <- make_summary_table(scotland_rows) |> #see functions.R for what this does
+	arrange(parse_number(QPI))
+
+
+
+#set up openxlsx workbook ----
 wb_qpi_summary = createWorkbook()
 addWorksheet(wb_qpi_summary, "Table_1_summary_data")
 
-writeDataTable(wb_qpi_summary, "Table_1_summary_data", perf_summary_tbl, startCol = 1, startRow = 1)
+writeDataTable(wb_qpi_summary, 
+							 sheet = "Table_1_summary_data", 
+							 x = perf_summary_tbl, 
+							 startCol = 1, 
+							 startRow = 1, 
+							 #tableStyle = "TableStyleLight1"
+							 )
 
+
+
+
+#widths + styles ----
+setColWidths(wb_qpi_summary, 
+						 sheet = "Table_1_summary_data", 
+						 cols = 1:length(names(perf_summary_tbl)), 
+						 widths = c(48, 7.5, rep(c(14, 10), (length(names(perf_summary_tbl)) -2)/2 )))
+
+addStyle(wb_qpi_summary, 
+				 sheet = "Table_1_summary_data", 
+				 style = createStyle(wrapText = TRUE, 
+				 										 valign = "center",
+				 										border = "bottom",
+				 										borderColour = phs_colors("phs-purple")),
+				 cols = 1:length(names(perf_summary_tbl)),
+				 rows = 2:length(perf_summary_tbl$QPI)+1,
+				 gridExpand = TRUE)
+
+addStyle(wb_qpi_summary, 
+				 sheet = "Table_1_summary_data", 
+				 style = createStyle(numFmt = "0.0%", 
+				 										border = "left",
+				 										borderColour = phs_colors("phs-purple")),
+				 cols = (1:(length(names(perf_summary_tbl))/2) * 2) + 1,
+				 rows = 2:length(perf_summary_tbl$QPI)+1,
+				 gridExpand = TRUE,
+				 stack = TRUE)
+
+
+
+
+##top row styles----
+addStyle(wb_qpi_summary, 
+				 sheet = "Table_1_summary_data", 
+				 style = createStyle(wrapText = TRUE, 
+				 										valign = "center",
+				 										fgFill = phs_colors("phs-purple"),
+				 										fontColour = "#FFFFFF"),
+				 cols = 1:length(names(perf_summary_tbl)),
+				 rows = 1,
+				 stack = TRUE)
+
+addStyle(wb_qpi_summary, 
+				 sheet = "Table_1_summary_data", 
+				 style = createStyle(numFmt = "0.0%", 
+				 										border = "left",
+				 										borderColour = "#FFFFFF"),
+				 cols = (1:(length(names(perf_summary_tbl))/2) * 2) + 1,
+				 rows = 1,
+				 stack = TRUE)
+
+
+
+
+#conditional formatting ----
 conditionalFormatting(wb_qpi_summary,
                       "Table_1_summary_data",
-                      cols = 1:14,
-                      rows = 1:50,
+                      cols = 1:length(names(perf_summary_tbl)),
+                      rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Target met"', 
-                      style = success_style
-                      )
+                      style = success_style)
+
+conditionalFormatting(wb_qpi_summary,
+											"Table_1_summary_data",
+											cols = 1:length(names(perf_summary_tbl)),
+											rows = 1:length(perf_summary_tbl$QPI)+1,
+											rule = '=B2="Target met"', 
+											style = success_style)
+
 
 conditionalFormatting(wb_qpi_summary,
                       "Table_1_summary_data",
-                      cols = 1:14,
-                      rows = 1:50,
-                      rule = '="Target not met"',
-                      style = target_not_met_style
-                      )
-
-# The below is activated when we manually edit the cells to "Not met" 
-# to make a narrower table for pasting into the draft publication. 
-conditionalFormatting(wb_qpi_summary,
-                      "Table_1_summary_data",
-                      cols = 1:14,
-                      rows = 1:50,
+                      cols = 1:length(names(scotland_rows)),
+                      rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Not met"',
-                      style = target_not_met_style
-)
+                      style = target_not_met_style)
+
+conditionalFormatting(wb_qpi_summary,
+											"Table_1_summary_data",
+											cols = 1:length(names(scotland_rows)),
+											rows = 1:length(perf_summary_tbl$QPI)+1,
+											rule = '=B2="Not met"',
+											style = target_not_met_style)
 
 
-saveWorkbook(wb_qpi_summary, here(summary_data_path, "cancer_qpi_summary_table1.xlsx"))
 
-# Optional - just write the data to file, for manual formatting
-write.xlsx(perf_summary_tbl, file = here(summary_data_path, "qpi_summary_table_plain.xlsx"))
+
+#save! ----
+tsg <- scotland_rows$Cancer[1] |> str_to_lower() |> str_replace_all("\\W", "_")
+
+years <- distinct(scotland_rows, Cyear)$Cyear |> str_flatten("_") |> str_replace_all("\\W", "-")
+
+saveWorkbook(wb_qpi_summary, here(summary_data_path, 
+																	paste0("qpi_summary_table_", 
+																				 tsg, 
+																				 "_",
+																				 years,
+																				 ".xlsx")),
+						 overwrite = TRUE)
