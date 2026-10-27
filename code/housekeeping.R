@@ -23,19 +23,19 @@ source("code/functions.R")
 # In-development values for tsg:
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Lymphoma"
+tsg <- "Testicular"
 
 # For the BO input, important to specify JUST ONE Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2022/23")
+new_years <- c("2023/24")
 
 
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
-new_years_vals <- c(9)
+new_years_vals <- c(10)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2022")
+date_start <- dmy("01-10-2023")
 
 # measurability versions (one for each year, usually "5.x")
 meas_vers <- c("4.x")
@@ -50,7 +50,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "lymphoma_2026", "2022-23") 
+                      "Data", "new_process", "testis_2026", "diagyear_2023_2024") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -61,7 +61,9 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("lymphoma_2022_2023_performance_manually_created_rectangular_multi_QPI_table.xlsx")
+extracts_filenames <- c("2023_2024_Rectangular_QPI_Testicular_v4_Diag_QPIs.xlsx", 
+                        "2023_2024_Rectangular_QPI_Testicular_v4_HOSPSURG.xlsx",
+                        "2023_2024_Rectangular_QPI_Testicular_v4_–_QPI12_–_Arrears.xlsx")
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 
