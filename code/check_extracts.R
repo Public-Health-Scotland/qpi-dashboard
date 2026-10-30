@@ -21,7 +21,15 @@ test_lookup_fpath <- here(test_data_folder,
 test_false_lookup <- import_lookup(test_lookup_fpath) |> 
 	select(-SurgDiag)  # edited original from hb_hosp_qpi.R has 35 to 44
 
-# get new_data by equivalent of running hb_hosp_qpi to line 83 170x10
+
+# For troubleshooting when files cannot be read in, 
+# check each one for error messages, separately
+file1_new_data <- import_extracts(data_folder, extracts_filenames[1]) 
+file2_new_data <- import_extracts(data_folder, extracts_filenames[2]) 
+file3_new_data <- import_extracts(data_folder, extracts_filenames[3]) 
+
+# Read in the new data in the usual way, from all the extracts at once
+new_data <- import_extracts(data_folder, extracts_filenames) 
 
 # Check there is always just one year's worth of data to be read in. 
 if (length(new_years) > 1) {
