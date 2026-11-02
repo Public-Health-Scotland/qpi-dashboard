@@ -30,10 +30,6 @@ unique(hb_hosp_old$Cancer)
 # ie colorectal has three excel extract files for each year. 
 
 
-# old hb_hosp_qpi
-max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
-unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
-
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
@@ -184,15 +180,6 @@ new_data <- new_data |>
            SurgDiag = "Not applicable",
            Board_Hospital = "NHS Board",
            HB_Comments = NA)
-
-#### Step 2b: Build summary table for publications ----
-# scotland_rows <- new_data |> 
-#   filter(str_detect(tolower(Location), "scotland"))
-# 
-# scotland_minus_comments <- scotland_rows |>
-#   select(-any_of("HB_Comments")) 
-# write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
-
 
 #### Step 3 : Join lookup to new data ----
 # Clean up trailing carriage returns before join to lookup!
