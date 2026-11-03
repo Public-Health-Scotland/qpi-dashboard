@@ -62,7 +62,7 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("OK_checked_Rectangular_2022-2023_QPI_Ovarian_HOSPSURG_v4.xlsx", # ovarian OK file for testing
+extracts_filenames <- c("for_troubleshooting_OK_checked_22_23_Ovarian_HOSPSURG.xlsx", # ovarian OK file for testing
                         "lymphoma_try_to_find_data_2022_2023_perf_manually_created.xlsx", # problem file does not read in
                         "Rectangular_2022-2023_pasted_in_lymphoma.xlsx") # workaround
 

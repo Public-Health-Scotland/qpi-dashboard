@@ -57,26 +57,6 @@ import_extracts <- function(data_folder, extracts_filenames) {
     
     # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
-    # scot_sheet_name <- tab_names[str_detect(tab_names, regex("Scot", ignore_case = TRUE))][1]
-    # scot_raw_tab <- readWorkbook(extract_file, 
-    #                              sheet = scot_sheet_name, 
-    #                              colNames = FALSE, 
-    #                              skipEmptyRows = FALSE)
-    # 
-    # scot_table_start_position <- find_table_start(scot_raw_tab)
-    # 
-    # scot_new_data <- readWorkbook(extract_file, 
-    #                               sheet = scot_sheet_name, 
-    #                               # Use colNames to take column names from row 
-    #                               # whose number is the same as startRow
-    #                               colNames = TRUE, 
-    #                               skipEmptyCols = TRUE, 
-    #                               skipEmptyRows = TRUE,
-    #                               startRow = as.integer(scot_table_start_position["start_row"])
-    # )   |> 
-    #   select (-c(PerPerformance, Target_Label))
-    # 
-    # scot_new_data <- scot_new_data |> mutate(Location = "Scotland")
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
     hb_raw_tab <- readWorkbook(extract_file, 
@@ -84,6 +64,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                colNames = FALSE,
                                skipEmptyRows = FALSE)
     hb_table_start_position <- find_table_start(hb_raw_tab)
+    # Workaround for erroring input file
+    # start_positions <- c(start_row = 7, start_col = 1)
+    # hb_table_start_position <- start_positions 
     hb_new_data  <- readWorkbook(extract_file, 
                                  sheet = hb_sheet_name, 
                                  colNames = TRUE, 
@@ -102,9 +85,9 @@ import_extracts <- function(data_folder, extracts_filenames) {
       # print("found Glasgow, phew.") # Just checking this is the health board column
       names(hb_new_data)[2] <- "Location"
     }
-    # Altered the step below, as scotland new rows now need to be calcd elsewhere.  
-    #  new_data <-  bind_rows(new_data, scot_new_data, hb_new_data)    
-    new_data <-  bind_rows(new_data, hb_new_data)  
+    # Add the health board rows to the (empty) new_data tibble  
+    new_data <- new_data |>
+      bind_rows(hb_new_data)  
   }
   
   # Data cleaning steps moved here, instead of in hb_hosp script
@@ -131,6 +114,7 @@ find_table_start <- function(raw_worksheet){
   start_positions <- c(start_row = 0, start_col = 0)
   max_cols_to_search <- 20
   max_rows_to_search <- 50
+
   current_row_checking <- 1
   while (current_row_checking < max_rows_to_search) { 
     current_col_checking <- 1
@@ -142,11 +126,19 @@ find_table_start <- function(raw_worksheet){
       ){
         start_positions["start_row"] <- current_row_checking
         start_positions["start_col"] <- current_col_checking 
+        found_data <- TRUE
+        break
       }
       current_col_checking <- current_col_checking + 1
     }
-    
+    if (found_data) {
+      break
+    } else {
     current_row_checking <- current_row_checking + 1 
+    }
+  }
+  if (!found_data){
+    stop("PROBLEM: Cannot find data table in the HB tab.")
   }
   return(start_positions) 
 }
@@ -193,7 +185,8 @@ import_lookup <- function(lookup_fpath) {
                     "qpi_subtitle",
                     "SurgDiag"), as.character)) |> 
     mutate(across(c("qpi_order", "previous_target",
-                    "current_target"), as.numeric))
+                    "current_target"), as.numeric)) |>
+  	suppressWarnings()
   
   lookup
   
@@ -684,30 +677,6 @@ reformat_qpi_number <- function(x) {
   
 }
 
-make_summary_table <- function(summary_data_path) {
-  # Import the summary data 
-  # from the separate file containing rows from HB_hosp where Location is Scotland 
-  scotland_performance_all_qpis <- readWorkbook(here(summary_data_path, "Scotland_rows_no_comments.xlsx"))
-  
-  # Add target status column called Result
-  scotland_performance_all_qpis <- scotland_performance_all_qpis |>
-    mutate(Result = ifelse(RAG_Status == 1, "Target met", "Target not met")) |> 
-    mutate("Performance (%)" = str_c(format(round_half_up(PerPerformance, digits = 1), nsmall=1), "%")) |> 
-    rename("Target" = Target_Label)
-  
-  # Use pivot_wider to create columns for the years
-  # Needs more work, to appent "%" in the cells so its more obvious they're percentages. 
-  performance_by_year <- scotland_performance_all_qpis |>
-    pivot_wider(names_from = Cyear, 
-                values_from = c("Performance (%)", Result),
-                id_cols = c(QPI,Target), 
-                names_sep = " ",
-                names_vary = "slowest"
-    ) 
-  
-  return(performance_by_year)
-}
-
 # Identify what HBs belong to what regions, dependent on the TSG
 # since some HBs differ for brain & CNS, lymphoma and ac leuk
 set_up_regions <- function() { 
@@ -919,6 +888,112 @@ import_age_gender <- function(network, sub_path, year_vals, years) {
   network_sub
   
 }
+
+
+
+
+
+#### generate_summary_in_excl.R----
+
+
+
+filter_hbhosp_for_summary <- \(filepath){
+
+	if(!str_detect(filepath, ".xlsx$")){return("Filepath must end \".xlsx\"")}
+	
+	
+	hb_hosp = read.xlsx(filepath)
+	
+	
+	
+
+	tumour_groups = distinct(arrange(hb_hosp, Cancer), Cancer)$Cancer
+	
+	cat("The tumor groups in the file provided are: \n")
+	for(i in 1:length(tumour_groups)){
+		cat(paste0(i, ": ", tumour_groups[[i]], "\n"))
+	}
+	cat("\n")
+	
+	
+	tsg = NA
+	
+	while(is.na(tsg) | !(tsg %in% 0:length(tumour_groups))){
+		cat(paste0("Please select a tumour group by entering a number from 1 to ", length(tumour_groups), ", or 0 to cancel: "))
+		tsg = readline("") |>
+			as.numeric() |>
+			suppressWarnings()
+	}
+	
+	if(tsg == 0){return()}
+	
+	
+	
+	hb_hosp = hb_hosp |>
+		filter(Cancer == tumour_groups[tsg])
+	
+	
+
+	years = distinct(arrange(filter(hb_hosp, Cancer == tumour_groups[tsg]), Cyear), Cyear)$Cyear
+	
+	cat(paste0("The years associated with the tumour group ", tumour_groups[tsg], " in the file provided are: \n"))
+	for(i in 1:length(years)){
+		cat(paste0(i, ": ", years[[i]], "\n"))
+	}
+	cat("\n")
+	
+	years_selected = c(NA, 1)
+	
+	while(any(is.na(years_selected)) | any(!(years_selected %in% 0:length(years)))){
+		cat(paste0("Please select any number of years by entering the associated number for each year (from 1 to ", 
+							 length(years), "), \nwith each number separated by a comma; or enter 0 to cancel: "))
+		years_selected = readline("") |>
+			str_split_1(", ?") |>
+			as.numeric() |>
+			suppressWarnings()
+	}
+	
+	if(0 %in% years_selected){return()}
+	
+	
+	
+	hb_hosp_filtered = hb_hosp |>
+		filter(Cancer == tumour_groups[tsg] 
+					 & Cyear %in% years[years_selected]
+					 & Location == "Scotland") |>
+		arrange(Cyear)
+	
+	
+	return(hb_hosp_filtered)
+}
+
+
+
+
+make_summary_table <- function(scotland_performance_all_qpis) {
+	# Add target status column called Result
+	scotland_performance_all_qpis <- scotland_performance_all_qpis |>
+		mutate(Result = ifelse(RAG_Status == 1, "Target met", "Not met")) |> 
+		mutate("Performance (%)" = round_half_up(PerPerformance, digits = 1) / 100) |> 
+		mutate("Target" = case_when(str_detect(Target_Label, "^\\d") ~ paste0(">", Target_Label),
+																str_detect(Target_Label, "^<") ~ Target_Label))
+	
+	# Use pivot_wider to create columns for the years
+	# Needs more work, to appent "%" in the cells so its more obvious they're percentages. 
+	performance_by_year <- scotland_performance_all_qpis |>
+		pivot_wider(names_from = Cyear, 
+								values_from = c("Performance (%)", Result),
+								id_cols = c(QPI,Target), 
+								names_sep = " ",
+								names_vary = "slowest"
+		) 
+	
+	return(performance_by_year)
+}
+
+
+
+
 
 ## Potential checks
 # Check totals match

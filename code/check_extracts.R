@@ -1,11 +1,11 @@
 # check_extracts.R 
-# Looks for issues in the Boxi input for SCRIS QPI dashboard updates
+# Tests data extracts for new SCRIS QPIs dashboard updates. 
 # Clare Taylor, October 2026
 
-source("code/housekeeping.R") 
+# Are all lookup qpis in new_data for a particular year (& vice versa)? -------
+# Code in line 144 hb_hosp_qpi.R now redundant ("Identify rows where the QPI name in new_data was not matched with any in lookup"
 
-# are all lookup qpis in new_data for a particular year (& vice versa)? -------
-# code in line 144 hb_hosp_qpi.R now redundant ("Identify rows where the QPI name in new_data was not matched with any in lookup"
+source("code/housekeeping.R")
 
 # get test : fake xlsx with pos & neg controls : lookup_cft_test.xlsx
 # in lookup_test_cft edited "QPI 9: First-line Chemotherapy" to read "QPI 99: test qpi not in boxi"
@@ -21,7 +21,6 @@ test_lookup_fpath <- here(test_data_folder,
 test_false_lookup <- import_lookup(test_lookup_fpath) |> 
 	select(-SurgDiag)  # edited original from hb_hosp_qpi.R has 35 to 44
 
-# get new_data by equivalent of running hb_hosp_qpi to line 83 170x10
 
 
 # Check there is always just one year's worth of data to be read in. 
@@ -31,6 +30,7 @@ if (length(new_years) > 1) {
 }
 
 # Real new lookup file, listing the actual QPIs 
+
 lookup <- import_lookup(lookup_fpath) |> 
 	select(-SurgDiag) 
 
@@ -49,7 +49,7 @@ sort(unique(new_data$QPI))
 
 # test 1 are all QPIs in lookup for a specific year in the new_data?
 
-test_abbrev_lookup <-lookup %>% filter(cyear %in% new_years) #11 x 14
+test_abbrev_lookup <-lookup %>% filter(cyear %in% new_years) 
 sort(unique(test_abbrev_lookup$qpi))
 
 names(lookup)  # cyear, qpi are lowercase
@@ -73,6 +73,33 @@ test_b <- sort(unique(new_data$QPI))
 test_a %in% test_b  # 1 false
 test_a[!test_a %in% test_b ]  # "QPI 99: test qpi not in boxi"
 test_b[!test_b %in% test_a ]  # "QPI 9: First-line Chemotherapy"
+
+# Code below moved from hb_hosp_qpi.R sections 5.1 and 5.2 
+test_a[!test_a %in% test_b]  # in a(hosp) but not new_data: nrfordenominator" "nrforexclusion"   "perperformance"  
+# hence to do :add 2 & find out why perperformance not there (it was prior section 4)
+
+test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous.year" "per_performance"
+# hence remove 1st & rename 2nd
+
+# check
+# Below does not make sense
+test_new_data_names2 <- new_data |> names()
+compare(test_new_data_names,test_new_data_names2)
+
+test_c <-str_to_lower(test_new_data_names2)  # 28
+
+# check
+test_c %in% test_b  # 3 false
+test_c[c(23, 27:28)]  # as expected
+
+sum(!test_a[!test_c %in% test_a])  # 0 
+
+# investigate 
+compare(test_hbhosp_names, names(new_data), max_diffs = Inf)
+
+# investigate 
+compare(test_hbhosp_names,names(new_data), max_diffs = Inf) # order correct, now only need case change
+
 
 # end code -----
 
