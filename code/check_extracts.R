@@ -58,7 +58,7 @@ sort(unique(lookup$qpi))
 compare(sort(unique(test_abbrev_lookup$qpi)),
 				sort(unique(new_data$QPI))) # ✔ No differences
 
-#now try with the lookup with fake data, need abbreviate it too 
+#now try with the fake lookup, need abbreviate it too 
 
 test_false_lookup <-test_false_lookup %>% filter(cyear %in% new_years) #11 x 14
 sort(unique(test_false_lookup$qpi)) # note qpi 9 is absent, qpi 99 is added
