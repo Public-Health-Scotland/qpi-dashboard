@@ -25,54 +25,80 @@ target_not_met_style <- createStyle(
 
 
 
+
+
 # Make the summary table ----
 scotland_rows <- filter_hbhosp_for_summary(
-	"/PHI_conf/CancerGroup2/Cancer_QPIs/Data/new_process/lymphoma_2026/2022-23/HB_Hosp_updated/HB_Hosp_QPI.xlsx"
+	"/PHI_conf/CancerGroup2/Cancer_QPIs/Data/HB_Hosp_new/HB_Hosp_current/HB_Hosp_QPI.xlsx"
 	)
 
 perf_summary_tbl <- make_summary_table(scotland_rows) |> #see functions.R for what this does
-	arrange(parse_number(QPI))
+	arrange(parse_number(QPI), str_extract(QPI, "\\([xvi]*\\)"))
+
+
+
+
+#this block of code replaces the "Years x:y" text within QPI names with "(20XX criteria)"
+#feel free to skip if if this is not wanted/needed
+perf_summary_tbl <- perf_summary_tbl |>
+	mutate(temp = "", .after = QPI)
+
+for(i in names(perf_summary_tbl)){
+	if(str_detect(i, "^Performance")){
+		col_year = str_extract(i, "\\d*/\\d*")
+		perf_summary_tbl <- perf_summary_tbl |>
+			mutate(temp = if_else(!is.na(perf_summary_tbl[[i]]),
+														paste(temp, col_year, sep = " & "),
+														temp))
+	}
+}
+
+perf_summary_tbl <- perf_summary_tbl |>
+	mutate(temp = str_remove(temp, "^ & "))
+
+perf_summary_tbl <- perf_summary_tbl |>
+	mutate(QPI = str_replace(QPI, "(\\.)? Years \\d*:\\d*", paste0(" (", temp, " criteria)"))) |>
+	select(-temp)
+
+
+
 
 
 
 #set up openxlsx workbook ----
 wb_qpi_summary = createWorkbook()
-addWorksheet(wb_qpi_summary, "Table_1_summary_data")
+addWorksheet(wb_qpi_summary, "summary_data")
 
 writeDataTable(wb_qpi_summary, 
-							 sheet = "Table_1_summary_data", 
-							 x = perf_summary_tbl, 
-							 startCol = 1, 
-							 startRow = 1, 
-							 #tableStyle = "TableStyleLight1"
-							 )
+							 sheet = "summary_data", 
+							 x = perf_summary_tbl)
 
 
 
 
 #widths + styles ----
 setColWidths(wb_qpi_summary, 
-						 sheet = "Table_1_summary_data", 
-						 cols = 1:length(names(perf_summary_tbl)), 
-						 widths = c(48, 7.5, rep(c(14, 10), (length(names(perf_summary_tbl)) -2)/2 )))
+						 sheet = "summary_data", 
+						 cols = 1:length(perf_summary_tbl), 
+						 widths = c(48, 7.5, rep(c(14, 10), (length(perf_summary_tbl) -2)/2 )))
 
 addStyle(wb_qpi_summary, 
-				 sheet = "Table_1_summary_data", 
+				 sheet = "summary_data", 
 				 style = createStyle(wrapText = TRUE, 
 				 										 valign = "center",
 				 										border = "bottom",
 				 										borderColour = phs_colors("phs-purple")),
-				 cols = 1:length(names(perf_summary_tbl)),
-				 rows = 2:length(perf_summary_tbl$QPI)+1,
+				 cols = 1:length(perf_summary_tbl),
+				 rows = 1:length(perf_summary_tbl$QPI)+1,
 				 gridExpand = TRUE)
 
 addStyle(wb_qpi_summary, 
-				 sheet = "Table_1_summary_data", 
+				 sheet = "summary_data", 
 				 style = createStyle(numFmt = "0.0%", 
 				 										border = "left",
 				 										borderColour = phs_colors("phs-purple")),
-				 cols = (1:(length(names(perf_summary_tbl))/2) * 2) + 1,
-				 rows = 2:length(perf_summary_tbl$QPI)+1,
+				 cols = (1:(length(perf_summary_tbl)/2) * 2) + 1,
+				 rows = 1:length(perf_summary_tbl$QPI)+1,
 				 gridExpand = TRUE,
 				 stack = TRUE)
 
@@ -81,21 +107,21 @@ addStyle(wb_qpi_summary,
 
 ##top row styles----
 addStyle(wb_qpi_summary, 
-				 sheet = "Table_1_summary_data", 
+				 sheet = "summary_data", 
 				 style = createStyle(wrapText = TRUE, 
 				 										valign = "center",
 				 										fgFill = phs_colors("phs-purple"),
 				 										fontColour = "#FFFFFF"),
-				 cols = 1:length(names(perf_summary_tbl)),
+				 cols = 1:length(perf_summary_tbl),
 				 rows = 1,
 				 stack = TRUE)
 
 addStyle(wb_qpi_summary, 
-				 sheet = "Table_1_summary_data", 
+				 sheet = "summary_data", 
 				 style = createStyle(numFmt = "0.0%", 
 				 										border = "left",
 				 										borderColour = "#FFFFFF"),
-				 cols = (1:(length(names(perf_summary_tbl))/2) * 2) + 1,
+				 cols = (1:(length(perf_summary_tbl)/2) * 2) + 1,
 				 rows = 1,
 				 stack = TRUE)
 
@@ -104,30 +130,30 @@ addStyle(wb_qpi_summary,
 
 #conditional formatting ----
 conditionalFormatting(wb_qpi_summary,
-                      "Table_1_summary_data",
-                      cols = 1:length(names(perf_summary_tbl)),
+                      "summary_data",
+                      cols = 1:length(perf_summary_tbl),
                       rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Target met"', 
                       style = success_style)
 
 conditionalFormatting(wb_qpi_summary,
-											"Table_1_summary_data",
-											cols = 1:length(names(perf_summary_tbl)),
+											"summary_data",
+											cols = 1:length(perf_summary_tbl),
 											rows = 1:length(perf_summary_tbl$QPI)+1,
 											rule = '=B2="Target met"', 
 											style = success_style)
 
 
 conditionalFormatting(wb_qpi_summary,
-                      "Table_1_summary_data",
-                      cols = 1:length(names(scotland_rows)),
+                      "summary_data",
+                      cols = 1:length(perf_summary_tbl),
                       rows = 1:length(perf_summary_tbl$QPI)+1,
                       rule = '="Not met"',
                       style = target_not_met_style)
 
 conditionalFormatting(wb_qpi_summary,
-											"Table_1_summary_data",
-											cols = 1:length(names(scotland_rows)),
+											"summary_data",
+											cols = 1:length(perf_summary_tbl),
 											rows = 1:length(perf_summary_tbl$QPI)+1,
 											rule = '=B2="Not met"',
 											style = target_not_met_style)
@@ -147,3 +173,60 @@ saveWorkbook(wb_qpi_summary, here(summary_data_path,
 																				 years,
 																				 ".xlsx")),
 						 overwrite = TRUE)
+
+
+
+
+#.----
+#concise version----
+simple_summary_table <- perf_summary_tbl
+names(simple_summary_table) <- names(perf_summary_tbl) |> str_remove_all("Performance \\(%\\) ")
+
+removeTable(wb_qpi_summary,
+						"summary_data",
+						getTables(wb_qpi_summary,
+											"summary_data"))
+
+writeDataTable(wb_qpi_summary,
+					"summary_data",
+					x = simple_summary_table)
+
+addStyle(wb_qpi_summary,
+				 "summary_data",
+				 cols = 1:length(perf_summary_tbl),
+				 rows = 1,
+				 style = createStyle(textDecoration = "bold"),
+				 stack = TRUE)
+
+setColWidths(wb_qpi_summary,
+						 "summary_data",
+						 cols = 1:length(perf_summary_tbl), 
+						 widths = c(64, 7.5, rep(c(8.5, 10), (length(perf_summary_tbl) -2)/2 )),
+						 hidden = c(F,F, rep(c(F,T), (length(perf_summary_tbl)-2)/2)))
+
+addStyle(wb_qpi_summary,
+					"summary_data",
+					cols = 1:length(perf_summary_tbl),
+					rows = 1:length(perf_summary_tbl$QPI) + 1,
+					style = createStyle(border = "TopBottomLeftRight"),
+					gridExpand = TRUE,
+					stack = TRUE)
+
+addStyle(wb_qpi_summary, 
+				 sheet = "summary_data", 
+				 style = createStyle(border = "TopBottomLeftRight"),
+				 cols = 1:length(perf_summary_tbl),
+				 rows = 1,
+				 stack = TRUE)
+
+
+
+saveWorkbook(wb_qpi_summary, here(summary_data_path, 
+																	paste0("qpi_summary_table_", 
+																				 tsg, 
+																				 "_",
+																				 years,
+																				 "_concise.xlsx")),
+						 overwrite = TRUE)
+
+
