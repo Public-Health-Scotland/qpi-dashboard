@@ -55,7 +55,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
     extract_file <- here(extract_path, one_filename) 
     # read_sensitivity_label(extract_file) # ERROR
     
-    # Identify the Scotland and HB tabs respectively, in a typo-tolerant way
+    # Identify HB tab, in a typo-tolerant way
     tab_names <- getSheetNames(extract_file)
     
     hb_sheet_name <- tab_names[str_detect(tab_names, regex("HB", ignore_case = TRUE))][1]
@@ -63,7 +63,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                sheet = hb_sheet_name, 
                                colNames = FALSE,
                                skipEmptyRows = FALSE)
-    hb_table_start_position <- find_table_start(hb_raw_tab)
+    hb_table_start_row <- find_table_start(hb_raw_tab)
     # Workaround for erroring input file
     # start_positions <- c(start_row = 7, start_col = 1)
     # hb_table_start_position <- start_positions 
@@ -72,7 +72,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  colNames = TRUE, 
                                  skipEmptyCols = TRUE, 
                                  skipEmptyRows = TRUE,
-                                 startRow = as.integer(hb_table_start_position["start_row"])
+                                 startRow = as.integer(hb_table_start_row)
     ) #     |> # Separating out the step with the performance, to troubleshoot. 
       hb_new_data <- hb_new_data |>
       select (-contains("Performance")) |>
@@ -108,30 +108,18 @@ import_extracts <- function(data_folder, extracts_filenames) {
 find_table_start <- function(raw_worksheet){
 	
 	search_string <- "QPI.*dashboard name" 
+
+	# New approach, single step using filter to find match anywhere in row, 
+	# instead of while loops, and therefore treat all columns as one.
+	# Add row numbers as a column
+	raw_worksheet <- raw_worksheet |>
+		mutate(row_number = row_number())
+	# Get the row number where search_string matches anywhere in the row
+	table_start_row <- raw_worksheet |>
+		filter(if_any(everything(), ~ str_detect(.x, search_string))) |>
+		pull(row_number)
 	
-	# Create named vector, for returning the result 
-	# NB start_row is the number of the row containing the headers
-	start_positions <- c(start_row = 0, start_col = 0)
-	max_cols_to_search <- 20
-	max_rows_to_search <- 50
-	
-	current_row_checking <- 1
-	while (current_row_checking < max_rows_to_search) { 
-		current_col_checking <- 1
-		while (current_col_checking < max_cols_to_search) {
-			if (  str_detect(
-				raw_worksheet[current_row_checking, current_col_checking], 
-				search_string) |>
-				coalesce(FALSE) # treat NA values as false
-			){
-				start_positions["start_row"] <- current_row_checking
-				start_positions["start_col"] <- current_col_checking 
-			}
-			current_col_checking <- current_col_checking + 1
-		}
-		current_row_checking <- current_row_checking + 1 
-	}
-	return(start_positions) 
+	return(table_start_row)
 }
 
 # Should be called passing in the following arguments: 
