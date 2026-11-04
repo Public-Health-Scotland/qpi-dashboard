@@ -63,8 +63,9 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
 extracts_filenames <- c("for_troubleshooting_OK_checked_22_23_Ovarian_HOSPSURG.xlsx", # ovarian OK file for testing
-                        "lymphoma_try_to_find_data_2022_2023_perf_manually_created.xlsx", # problem file does not read in
-                        "Rectangular_2022-2023_pasted_in_lymphoma.xlsx") # workaround
+                        "lymphoma_try_to_find_data_2022_2023_perf_manually_created.xlsx", # problem file, modify to try to read in
+                        "lymphoma_wont_find_data_2022_2023_perf_manually_created_do_not_modify.xlsx", # problem file doesnt read in
+                        "Tested_OK_Rectangular_2022-2023_QPI_Ovarian_Diag_v4.xlsx") # ovarian OK file for testing
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 

@@ -39,6 +39,7 @@ lookup <- import_lookup(lookup_fpath) |>
 file1_new_data <- import_extracts(data_folder, extracts_filenames[1]) 
 file2_new_data <- import_extracts(data_folder, extracts_filenames[2]) 
 file3_new_data <- import_extracts(data_folder, extracts_filenames[3]) 
+file4_new_data <- import_extracts(data_folder, extracts_filenames[4]) 
 
 # Read in the new data in the usual way, from all the extracts at once
 new_data <- import_extracts(data_folder, extracts_filenames) 
