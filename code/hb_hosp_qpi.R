@@ -30,10 +30,6 @@ length(unique(hb_hosp_old$Cancer))
 # ie colorectal has three excel extract files for each year. 
 
 
-# old hb_hosp_qpi
-max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
-unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
-
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
   select(-SurgDiag)
