@@ -167,11 +167,10 @@ tsg <- scotland_rows$Cancer[1] |> str_to_lower() |> str_replace_all("\\W", "_")
 years <- distinct(scotland_rows, Cyear)$Cyear |> str_flatten("_") |> str_replace_all("\\W", "-")
 
 saveWorkbook(wb_qpi_summary, here(summary_data_path, 
-																	paste0("qpi_summary_table_", 
-																				 tsg, 
+																	paste0(tsg, 
 																				 "_",
 																				 years,
-																				 ".xlsx")),
+																				 "_QPI_summary_table.xlsx")),
 						 overwrite = TRUE)
 
 
@@ -222,11 +221,10 @@ addStyle(wb_qpi_summary,
 
 
 saveWorkbook(wb_qpi_summary, here(summary_data_path, 
-																	paste0("qpi_summary_table_", 
-																				 tsg, 
+																	paste0(tsg, 
 																				 "_",
 																				 years,
-																				 "_concise.xlsx")),
+																				 "_QPI_summary_table_concise.xlsx")),
 						 overwrite = TRUE)
 
 
