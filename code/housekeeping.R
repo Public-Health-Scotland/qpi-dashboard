@@ -50,7 +50,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                    "Data", "new_process", "testis_2026", "diagyear_2023_2024") 
+                    "Data", "new_process", "testis_2026", "reporting_year_2023_2024") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
