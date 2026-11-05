@@ -119,6 +119,10 @@ find_table_start <- function(raw_worksheet){
 		filter(if_any(everything(), ~ str_detect(.x, search_string))) |>
 		pull(row_number)
 	
+	if (length(table_start_row) > 1){
+		stop("Problem: found more than one occurrence of the search string in the data file.")
+	}
+	
 	return(table_start_row)
 }
 
