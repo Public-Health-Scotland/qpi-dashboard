@@ -33,6 +33,12 @@ if (length(new_years) > 1) {
 lookup <- import_lookup(lookup_fpath) |> 
 	select(-SurgDiag) 
 
+# For troubleshooting when files cannot be read in, 
+# check each one for error messages, separately
+file1_new_data <- import_extracts(data_folder, extracts_filenames[1]) 
+file2_new_data <- import_extracts(data_folder, extracts_filenames[2]) 
+file3_new_data <- import_extracts(data_folder, extracts_filenames[3])
+
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
 
