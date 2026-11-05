@@ -22,14 +22,6 @@ test_false_lookup <- import_lookup(test_lookup_fpath) |>
 	select(-SurgDiag)  # edited original from hb_hosp_qpi.R has 35 to 44
 
 
-# For troubleshooting when files cannot be read in, 
-# check each one for error messages, separately
-file1_new_data <- import_extracts(data_folder, extracts_filenames[1]) 
-file2_new_data <- import_extracts(data_folder, extracts_filenames[2]) 
-file3_new_data <- import_extracts(data_folder, extracts_filenames[3]) 
-
-# Read in the new data in the usual way, from all the extracts at once
-new_data <- import_extracts(data_folder, extracts_filenames) 
 
 # Check there is always just one year's worth of data to be read in. 
 if (length(new_years) > 1) {
@@ -37,11 +29,19 @@ if (length(new_years) > 1) {
           This script is designed to process one year's data at a time.")
 }
 
-# new real lookup
+# Real new lookup file, listing the actual QPIs 
+
 lookup <- import_lookup(lookup_fpath) |> 
 	select(-SurgDiag) 
 
-# new data
+# For troubleshooting when files cannot be read in, 
+# check each one for error messages, separately
+file1_new_data <- import_extracts(data_folder, extracts_filenames[1]) 
+file2_new_data <- import_extracts(data_folder, extracts_filenames[2]) 
+file3_new_data <- import_extracts(data_folder, extracts_filenames[3]) 
+file4_new_data <- import_extracts(data_folder, extracts_filenames[4]) 
+
+# Read in the new data in the usual way, from all the extracts at once
 new_data <- import_extracts(data_folder, extracts_filenames) 
 
 # exploration 
@@ -59,7 +59,7 @@ sort(unique(lookup$qpi))
 compare(sort(unique(test_abbrev_lookup$qpi)),
 				sort(unique(new_data$QPI))) # ✔ No differences
 
-#now try with the lookup with fake data, need abbreviate it too 
+#now try with the fake lookup, need abbreviate it too 
 
 test_false_lookup <-test_false_lookup %>% filter(cyear %in% new_years) #11 x 14
 sort(unique(test_false_lookup$qpi)) # note qpi 9 is absent, qpi 99 is added

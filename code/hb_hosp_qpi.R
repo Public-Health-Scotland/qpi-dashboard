@@ -20,7 +20,7 @@ source("code/housekeeping.R")
 # These tests will make it obvious if the condensed hbhosp test file is being used.
 max(hb_hosp_old$Cyear)      
 unique(hb_hosp_old$Cancer)  
-
+length(unique(hb_hosp_old$Cancer))
 
 #### Step 1 : Import data ----
 # Read in lookup file, and then extract(s). 
@@ -29,10 +29,6 @@ unique(hb_hosp_old$Cancer)
 # while colorectal qpi 15 liver mets is a special additional report, 
 # ie colorectal has three excel extract files for each year. 
 
-
-# old hb_hosp_qpi
-max(hb_hosp_old$Cyear)       # check 1 in case condensed hbhosp data is being used
-unique(hb_hosp_old$Cancer)   # check 2 will highlight if condensed hbhosp data is being used
 
 # new lookup
 lookup <- import_lookup(lookup_fpath) |> 
