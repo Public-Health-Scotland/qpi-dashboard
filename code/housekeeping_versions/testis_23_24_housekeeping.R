@@ -50,7 +50,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                      "Data", "new_process", "testis_2026", "diagyear_2023_2024") 
+                    "Data", "new_process", "testis_2026", "reporting_year_2023_2024") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -61,9 +61,11 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("2023_2024_Rectangular_QPI_Testicular_v4_Diag_QPIs.xlsx", 
-                        "2023_2024_Rectangular_QPI_Testicular_v4_HOSPSURG.xlsx",
-                        "2023_2024_Rectangular_QPI_Testicular_v4_–_QPI12_–_Arrears.xlsx")
+extracts_filenames <- c("Oct2023_Sep2024Rectangular_QPI_Testicular_v4_Diag_QPIs.xlsx", # extracted 5 nov 2026
+                        "Oct2023_Sept_2024_Rectangular_QPI_Testicular_v4_HOSPSURG.xlsx",
+                        "Testicular_v4_QPI12_ARREARS_Diag_period_2022_23_ReportgYr_2023_24.xlsx")
+
+
 
 # Folder containing lookup info on HBs by network
 regional_networks_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs", 

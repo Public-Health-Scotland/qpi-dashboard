@@ -84,7 +84,6 @@ test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous
 # hence remove 1st & rename 2nd
 
 # check
-# Below does not make sense
 test_new_data_names2 <- new_data |> names()
 compare(test_new_data_names,test_new_data_names2)
 

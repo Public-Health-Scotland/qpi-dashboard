@@ -27,15 +27,15 @@ tsg <- "Testicular"
 
 # For the BO input, important to specify JUST ONE Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2023/24")
+new_years <- c("2024/25")
 
 
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
-new_years_vals <- c(10)
+new_years_vals <- c(11)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2023")
+date_start <- dmy("01-10-2024")
 
 # measurability versions (one for each year, usually "5.x")
 meas_vers <- c("4.x")
@@ -50,7 +50,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                    "Data", "new_process", "testis_2026", "reporting_year_2023_2024") 
+                    "Data", "new_process", "testis_2026", "reporting_year_2024_2025") 
 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
@@ -61,9 +61,9 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("Oct2023_Sep2024Rectangular_QPI_Testicular_v4_Diag_QPIs.xlsx", # extracted 5 nov 2026
-                        "Oct2023_Sept_2024_Rectangular_QPI_Testicular_v4_HOSPSURG.xlsx",
-                        "Testicular_v4_QPI12_ARREARS_Diag_period_2022_23_ReportgYr_2023_24.xlsx")
+extracts_filenames <- c("2024_2025_at6novRectangular_QPI_Testicular_v4_Diag_QPIs.xlsx", 
+                        "oct2024_sep2025_at6novRectangular_QPI_Testicular_v4_HOSPSURG.xlsx",
+                        "QPI_12_ARREARS_diag_2023_24_reportg_yr_2024_25_QPI_Testicular_v4_QPI12_Arrears.xlsx")
 
 
 
@@ -89,15 +89,15 @@ tsg_sex <- case_when(
 # input files
 
 hb_hosp_in_fpath <- here(data_folder,
-                         "excels_for_tableau/initial_run/input/",
+                         "excels_for_tableau/input",
                          "HB_Hosp_QPI.xlsx")
 
-age_gender_in_fpath <- paste0(data_folder,
-                              "excels_for_tableau/initial_run/input/",
+age_gender_in_fpath <- here(data_folder,
+                              "excels_for_tableau/input",
                               "Background_Data_Age_Gender.xlsx")
 
-case_asc_in_fpath <- paste0(data_folder,
-                            "excels_for_tableau/initial_run/input/",
+case_asc_in_fpath <- here(data_folder,
+                            "excels_for_tableau/input",
                             "Background_Data_Case.xlsx")
 
 # lookup
