@@ -34,6 +34,7 @@ if (length(new_years) > 1) {
 lookup <- import_lookup(lookup_fpath) |> 
 	select(-SurgDiag) 
 
+# new data
 # For troubleshooting when files cannot be read in, 
 # check each one for error messages, separately
 file1_new_data <- import_extracts(data_folder, extracts_filenames[1]) 
@@ -83,7 +84,6 @@ test_b[!test_b %in% test_a] # in new_data but not hbhosp "new.report.cf.previous
 # hence remove 1st & rename 2nd
 
 # check
-# Below does not make sense
 test_new_data_names2 <- new_data |> names()
 compare(test_new_data_names,test_new_data_names2)
 
