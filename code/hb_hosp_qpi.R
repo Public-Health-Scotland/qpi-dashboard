@@ -181,15 +181,6 @@ new_data <- new_data |>
            Board_Hospital = "NHS Board",
            HB_Comments = NA)
 
-#### Step 2b: Build summary table for publications ----
-# scotland_rows <- new_data |> 
-#   filter(str_detect(tolower(Location), "scotland"))
-# 
-# scotland_minus_comments <- scotland_rows |>
-#   select(-any_of("HB_Comments")) 
-# write.xlsx(scotland_minus_comments, here("code", "for_summary_table", "Scotland_rows_no_comments.xlsx"))
-
-
 #### Step 3 : Join lookup to new data ----
 # Clean up trailing carriage returns before join to lookup!
 
