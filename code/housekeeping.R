@@ -37,9 +37,6 @@ new_years_vals <- c(13)
 # Date of the start of the first new reporting year
 date_start <- dmy("01-10-2024")
 
-# measurability versions (one for each year, usually "5.x")
-meas_vers <- c("4.x")
-
 # Workaround to avoid error - create hospital vectors. 
 # This is just backwards compatibility with the submission / templates approach.
 nca_hosps <- c()
