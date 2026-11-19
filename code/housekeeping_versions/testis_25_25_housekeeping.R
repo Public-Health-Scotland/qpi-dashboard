@@ -89,15 +89,15 @@ tsg_sex <- case_when(
 # input files
 
 hb_hosp_in_fpath <- here(data_folder,
-                         "excels_for_tableau/initial_run/input/",
+                         "excels_for_tableau/input",
                          "HB_Hosp_QPI.xlsx")
 
-age_gender_in_fpath <- paste0(data_folder,
-                              "excels_for_tableau/initial_run/input/",
+age_gender_in_fpath <- here(data_folder,
+                              "excels_for_tableau/input",
                               "Background_Data_Age_Gender.xlsx")
 
-case_asc_in_fpath <- paste0(data_folder,
-                            "excels_for_tableau/initial_run/input/",
+case_asc_in_fpath <- here(data_folder,
+                            "excels_for_tableau/input",
                             "Background_Data_Case.xlsx")
 
 # lookup
