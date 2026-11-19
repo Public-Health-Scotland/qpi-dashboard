@@ -35,7 +35,7 @@ new_years <- c("2024/25")
 new_years_vals <- c(13)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2024")
+date_start <- dmy("01-10-2024") 
 
 # Workaround to avoid error - create hospital vectors. 
 # This is just backwards compatibility with the submission / templates approach.

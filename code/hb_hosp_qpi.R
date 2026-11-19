@@ -216,6 +216,7 @@ new_data <- new_data |>
 # per_performance
 new_data <- new_data |> 
   mutate(per_performance = (Numerator/Denominator)*100) |> 
+	mutate(per_performance = round_half_up(per_performance, digits = 2)) |> 
   mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
 
 if (any(new_data$per_performance > 100)){ 
