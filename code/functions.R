@@ -73,33 +73,27 @@ import_extracts <- function(data_folder, extracts_filenames) {
                                  skipEmptyCols = TRUE, 
                                  skipEmptyRows = TRUE,
                                  startRow = as.integer(hb_table_start_row)
-    ) #     |> # Separating out the step with the performance, to troubleshoot. 
-      hb_new_data <- hb_new_data |>
-      select (-contains("Performance")) |>
-        select (-contains("Target_Label")) |>
-        select(-contains("Cyear"))
+    ) |> clean_names() 
+    
+    # Remove columns that should not be imported, if present
+     hb_new_data <- hb_new_data |>
+      select (-contains("performance")) |>
+        select (-contains("target_label")) |>
+        select(-contains("cyear"))
     
     
     # Rename the column containing health board name 
     if (any(str_detect(tolower(hb_new_data[ ,2]), "glasgow"))) {
       # print("found Glasgow, phew.") # Just checking this is the health board column
-      names(hb_new_data)[2] <- "Location"
+      names(hb_new_data)[2] <- "location"
     }
-    # Add the health board rows to the (empty) new_data tibble  
-    new_data <- new_data |>
-      bind_rows(hb_new_data)  
+     
+     # Add the health board rows to the (empty) new_data tibble  
+     new_data <- new_data |>
+     	bind_rows(hb_new_data)  
   }
   
-  # Data cleaning steps moved here, instead of in hb_hosp script
-  
-  # Remove empty rows
-  new_data <-  new_data |>
-     filter_out(is.na(Location))
-  
-  # Set the Cyear value from housekeeping. 
-  # See above, drop any column containing Cyear 
-  new_data <- new_data |>
-    mutate(Cyear = as.character(new_years[1])) 
+  new_data <- clean_data(new_data)
   
   return(new_data)
   
@@ -124,8 +118,23 @@ find_table_start <- function(raw_worksheet){
 	}
 	
 	return(table_start_row)
-}
+} 
 
+  clean_data <- function(new_data) {
+    # Data cleaning steps moved here, instead of in hb_hosp script
+    
+    # Remove empty rows
+    new_data <-  new_data |>
+       filter_out(is.na(location))
+    
+    # Set the Cyear value from housekeeping. 
+    # See above, drop any column containing Cyear 
+    new_data <- new_data |>
+      mutate(Cyear = as.character(new_years[1])) 
+    
+    return(new_data)
+  } 
+  
 # Should be called passing in the following arguments: 
 #  - new_years_vals, as defined in housekeeping, in to year_vals parameter
 #    (year_vals are usually integers stored as numerics representing the year 
