@@ -55,7 +55,7 @@ lookup |>
 
 # new data
 new_data <- import_extracts(data_folder, extracts_filenames) 
-
+new_data <- clean_data(new_data)
 
 #fix up common issues with names in new_data 
 new_data <- new_data |>

@@ -43,6 +43,7 @@ file4_new_data <- import_extracts(data_folder, extracts_filenames[4])
 
 # Read in the new data in the usual way, from all the extracts at once
 new_data <- import_extracts(data_folder, extracts_filenames) 
+new_data <- clean_data(new_data) 
 
 # exploration 
 names(new_data)  #"QPI""Cyear" "Numerator""NRforNumerator" "Denominator" "Location" "Cancer"  "SurgDiag" "Board_Hospital" "HB_Comments"        
