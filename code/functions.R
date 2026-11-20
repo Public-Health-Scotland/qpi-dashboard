@@ -93,7 +93,7 @@ import_extracts <- function(data_folder, extracts_filenames) {
      	bind_rows(hb_new_data)  
   }
   
- # new_data <- clean_data(new_data)
+   new_data <- clean_data(new_data)
   
   return(new_data)
   
