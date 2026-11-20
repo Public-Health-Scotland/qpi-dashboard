@@ -111,9 +111,9 @@ if (! str_detect(tolower(Jubilee_netwk), "jubilee|woscan")) {
 } 
 
 # Temporary code for rest of the UK England etc and non-NHS 
-new_data <-  new_data |>
-  filter_out(str_detect(tolower(Location), "england")) |>
-  filter_out(str_detect(tolower(Location), "non.*nhs")) 
+# new_data <-  new_data |>
+#   filter_out(str_detect(tolower(Location), "england")) |>
+#   filter_out(str_detect(tolower(Location), "non.*nhs")) 
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
