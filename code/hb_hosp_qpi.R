@@ -111,14 +111,14 @@ new_data <-  new_data |>
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
-  mutate(Network = replace_values(
-    Location, 
+  mutate(network = replace_values(
+    location, 
     from = HB_geo_groups$e_case_hb_name, 
     to = HB_geo_groups$Network))
     
 # Swap in the health board abbreviations used in the SCRIS Tableau dashboard
 new_data <- new_data |>
-  mutate(Location = replace_values(Location, 
+  mutate(location = replace_values(location, 
                                    from = HB_geo_groups$e_case_hb_name, 
                                    to = HB_geo_groups$qpi_dashboard_hb_abbreviation)) 
 
@@ -130,15 +130,15 @@ new_data <- new_data |>
 regional_rows <- new_data |>
   # Sum of performance is invalid, so firstly drop this column if it exists
   select(-any_of("PerPerformance")) |> 
-  filter(!str_detect(tolower(Location), "scotland")) |>
-           group_by(qpi, Network) |>
+  filter(!str_detect(tolower(location), "scotland")) |>
+           group_by(qpi, network) |>
            summarise(
              across(
               where(is.numeric), 
               ~ sum(.x, na.rm = TRUE)
               ) |> 
            ungroup()) |>
-           mutate(Location = Network) 
+           mutate(location = network) 
 
 # Identify the HBs that should be summed to give Scotland total, 
 # such as not to include non-NHS and NHS rest of the UK ie England, Wales, NI. 
@@ -149,7 +149,7 @@ hbs_to_inc_in_scot_total <- HB_geo_groups |>
 
 ## Calculate the Scotland rows 
 scotland_rows_calcd <- new_data |>
-  filter(Location %in% hbs_to_inc_in_scot_total) |>
+  filter(location %in% hbs_to_inc_in_scot_total) |>
   group_by(qpi) |>
   summarise(
     across(
@@ -158,8 +158,8 @@ scotland_rows_calcd <- new_data |>
     ) |> 
       ungroup()) |>
   mutate(
-   Location = "Scotland", 
-   Network = "Scotland"
+   location = "Scotland", 
+   network = "Scotland"
   )
   
 # Bind the regional rows and Scotland rows onto new_data (already contains HB data)
@@ -346,7 +346,9 @@ new_data <- new_data |>
     RAG_Status = rag_status,
     #HB_Comments = Comments,
     Previous_Target = previous_target,
-    QPI_Subtitle = qpi_subtitle
+    QPI_Subtitle = qpi_subtitle, 
+    Location = location,
+    Network = network
   ) 
 
 #### Step 7 : Bind together to make full hb_hosp_qpi ----
