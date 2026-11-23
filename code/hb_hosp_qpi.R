@@ -257,12 +257,12 @@ new_data <- new_data |>
   mutate(rag_status = case_when(
     direction == "H" & (per_performance >= current_target) ~ "1",
     direction == "H" & per_performance > 0 & (per_performance < current_target) ~ "2",
-    direction == "H" & per_performance == 0  & Denominator <= 0 ~ "3",
-    direction == "H" & per_performance == 0 & Denominator > 0 ~ "2",
+    direction == "H" & per_performance == 0  & denominator <= 0 ~ "3",
+    direction == "H" & per_performance == 0 & denominator > 0 ~ "2",
     direction == "L" & per_performance > 0 & per_performance <= current_target ~ "1",
     direction == "L" & per_performance > current_target ~ "2",
-    direction == "L" & per_performance == 0 & Denominator <= 0 ~ "3",
-    direction == "L" & per_performance == 0 & Denominator > 0 ~ "1",
+    direction == "L" & per_performance == 0 & denominator <= 0 ~ "3",
+    direction == "L" & per_performance == 0 & denominator > 0 ~ "1",
     TRUE ~ "unknown"))
 
 # target_label
@@ -273,30 +273,28 @@ new_data <- new_data |>
   ))
 
 # Populate the two numeric columns we no longer use with zeroes,  
-# Not Recorded for denominator, and Not recorded for exclusion 
+# Not Recorded for denominator, and Not recorded for exclusion ie fake data. 
 # This is just for Tableau ie fake data. Columns in eCASE will have some non-zeroes.
 new_data <- new_data |>
-		mutate(nr_denominator =0,
-					 nr_exclusion =0 )
+		mutate(nr_for_denominator = 0,
+					 nr_for_exclusion = 0 )
 
 #### Step 5 : Comparisons for Quality Assurance ----
 
-
 # check that 0 a reasonable value for new vars in new_data
 
-head(hb_hosp_old |> count(nr_denominator)) # 0 is 56k
-head(hb_hosp_old |> count(nr_exclusion)) # 0 is 62k
+head(hb_hosp_old |> count(NRforDenominator)) # 0 is 56k
+head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
 
 ## Step 5.1 remove unwanted variables, add new one and adjust name of another ----
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
-# add 2 new variables fake data as value 0 
 
 new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) 
 new_data <-new_data |> select(-any_of("new_report")) 
 
 
 # Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
-new_data |> count(nr_denominator, nr_exclusion ) |> slice_head()
+new_data |> count(nr_for_denominator, nr_for_exclusion ) |> slice_head()
 
 
 #### Step 6 : Change names for tableau ----
@@ -306,8 +304,8 @@ new_data <- new_data |>
   	Board_Hospital = board_hosp,
     Cyear = cyear,
     SurgDiag = surg_diag,
-    NRforDenominator = nr_denominator, 
-    NRforExclusion = nr_exclusions, 
+    NRforDenominator = nr_for_denominator, 
+    NRforExclusion = nr_for_exclusion, 
     NRforNumerator = nr_for_numerator,
     PerPerformance = per_performance,
     Cyear_Abr = cyear_abr,
