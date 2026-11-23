@@ -106,8 +106,8 @@ if (! str_detect(tolower(Jubilee_netwk), "jubilee|woscan")) {
 
 # Temporary code for rest of the UK England etc and non-NHS 
 new_data <-  new_data |>
-  filter_out(str_detect(tolower(Location), "england")) |>
-  filter_out(str_detect(tolower(Location), "non.*nhs")) 
+  filter_out(str_detect(tolower(location), "england")) |>
+  filter_out(str_detect(tolower(location), "non.*nhs")) 
 
 # Join to allocate rows to regional networks
 new_data <-  new_data |>
@@ -171,8 +171,8 @@ new_data <- new_data |>
 new_data <- new_data |>
   mutate(  cancer = tsg, 
            cyear = as.character(new_years[1]),
-           surgdiag = "Not applicable",
-           board_hospital = "NHS Board",
+           surg_diag = "Not applicable",
+           board_hosp = "NHS Board",
            hb_comments = NA)
 
 #### Step 2b: Build summary table for publications ----
@@ -188,8 +188,8 @@ new_data <- new_data |>
 # Clean up trailing carriage returns before join to lookup!
 
 new_data <- new_data |> 
-  left_join(lookup, by = c("Cyear" = "cyear",
-                           "Cancer" = "cancer",
+  left_join(lookup, by = c("cyear" = "cyear",
+                           "cancer" = "cancer",
                            "qpi" = "qpi"))
 
 # Identify rows where the QPI name in new_data was not matched with any in lookup. 
@@ -276,16 +276,16 @@ new_data <- new_data |>
 # Not Recorded for denominator, and Not recorded for exclusion 
 # This is just for Tableau ie fake data. Columns in eCASE will have some non-zeroes.
 new_data <- new_data |>
-		mutate(NRforDenominator =0,
-				 NRforExclusion =0 )
+		mutate(nr_denominator =0,
+					 nr_exclusion =0 )
 
 #### Step 5 : Comparisons for Quality Assurance ----
 
 
 # check that 0 a reasonable value for new vars in new_data
 
-head(hb_hosp_old |> count(NRforDenominator)) # 0 is 56k
-head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
+head(hb_hosp_old |> count(nr_denominator)) # 0 is 56k
+head(hb_hosp_old |> count(nr_exclusion)) # 0 is 62k
 
 ## Step 5.1 remove unwanted variables, add new one and adjust name of another ----
 # from new_data:delete the additional variable & rename per_performance (check in main code where "_" came in) 
@@ -296,41 +296,18 @@ new_data <-new_data |> select(-any_of("new_report"))
 
 
 # Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
-new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()
-
-
-
-# 5.2 piecemeal reordering of new_data, make iterative -----
-# Needs an explanatory comment at least
-# Cannot find the test_hbhosp_names vector anywhere, 
-# when is it populated?! 
-# Commenting out the column re-ordering, since bind_rows does it for us.
-# new_data <- new_data |> select(test_hbhosp_names[1:10], everything())
-# 
-# new_data <- new_data |> select(
-# 	test_hbhosp_names[1:11],
-# 	PerPerformance, cyear_abr, year_lk, qpi_order:target_label,
-# 	everything()
-# )
-
-# new_data <- new_data |> select(
-# 	Board_Hospital:target_label,
-# 	direction, qpi_label_short, Network,
-# 	direction_text, rag_status, HB_Comments,
-# 	previous_target, qpi_subtitle
-# )
-
+new_data |> count(nr_denominator, nr_exclusion ) |> slice_head()
 
 
 #### Step 6 : Change names for tableau ----
 new_data <- new_data |> 
   rename(
     QPI = qpi, 
-  	# Board_Hospital = board_hosp,
+  	Board_Hospital = board_hosp,
     Cyear = cyear,
-    # SurgDiag = surg_diag,
-    # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
-    # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
+    SurgDiag = surg_diag,
+    NRforDenominator = nr_denominator, 
+    NRforExclusion = nr_exclusions, 
     NRforNumerator = nr_for_numerator,
     PerPerformance = per_performance,
     Cyear_Abr = cyear_abr,
@@ -345,7 +322,7 @@ new_data <- new_data |>
     QPI_Label_Short = qpi_label_short,
     Direction_Text = direction_text,
     RAG_Status = rag_status,
-    #HB_Comments = Comments,
+    HB_Comments = hb_comments,
     Previous_Target = previous_target,
     QPI_Subtitle = qpi_subtitle, 
     Location = location,
