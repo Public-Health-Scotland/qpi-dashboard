@@ -169,11 +169,11 @@ new_data <- new_data |>
 
 # Populate constant fields
 new_data <- new_data |>
-  mutate(  Cancer = tsg, 
-           Cyear = as.character(new_years[1]),
-           SurgDiag = "Not applicable",
-           Board_Hospital = "NHS Board",
-           HB_Comments = NA)
+  mutate(  cancer = tsg, 
+           cyear = as.character(new_years[1]),
+           surgdiag = "Not applicable",
+           board_hospital = "NHS Board",
+           hb_comments = NA)
 
 #### Step 2b: Build summary table for publications ----
 # scotland_rows <- new_data |> 
@@ -212,19 +212,20 @@ if (nrow(rows_with_missing_values) > 0 ) {
 ## cyear_abr
 new_data <- new_data |>
   mutate(cyear_abr = case_when(
-    str_length(Cyear) == 4 ~ str_sub(Cyear, 1, 4),
-    str_length(Cyear) == 7 ~ str_sub(Cyear, 3, 7)
+    str_length(cyear) == 4 ~ str_sub(cyear, 1, 4),
+    str_length(cyear) == 7 ~ str_sub(cyear, 3, 7)
   ))
 
 # per_performance
 new_data <- new_data |> 
-  mutate(per_performance = (Numerator/Denominator)*100) |> 
+  mutate(per_performance = (numerator/denominator)*100) |> 
+	mutate(per_performance = round_half_up(per_performance, digits = 2)) |> 
   mutate(per_performance = if_else(is.na(per_performance), 0, per_performance))
 
 if (any(new_data$per_performance > 100)){ 
 	bad_performance <- new_data |>
-		select(qpi, Location, Network, 
-					 Numerator, nr_for_numerator, Denominator, per_performance) |>
+		select(qpi, location, network, 
+					 numerator, nr_for_numerator, denominator, per_performance) |>
 		filter(per_performance > 100)
 	print(bad_performance)
 	stop("BAD DATA: Detected at least one performance value of over 100%, 
