@@ -42,14 +42,14 @@ if (any(!str_equal(lookup$cancer, tsg))){
 }
 
 # Do the QPIs need to be split (due to a new report) ?
-glimpse(lookup) # variable of interest is New.report.cf.previous.year
+glimpse(lookup) # variable of interest is new_report formerly known as New.report.cf.previous.year
 
-any(lookup$New.report.cf.previous.year == TRUE)# TRUE for ovarian 2023/24
+any(lookup$new_report == TRUE)# TRUE for ovarian 2023/24
 
-if (any(lookup$New.report.cf.previous.year == TRUE)){
+if (any(lookup$new_report == TRUE)){
 lookup |>
-  filter(New.report.cf.previous.year %in% c(T, TRUE, "yes", "YES")) |>
-  count(qpi_label_short, New.report.cf.previous.year,cyear, qpi)
+  filter(new_report %in% c(T, TRUE, "yes", "YES")) |>
+  count(qpi_label_short, new_report, cyear, qpi)
 }
 
 
@@ -291,7 +291,8 @@ head(hb_hosp_old |> count(NRforExclusion)) # 0 is 62k
 # add 2 new variables fake data as value 0 
 
 new_data <-new_data |> select(-any_of("New.report.cf.previous.year")) 
- 
+new_data <-new_data |> select(-any_of("new_report")) 
+
 
 # Check NR4D, NR4E, now that regional and Scotland sub-totals are included.  
 new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()

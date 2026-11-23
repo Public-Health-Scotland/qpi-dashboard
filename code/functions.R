@@ -188,9 +188,13 @@ import_lookup <- function(lookup_fpath) {
                     "SurgDiag"), as.character)) |> 
     mutate(across(c("qpi_order", "previous_target",
                     "current_target"), as.numeric)) |>
-  	suppressWarnings()
+  	suppressWarnings() 
   
-  lookup
+  # Rename the column "New report cf previous year" to new_report
+  lookup <- lookup |>
+  	rename_with(~ "new_report", matches("^New.report"))
+  
+  return(lookup)
   
 }
 
