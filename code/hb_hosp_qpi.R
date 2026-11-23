@@ -229,7 +229,7 @@ new_data <- new_data |>
 if (any(new_data$per_performance > 100)){ 
 	bad_performance <- new_data |>
 		select(QPI, Location, Network, 
-					 Numerator, NRforNumerator, Denominator, per_performance) |>
+					 Numerator, nr_for_numerator, Denominator, per_performance) |>
 		filter(per_performance > 100)
 	print(bad_performance)
 	stop("BAD DATA: Detected at least one performance value of over 100%, 
@@ -333,7 +333,7 @@ new_data <- new_data |>
     # SurgDiag = surg_diag,
     # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
     # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
-    # NRforNumerator = nr_numerator,
+    NRforNumerator = nr_for_numerator,
     PerPerformance = per_performance,
     Cyear_Abr = cyear_abr,
     Year_Lk = year_lk,

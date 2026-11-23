@@ -125,7 +125,7 @@ find_table_start <- function(raw_worksheet){
     
   	# Re-name 'Not Recorded for Numerator' to a readable, logical name
   	new_data <- new_data |>
-  		mutate(nr_for_numerator = n_rfor_numerator)
+  		rename(nr_for_numerator = n_rfor_numerator)
   	
     # Remove empty rows
     new_data <-  new_data |>
