@@ -122,7 +122,13 @@ find_table_start <- function(raw_worksheet){
 
   clean_data <- function(new_data) {
     # Data cleaning steps moved here, instead of in hb_hosp script
-    
+ 
+  	 	# Shorten the QPI name column header to just 'QPI'. 
+  	# The import functions already identified the first column 
+  	# by matching search_string "QPI.*dashboard name", so we assume the column index
+  	# is equal to 1, and do this step first, before any column re-ordering.  
+  	names(new_data)[1] <- "qpi"
+  	
   	# Re-name 'Not Recorded for Numerator' to a readable, logical name
   	new_data <- new_data |>
   		rename(nr_for_numerator = n_rfor_numerator)
@@ -134,7 +140,7 @@ find_table_start <- function(raw_worksheet){
     # Set the Cyear value from housekeeping. 
     # See above, drop any column containing Cyear 
     new_data <- new_data |>
-      mutate(Cyear = as.character(new_years[1])) 
+      mutate(cyear = as.character(new_years[1])) 
     
     return(new_data)
   } 

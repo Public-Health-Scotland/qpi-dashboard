@@ -58,16 +58,11 @@ new_data <- import_extracts(data_folder, extracts_filenames)
 
 #fix up common issues with names in new_data 
 new_data <- new_data |>
-	mutate(`QPI.(dashboard.name)` = `QPI.(dashboard.name)`|>
+	mutate(qpi = qpi|>
 				 	                          str_remove_all("(\\r)|(\\n)") |> #new line characters
 				 	                          str_remove_all(" $")) #spaces at end of string
 
 
-# Shorten the QPI name column header to just 'QPI'. 
-# The import functions already identified the first column 
-# by matching search_string "QPI.*dashboard name", so we assume the column index
-# is equal to 1, and do this step first, before any column re-ordering.  
-names(new_data)[1] <- "QPI"
 
 # Handle NAs in numeric columns only - convert to zeroes
 new_data <- new_data |>
@@ -136,7 +131,7 @@ regional_rows <- new_data |>
   # Sum of performance is invalid, so firstly drop this column if it exists
   select(-any_of("PerPerformance")) |> 
   filter(!str_detect(tolower(Location), "scotland")) |>
-           group_by(QPI, Network) |>
+           group_by(qpi, Network) |>
            summarise(
              across(
               where(is.numeric), 
@@ -155,7 +150,7 @@ hbs_to_inc_in_scot_total <- HB_geo_groups |>
 ## Calculate the Scotland rows 
 scotland_rows_calcd <- new_data |>
   filter(Location %in% hbs_to_inc_in_scot_total) |>
-  group_by(QPI) |>
+  group_by(qpi) |>
   summarise(
     across(
       where(is.numeric), 
@@ -195,7 +190,7 @@ new_data <- new_data |>
 new_data <- new_data |> 
   left_join(lookup, by = c("Cyear" = "cyear",
                            "Cancer" = "cancer",
-                           "QPI" = "qpi"))
+                           "qpi" = "qpi"))
 
 # Identify rows where the QPI name in new_data was not matched with any in lookup. 
 # Sometimes happens because of a typo in the QPI name. 
@@ -228,7 +223,7 @@ new_data <- new_data |>
 
 if (any(new_data$per_performance > 100)){ 
 	bad_performance <- new_data |>
-		select(QPI, Location, Network, 
+		select(qpi, Location, Network, 
 					 Numerator, nr_for_numerator, Denominator, per_performance) |>
 		filter(per_performance > 100)
 	print(bad_performance)
@@ -328,8 +323,9 @@ new_data |> count(NRforDenominator,NRforExclusion ) |> slice_head()
 #### Step 6 : Change names for tableau ----
 new_data <- new_data |> 
   rename(
-    # Board_Hospital = board_hosp,
-    # Cyear = cyear,
+    QPI = qpi, 
+  	# Board_Hospital = board_hosp,
+    Cyear = cyear,
     # SurgDiag = surg_diag,
     # NRforDenominator = nr_denominator, # No longer ingested for SCRIS
     # NRforExclusion = nr_exclusions, # No longer ingested for SCRIS
