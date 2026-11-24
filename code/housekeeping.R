@@ -23,22 +23,19 @@ source("code/functions.R")
 # In-development values for tsg:
 # "Mesothelioma" "Thyroid"
 
-tsg <- "Testicular"
+tsg <- "Renal"
 
 # For the BO input, important to specify JUST ONE Cyear at a time 
 # (eg "2023" or "2023/24")
-new_years <- c("2024/25")
+new_years <- c("2024")
 
 
 # new_years_vals is the Year X year number eg most cancers started QPI data 
 # collection in 2014 so Year 1 was 2014 or 2014/15. Colorectal Year 11 is 2023/24. 
-new_years_vals <- c(11)
+new_years_vals <- c(13)
 
 # Date of the start of the first new reporting year
-date_start <- dmy("01-10-2024")
-
-# measurability versions (one for each year, usually "5.x")
-meas_vers <- c("4.x")
+date_start <- dmy("01-01-2024") 
 
 # Workaround to avoid error - create hospital vectors. 
 # This is just backwards compatibility with the submission / templates approach.
@@ -50,8 +47,7 @@ wos_hosps <- c()
 # The lookup folder and extracts folder will be derived from this path 
 # ie they're sub-folders of the data folder BOXI_extracts/ and lookup/. 
 data_folder <- here("/PHI_conf", "CancerGroup2", "Cancer_QPIs",
-                    "Data", "new_process", "testis_2026", "reporting_year_2024_2025") 
-
+                    "Data", "new_process", "renal_2026") 
 extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 
 # Extracts' filenames - list each extract file. No strict string-checking... 
@@ -61,10 +57,9 @@ extract_path <- here(data_folder, "BOXI_extracts") # path to input files
 # "2024_25_Rectangular_QPI_Colorectal_HOSPSURG_v4.xlsx",
 # "2024-25 Rectangular_QPI_Colorectal_LiverDiagDate.xlsx")
 
-extracts_filenames <- c("2024_2025_at6novRectangular_QPI_Testicular_v4_Diag_QPIs.xlsx", 
-                        "oct2024_sep2025_at6novRectangular_QPI_Testicular_v4_HOSPSURG.xlsx",
-                        "QPI_12_ARREARS_diag_2023_24_reportg_yr_2024_25_QPI_Testicular_v4_QPI12_Arrears.xlsx")
-
+extracts_filenames <- c("Jan_todecembr_2024Rectangular_QPI_Renal_v5.xlsx",
+                        "2024_Rectangular_QPI_Renal_HOSPSURG.xlsx", 
+                        "2024_Rectangular_QPI_Renal_QPI09_Arrears.xlsx")
 
 
 # Folder containing lookup info on HBs by network
